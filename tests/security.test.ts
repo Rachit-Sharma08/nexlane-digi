@@ -4,7 +4,6 @@ import {
   clampInt,
   filledSlowEnough,
   notHoneypot,
-  rateLimit,
   zodFieldErrors,
 } from "../src/lib/formsecurity.ts";
 
@@ -19,12 +18,6 @@ test("min fill time: too fast fails, slow enough passes", () => {
   assert.equal(filledSlowEnough(now), false);
   assert.equal(filledSlowEnough(now - 60_000), true);
   assert.equal(filledSlowEnough(Number.NaN), false);
-});
-
-test("rate limiter: blocks after N hits, resets in a new window", () => {
-  const key = `ip-${Math.random()}`;
-  for (let i = 0; i < 5; i++) assert.equal(rateLimit(key, 5), true);
-  assert.equal(rateLimit(key, 5), false);
 });
 
 test("clampInt keeps ints inside bounds", () => {

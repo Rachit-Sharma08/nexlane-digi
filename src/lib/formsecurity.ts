@@ -57,31 +57,10 @@ export function clampInt(value: unknown, min: number, max: number): number {
 }
 
 /**
- * Simple in-memory rate limiter (per IP). Enough as a starter:
- * on serverless it resets between instances, which only *weakens*
- * protection slightly — combine with Turnstile for stronger protection.
- * shortcut: memory-only limit is per lambda instance,
- * upgrade to a shared store (Vercel KV/Upstash) if abuse becomes a problem.
+ * Removed: in-memory rate limiter (per-lambda only, resets on cold start).
+ * Rate limiting is now handled by the Vercel WAF rule on /api/* (serverless-safe).
+ * See docs/PROGRESS.md → "Launch checklist" for dashboard steps.
  */
-const hits = new Map<string, { count: number; resetAt: number }>();
-
-export function rateLimit(ip: string, limit = 5, windowMs = 10 * 60 * 1000): boolean {
-  const now = Date.now();
-  const entry = hits.get(ip);
-  if (!entry || entry.resetAt < now) {
-    hits.set(ip, { count: 1, resetAt: now + windowMs });
-    // opportunistic cleanup: delete a few expired entries (avoids unbounded growth)
-    if (hits.size > 500) {
-      for (const [k, v] of hits) {
-        if (v.resetAt < now) hits.delete(k);
-        if (hits.size <= 400) break;
-      }
-    }
-    return true;
-  }
-  entry.count += 1;
-  return entry.count <= limit;
-}
 
 /** Best-effort client IP (Vercel sets x-forwarded-for / x-real-ip). */
 export function clientIp(req: Request): string {
