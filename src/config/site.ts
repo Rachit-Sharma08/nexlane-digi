@@ -20,8 +20,14 @@ export const site = {
 
   // Placeholders — TODO: confirm each before go-live.
   location: "Kaithal, Haryana, India",
-  // TODO: confirm the WhatsApp number for business enquiries (shown in buttons/footer).
-  whatsappNumber: "918307151186", // in international format without + or spaces
+  /**
+   * WhatsApp number for business enquiries — MUST come from the
+   * NEXT_PUBLIC_WHATSAPP_NUMBER env var (personal numbers are never
+   * hardcoded in source). Empty/unset = WhatsApp buttons and wa.me links
+   * are not rendered at all (contact page shows form + email + socials).
+   * Format: country code + digits only, no + or spaces.
+   */
+  whatsappNumber: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "",
   // TODO: set a real agency email. Empty = link hidden everywhere.
   contactEmail: "",
   instagramUrl: "", // TODO: add

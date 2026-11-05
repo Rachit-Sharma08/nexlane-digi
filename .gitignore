@@ -31,3 +31,4 @@ yarn-error.log*
 
 # user files
 TODO.md
+.opencode/tmp/
