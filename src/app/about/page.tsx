@@ -1,7 +1,9 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { buildMetadata, breadcrumbSchema } from '@/lib/seo';
-import { Section, SectionTitle, GlassCard, GradientHeading, Muted, Eyebrow } from '@/components/ui';
+import { Section, SectionTitle, GradientHeading, Muted, Eyebrow } from '@/components/ui';
+import DepthCard from '@/components/DepthCard';
+import NextUp from '@/components/NextUp';
 import JsonLd from '@/components/JsonLd';
 
 export const metadata: Metadata = buildMetadata({
@@ -30,7 +32,7 @@ export default function AboutPage() {
 
         <SectionTitle>Who you&apos;ll work with</SectionTitle>
         <div className="grid gap-5 md:grid-cols-2">
-          <GlassCard className="p-6">
+          <DepthCard className="p-6">
             <h2 className="font-display text-xl font-semibold">Meet the founders</h2>
             <Muted>
               Rachit and Krish lead SEO, growth, web development and AI — the two people you&apos;ll talk to first.
@@ -38,8 +40,8 @@ export default function AboutPage() {
             <Link href="/about/founders" className="mt-4 inline-block text-sm font-semibold text-[var(--accent-2)] hover:text-white">
               Founders →
             </Link>
-          </GlassCard>
-          <GlassCard className="p-6">
+          </DepthCard>
+          <DepthCard className="p-6">
             <h2 className="font-display text-xl font-semibold">Meet the team</h2>
             <Muted>
               Neelam and Jyoti build websites, handle social and video, and keep the work moving.
@@ -47,30 +49,30 @@ export default function AboutPage() {
             <Link href="/about/team" className="mt-4 inline-block text-sm font-semibold text-[var(--accent-2)] hover:text-white">
               Team →
             </Link>
-          </GlassCard>
+          </DepthCard>
         </div>
 
         <SectionTitle>What we believe</SectionTitle>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <GlassCard className="p-4">
+          <DepthCard className="p-4">
             <h3 className="font-semibold mb-2">Direct talk</h3>
             <p>You talk to the people doing the work</p>
-          </GlassCard>
-          <GlassCard className="p-4">
+          </DepthCard>
+          <DepthCard className="p-4">
             <h3 className="font-semibold mb-2">Written scope</h3>
             <p>We write down exactly what we&apos;ll do before we start</p>
-          </GlassCard>
-          <GlassCard className="p-4">
+          </DepthCard>
+          <DepthCard className="p-4">
             <h3 className="font-semibold mb-2">We teach what we do</h3>
             <p>We offer free lessons about what we learn</p>
-          </GlassCard>
-          <GlassCard className="p-4">
+          </DepthCard>
+          <DepthCard className="p-4">
             <h3 className="font-semibold mb-2">Free audit</h3>
             <p>We review your website before we work with you</p>
-          </GlassCard>
+          </DepthCard>
         </div>
 
-        <GlassCard className="p-6 mt-8">
+        <DepthCard className="p-6 mt-8">
           <div className="mb-4">
             <GradientHeading>Get a Free Audit</GradientHeading>
           </div>
@@ -78,9 +80,10 @@ export default function AboutPage() {
           <Link href="/audit" className="btn btn-primary">
             Start your audit
           </Link>
-        </GlassCard>
+        </DepthCard>
       </Section>
       <JsonLd data={breadcrumbSchema([{name:"Home",path:"/"},{name:"About",path:"/about"}])} />
+      <NextUp title="Meet the people behind Nexlane" href="/about/founders" cta="Meet the founders" eyebrow="Keep going" />
     </>
   );
 }
