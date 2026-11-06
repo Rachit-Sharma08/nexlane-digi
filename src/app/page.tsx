@@ -136,7 +136,7 @@ export default function HomePage() {
         <SectionNav items={sections} />
 
         {/* 2. WHAT WE DO — bento */}
-        <section id="what-we-do" className="reveal-blur py-14">
+        <section id="what-we-do" className="scroll-reveal py-14">
           <SectionHeader
             eyebrow="Services"
             title="What we do"
@@ -170,6 +170,13 @@ export default function HomePage() {
                   <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">02 · Search</span>
                   <h3 className="mt-3 font-display text-xl font-semibold">{services[1].shortName}</h3>
                   <p className="mt-3 text-sm leading-relaxed text-[var(--muted)]">{services[1].summary}</p>
+                  <ul className="mt-4 flex flex-wrap gap-2">
+                    {services[1].whatIsIncluded.slice(0, 3).map((item) => (
+                      <li key={item} className="rounded-full border border-[var(--card-border)] bg-[rgba(12,34,63,0.35)] px-3 py-1 text-xs text-[var(--muted)]">
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
                 <Link href="/services/seo" className={cardLink}>
                   See SEO <span aria-hidden="true">→</span>
@@ -183,6 +190,13 @@ export default function HomePage() {
                   <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">03 · Play</span>
                   <h3 className="mt-3 font-display text-xl font-semibold">{services[2].shortName}</h3>
                   <p className="mt-3 text-sm leading-relaxed text-[var(--muted)]">{services[2].summary}</p>
+                  <ul className="mt-4 flex flex-wrap gap-2">
+                    {services[2].whatIsIncluded.slice(0, 3).map((item) => (
+                      <li key={item} className="rounded-full border border-[var(--card-border)] bg-[rgba(12,34,63,0.35)] px-3 py-1 text-xs text-[var(--muted)]">
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
                 <Link href="/services/game-development" className={cardLink}>
                   See game development <span aria-hidden="true">→</span>
@@ -234,7 +248,7 @@ export default function HomePage() {
         </section>
 
         {/* 4. WHO WE HELP */}
-        <section id="who-we-help" className="reveal-blur py-14">
+        <section id="who-we-help" className="scroll-reveal py-14">
           <SectionHeader
             eyebrow="Audience"
             title="Who we help"
@@ -251,7 +265,7 @@ export default function HomePage() {
         </section>
 
         {/* 5. WHY NEXLANE */}
-        <section id="why-nexlane" className="reveal-blur py-14">
+        <section id="why-nexlane" className="scroll-reveal py-14">
           <SectionHeader
             eyebrow="Why us"
             title="Why Nexlane"
@@ -259,17 +273,19 @@ export default function HomePage() {
           />
           <div className="mt-8 grid gap-4 sm:grid-cols-2">
             {whyUs.map((w, i) => (
-              <DepthCard key={w.title} glare className="p-6">
-                <span className="font-display text-sm font-bold text-gradient">{String(i + 1).padStart(2, "0")}</span>
-                <h3 className="mt-2 font-display text-lg font-semibold">{w.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-[var(--muted)]">{w.blurb}</p>
-              </DepthCard>
+              <div key={w.title} className="reveal-blur">
+                <DepthCard glare className="p-6">
+                  <span className="font-display text-sm font-bold text-gradient">{String(i + 1).padStart(2, "0")}</span>
+                  <h3 className="mt-2 font-display text-lg font-semibold">{w.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-[var(--muted)]">{w.blurb}</p>
+                </DepthCard>
+              </div>
             ))}
           </div>
         </section>
 
         {/* 6. HOW WE WORK — 5-step beam */}
-        <section id="process" className="reveal-blur py-14">
+        <section id="process" className="scroll-reveal py-14">
           <SectionHeader
             eyebrow="Process"
             title="How we work"
@@ -285,7 +301,7 @@ export default function HomePage() {
               className="absolute left-0 right-0 top-4 hidden h-px bg-gradient-to-r from-[var(--brand)] via-[var(--accent)] to-transparent lg:block"
             />
             {process.map((s) => (
-              <li key={s.step} className="relative pl-12 lg:pl-0 lg:pt-12">
+              <li key={s.step} className="reveal-blur relative pl-12 lg:pl-0 lg:pt-12">
                 <span className="absolute left-0 top-0 grid h-8 w-8 place-items-center rounded-full border border-[var(--accent)]/50 bg-[#04203a] text-xs font-bold text-[var(--accent-2)]">
                   {s.step}
                 </span>
@@ -297,7 +313,7 @@ export default function HomePage() {
         </section>
 
         {/* 7. OUR WORK — honest empty state, no fake items */}
-        <section id="work" className="reveal-blur py-14">
+        <section id="work" className="scroll-reveal py-14">
           <SectionHeader eyebrow="Proof" title="Our work" />
           <div className="mt-8 rounded-2xl border border-dashed border-[var(--card-border)] bg-[rgba(6,27,54,0.3)] p-6 sm:p-8">
             <p className="max-w-2xl text-sm leading-relaxed text-[var(--muted)]">
@@ -311,7 +327,7 @@ export default function HomePage() {
         </section>
 
         {/* 8. LEARN */}
-        <section id="learn" className="reveal-blur py-14">
+        <section id="learn" className="scroll-reveal py-14">
           <SectionHeader
             eyebrow="Free lessons"
             title="Learn with us"
@@ -342,7 +358,7 @@ export default function HomePage() {
         </section>
 
         {/* 9. FAQ */}
-        <section id="faq" className="reveal-blur py-14">
+        <section id="faq" className="scroll-reveal py-14">
           <SectionHeader eyebrow="FAQ" title="Questions people ask" />
           <div className="mt-8 divide-y divide-[var(--card-border)] rounded-2xl border border-[var(--card-border)]">
             {faqs.map((f) => (
