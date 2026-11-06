@@ -110,3 +110,16 @@ pm start) par 8 pages x 1440/768/360 screenshots: screenshots/stage-a-final/ (gi
 - Fixed: two competing nav underline rules - removed the global 1px rule so all active items use the same 2px gradient underline (also stopped the logo hover underline).
 - Fixed: mobile breadcrumb showed a leading / (Home hidden, separator left behind); separator now hides with its crumb.
 - Checks: eyebrow above every H1, Home once per breadcrumb, top-level pages have none, 12px eyebrow/H1 gap, no horizontal scroll at 360px.
+
+## Autopilot plan (Stages B–E, 2026-11-06)
+
+Owner approved a non-stop run: B → C → D → E, one PR per stage, nothing merged. Branch chain: `feat/design-system` → `feat/home-redesign` → `feat/pages-polish` → `feat/qa`.
+
+| Stage | Branch | Scope | Done when |
+|---|---|---|---|
+| B | `feat/design-system` (base `main`) | shadcn/Magic UI/motion setup, tokens + primitives, quality tier hook/provider, `DepthCard`, `Parallax`, page-open transition, navbar sliding indicator + keyboard dropdowns, scroll progress, `SectionNav` scroll-spy, `NextUp`, `ProfileTile` + Founders/Team restructure, logo blend fix | tsc/lint/build 0, screenshots, CSP check, PR |
+| C | `feat/home-redesign` (base B) | Home sections with depth system: one WebGL hero (high tier only, static fallback), bento services, true facts, tools marquee, Why Nexlane, 5-step timeline, Our Work teaser, CTA, `NextUp` | same gates + real bundle sizes, PR |
+| D | `feat/pages-polish` (base C) | Depth system on every inner page, eyebrow/breadcrumb/`NextUp` everywhere, `SectionNav` on long pages, contrast + copy fixes, empty-space fill with honest `TODO` placeholders | same gates, PR |
+| E | `feat/qa` (base D) | Reduced motion, 360 px, low-end CPU throttle, Lighthouse mobile, CSP console, `npm audit`, grep checks, final PROGRESS | real numbers reported, PR |
+
+Rules for the run: small commits; max 2 subagents with separate files; never trust subagent summaries; after 3 failed fixes mark `BLOCKED`; stop only if context is full (write `RESUME POINT`).
