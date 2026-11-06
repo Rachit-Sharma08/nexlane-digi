@@ -123,3 +123,38 @@ Owner approved a non-stop run: B → C → D → E, one PR per stage, nothing me
 | E | `feat/qa` (base D) | Reduced motion, 360 px, low-end CPU throttle, Lighthouse mobile, CSP console, `npm audit`, grep checks, final PROGRESS | real numbers reported, PR |
 
 Rules for the run: small commits; max 2 subagents with separate files; never trust subagent summaries; after 3 failed fixes mark `BLOCKED`; stop only if context is full (write `RESUME POINT`).
+
+## Stage B — design system and orientation (2026-11-06, `feat/design-system`)
+
+### Built
+
+- **Libraries:** `motion@14.10.0` (single motion library; `framer-motion` not installed). shadcn was already set up; `components.json` now carries `@magicui` (already) and free `@unlumen-ui` registries. No Magic UI/unlumen component was installed yet because none is used in Stage B — the first one lands in Stage C where it has a job (`marquee`, `animated-beam`). No Pro/paid items.
+- **Quality tiers:** `src/lib/quality.tsx` (`QualityProvider`, `useQuality`) returns `low | mid | high`. SSR/first render is always `low`, then measured after hydration; `data-quality` is written to `<html>`. `low` = reduced motion, saveData, deviceMemory ≤ 2, cores ≤ 2 or width < 768. `high` = 1024px+, 4+ cores, fine pointer, no saveData. `mid` = everything else.
+- **Depth primitives:** `DepthCard` (pointer tilt + optional glare; low/touch keep the static card), `Parallax` (motion `useScroll`/`useTransform`, disabled on low), layered depth tokens/shadows in `globals.css`, `Container`/`Section` primitives. `MotionConfig reducedMotion="user"` wraps the app via `AppProviders`.
+- **Page-open transition:** React 19 `ViewTransition` (already in the repo) with an enter-only 3D CSS animation (translateZ + rotateX + scale, 420ms). Exit animation is not attempted (App Router unreliable). `low` gets a 180ms fade; reduced motion gets 0s.
+- **Navbar:** active underline now slides with `layoutId`; parent dropdown is highlighted + `aria-current="page"` on child pages; click and keyboard dropdowns (ArrowDown opens and focuses the first item, ArrowUp/Down/Home/End cycle, Escape closes and returns focus, Tab/outside click closes); mobile menu highlights the current page with a left accent. Header height is measured into `--header-h` for SectionNav and anchor offsets.
+- **Orientation:** scroll progress bar sits under the header; `SectionNav` sticky pills (desktop) / chips (mobile) with IntersectionObserver scroll-spy; `NextUp` card; headings/sections get `scroll-margin-top`.
+- **Profiles:** one `ProfileTile` for Founders and Team. 1:1 initials tile (photo supported), whole tile links to the portfolio in a new tab when set, "Open portfolio ↗" cue on hover/focus and always on touch. Personal projects (max 3) stay clickable above the tile link and keep the "not Nexlane client work" label. `order` added to config: founders Rachit → Krish; team Jyoti → Neelam. Portfolio URLs set for Rachit, Krish and Neelam (owner permission 2026-11-06); Jyoti has none. `MemberCard` deleted.
+- **Logo:** `mix-blend-mode: screen` on the navbar/footer mark removes the dark box on our background. A transparent PNG is still needed (TODO below).
+
+### Verified
+
+| Gate | Result |
+|---|---|
+| `npx tsc --noEmit` | 0 errors |
+| `npm run lint` | 0 errors, 0 warnings |
+| `npm run build` | success, 21 routes |
+| Production CSP (`npm start` + `curl -I`) | no `unsafe-eval` |
+| Browser console (`/about/founders`, high tier) | 0 errors, 0 warnings, no CSP "Refused to…" |
+| Reduced motion | `data-quality="low"`, `scroll-behavior: auto` |
+| Mobile menu at 360px | Team marked `aria-current="page"`, accent bar visible |
+| Keyboard dropdown | ArrowDown → "Our story" focused; ArrowDown → "Founders"; Enter navigates; Escape closes |
+| Scroll-spy | at `#team-members`, pill "Team members" is `aria-current="location"`; bar sticks at `--header-h` (65px) |
+
+Screenshots: `screenshots/stage-b/` (home, about, founders, team at 1440/768/360; mobile menu; scroll-spy). Gitignored.
+
+### TODO for the owner
+
+1. Add square team photos to `public/team/` (800×800, under 150 KB), then set `photo: "/team/<slug>.webp"` in `src/config/site.ts`. None are set yet, so every tile shows initials.
+2. Supply a transparent logo PNG (the current mark still needs `mix-blend-screen`).
+3. Confirm every team title and bio (still the Stage A drafts).
