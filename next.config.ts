@@ -3,6 +3,11 @@ import type { NextConfig } from "next";
 // Security headers. CSP is "strict with minimal opens": Next.js needs
 // 'unsafe-inline' for its inline bootstrap scripts/styles without a nonce
 // middleware. TODO: move to nonce-based CSP via middleware if we ever need it.
+// Dev-only: React's dev mode calls eval() for debugging features, and without
+// 'unsafe-eval' the Next.js dev badge reports a console error on every page.
+// Production keeps the strict CSP — React never uses eval() there.
+const devEval = process.env.NODE_ENV !== "production" ? " 'unsafe-eval'" : "";
+
 const csp = [
   "default-src 'self'",
   "base-uri 'self'",
@@ -10,7 +15,7 @@ const csp = [
   "frame-ancestors 'none'",
   "object-src 'none'",
   // Next.js injects tiny inline bootstrap/hydration scripts; no third-party JS allowed.
-  "script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com",
+  `script-src 'self' 'unsafe-inline'${devEval} https://challenges.cloudflare.com`,
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data:",
   "font-src 'self'",
@@ -35,6 +40,12 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
+  async redirects() {
+    return [
+      // Renamed in the IA restructure — permanent, keeps old links alive.
+      { source: "/portfolio", destination: "/our-work", permanent: true },
+    ];
+  },
   async headers() {
     return [
       {

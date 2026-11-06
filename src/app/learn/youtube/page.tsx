@@ -21,8 +21,8 @@ export default function YouTubePage() {
 
   return (
     <Section>
-      <h1 className="font-display text-4xl font-bold mb-8">YouTube lessons</h1>
       <Breadcrumbs items={breadcrumbItems} />
+      <h1 className="font-display text-4xl font-bold mb-8">YouTube lessons</h1>
       <p className="text-[var(--muted)] mb-8">Free video lessons on digital marketing and free AI tools</p>
       {lessons.length === 0 ? (
         <GlassCard>

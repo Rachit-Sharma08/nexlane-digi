@@ -40,8 +40,8 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 
   return (
     <Section>
-      <h1 className="font-display text-4xl font-bold mb-8">{post.title}</h1>
       <Breadcrumbs items={postBreadcrumbItems} />
+      <h1 className="font-display text-4xl font-bold mb-8">{post.title}</h1>
       <p className="text-[var(--muted)] mb-8">
         {post.category} · {post.date} · {post.author} · {readingTime(post)}
       </p>

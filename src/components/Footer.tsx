@@ -34,10 +34,17 @@ export default function Footer() {
           </div>
         </div>
 
-        <nav aria-label="Services and Learn links" className="text-sm">
+        <nav aria-label="Explore links" className="text-sm">
           <p className="font-semibold uppercase tracking-widest text-xs text-[var(--accent)]">Explore</p>
           <ul className="mt-3 space-y-2">
             {nav.main.map((i) => (
+              <li key={i.href}>
+                <Link href={i.href} className="text-[var(--muted)] hover:text-white">
+                  {i.label}
+                </Link>
+              </li>
+            ))}
+            {nav.about.items.map((i) => (
               <li key={i.href}>
                 <Link href={i.href} className="text-[var(--muted)] hover:text-white">
                   {i.label}
@@ -72,14 +79,13 @@ export default function Footer() {
           <p className="font-semibold uppercase tracking-widest text-xs text-[var(--accent)]">Team</p>
           <ul className="mt-3 space-y-2">
             {team.map((m) => (
-              <li key={m.name}>
-                {m.portfolioUrl ? (
-                  <a href={m.portfolioUrl} className="text-[var(--muted)] hover:text-white" rel="noopener noreferrer" target="_blank">
-                    {m.name}
-                  </a>
-                ) : (
-                  <span className="text-[var(--muted)]">{m.name}</span>
-                )}
+              <li key={m.slug}>
+                <Link
+                  href={`/about/${m.group === "founders" ? "founders" : "team"}#${m.slug}`}
+                  className="text-[var(--muted)] hover:text-white"
+                >
+                  {m.name}
+                </Link>
               </li>
             ))}
           </ul>

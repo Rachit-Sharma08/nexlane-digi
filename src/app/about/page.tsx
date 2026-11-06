@@ -1,14 +1,12 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { buildMetadata, breadcrumbSchema } from '@/lib/seo';
-import { team } from '@/config/site';
-import { Section, SectionTitle, GlassCard, GradientHeading } from '@/components/ui';
-import Breadcrumbs from '@/components/Breadcrumbs';
+import { Section, SectionTitle, GlassCard, GradientHeading, Muted } from '@/components/ui';
 import JsonLd from '@/components/JsonLd';
 
 export const metadata: Metadata = buildMetadata({
   title: "About",
-  description: "Four friends studying Digital Marketing with AI, building real projects to help small local businesses get found online",
+  description: "Four friends building real projects to help small local businesses get found online",
   path: "/about"
 });
 
@@ -17,11 +15,39 @@ export default function AboutPage() {
     <>
       <Section>
         <h1 className="text-3xl font-bold mb-6">About Nexlane Digital</h1>
-        <Breadcrumbs items={[{name:"Home",path:"/"},{name:"About",path:"/about"}]} />
         <article className="prose max-w-none">
-          <p>We are four friends studying Digital Marketing with AI. In 2026, we started Nexlane Digital to learn by building real projects for small local businesses in Kaithal, Haryana.</p>
+          <p>We are four friends who started Nexlane Digital in 2026 to learn by building real projects for small local businesses in Kaithal, Haryana.</p>
           <p>We don&apos;t have paying clients yet, but we&apos;re working on our first projects to help businesses get found online. Our goal is to create simple, effective digital solutions that make a real difference for our clients.</p>
         </article>
+
+        <SectionTitle>Why we started Nexlane</SectionTitle>
+        <Muted>
+          We were learning digital marketing, web development and AI tools together and kept running into the same problem:
+          small local businesses in our city either had no website, or one nobody could find. We started Nexlane to fix that
+          for real clients — and to publish what we learn so others can too.
+        </Muted>
+
+        <SectionTitle>Who you&apos;ll work with</SectionTitle>
+        <div className="grid gap-5 md:grid-cols-2">
+          <GlassCard className="p-6">
+            <h2 className="font-display text-xl font-semibold">Meet the founders</h2>
+            <Muted>
+              Rachit and Krish lead SEO, growth, web development and AI — the two people you&apos;ll talk to first.
+            </Muted>
+            <Link href="/about/founders" className="mt-4 inline-block text-sm font-semibold text-[var(--accent-2)] hover:text-white">
+              Founders →
+            </Link>
+          </GlassCard>
+          <GlassCard className="p-6">
+            <h2 className="font-display text-xl font-semibold">Meet the team</h2>
+            <Muted>
+              Neelam and Jyoti build websites, handle social and video, and keep the work moving.
+            </Muted>
+            <Link href="/about/team" className="mt-4 inline-block text-sm font-semibold text-[var(--accent-2)] hover:text-white">
+              Team →
+            </Link>
+          </GlassCard>
+        </div>
 
         <SectionTitle>What we believe</SectionTitle>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -41,31 +67,6 @@ export default function AboutPage() {
             <h3 className="font-semibold mb-2">Free audit</h3>
             <p>We review your website before we work with you</p>
           </GlassCard>
-        </div>
-
-        <SectionTitle>Our team</SectionTitle>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {team.map((member) => (
-            <GlassCard key={member.name} className="p-4">
-              <h3 className="font-semibold mb-2">{member.name}</h3>
-              <p className="text-[var(--accent)] mb-2">{member.role}</p>
-              <ul className="list-disc pl-5 mb-2">
-                {member.skills.map((skill) => (
-                  <li key={skill}>{skill}</li>
-                ))}
-              </ul>
-              {member.portfolioUrl && (
-                <Link
-                  href={member.portfolioUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-[var(--accent)] underline"
-                >
-                  Portfolio
-                </Link>
-              )}
-            </GlassCard>
-          ))}
         </div>
 
         <GlassCard className="p-6 mt-8">

@@ -1,4 +1,3 @@
-import Breadcrumbs from '@/components/Breadcrumbs';
 import JsonLd from '@/components/JsonLd';
 import { Section, SectionTitle, GlassCard, Muted } from '@/components/ui';
 import { buildMetadata, breadcrumbSchema } from '@/lib/seo';
@@ -22,7 +21,6 @@ export default function AuditPage() {
   return (
     <Section>
       <h1 className="font-display text-4xl font-bold mb-8">{site.audit.title}</h1>
-      <Breadcrumbs items={breadcrumbItems} />
       <p className="text-[var(--muted)] mb-4">{site.audit.includes}</p>
       <Muted>{site.audit.note}</Muted>
 

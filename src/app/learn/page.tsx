@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import Breadcrumbs from '@/components/Breadcrumbs';
 import JsonLd from '@/components/JsonLd';
 import { GlassCard, Section } from '@/components/ui';
 import { buildMetadata, breadcrumbSchema } from '@/lib/seo';
@@ -19,7 +18,6 @@ export default function LearnPage() {
   return (
     <Section>
       <h1 className="font-display text-4xl font-bold mb-8">Learn with us — free</h1>
-      <Breadcrumbs items={breadcrumbItems} />
       <p className="text-[var(--muted)] mb-8">
         Everything here is free, and it&apos;s the same stuff we use ourselves.
       </p>

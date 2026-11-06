@@ -40,6 +40,9 @@ type NavItem = { href: string; label: string };
 function Dropdown({ parent, mobile }: { parent: { label: string } & { items: NavItem[] }; mobile?: boolean }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const pathname = usePathname();
+  // Parent counts as active when the current route is one of its children.
+  const active = parent.items.some((i) => i.href !== "/" && pathname.startsWith(i.href));
 
   useEffect(() => {
     if (!open) return;
@@ -63,7 +66,12 @@ function Dropdown({ parent, mobile }: { parent: { label: string } & { items: Nav
         <ul className="mt-1 space-y-1">
           {parent.items.map((i) => (
             <li key={i.href}>
-              <Link href={i.href} className="block rounded px-2 py-1.5 text-sm text-[var(--muted)] hover:text-white" onClick={() => setOpen(false)}>
+              <Link
+                href={i.href}
+                aria-current={pathname === i.href ? "page" : undefined}
+                className={`block rounded px-2 py-1.5 text-sm hover:text-white ${pathname === i.href ? "text-white" : "text-[var(--muted)]"}`}
+                onClick={() => setOpen(false)}
+              >
                 {i.label}
               </Link>
             </li>
@@ -79,7 +87,7 @@ function Dropdown({ parent, mobile }: { parent: { label: string } & { items: Nav
         aria-expanded={open}
         aria-haspopup="true"
         onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-1 rounded px-3 py-2 text-sm text-[var(--muted)] hover:text-white"
+        className={`flex items-center gap-1 rounded px-3 py-2 text-sm hover:text-white ${active ? "text-white" : "text-[var(--muted)]"}`}
       >
         {parent.label}
         <Chevron className={`h-3 w-3 transition-transform ${open ? "rotate-180" : ""}`} />
@@ -88,7 +96,12 @@ function Dropdown({ parent, mobile }: { parent: { label: string } & { items: Nav
         <ul className="glass absolute left-0 top-full z-50 mt-1 w-56 p-2 shadow-xl">
           {parent.items.map((i) => (
             <li key={i.href}>
-              <Link href={i.href} className="block rounded px-3 py-2 text-sm text-[var(--muted)] hover:text-white hover:bg-[rgba(12,34,63,0.5)]" onClick={() => setOpen(false)}>
+              <Link
+                href={i.href}
+                aria-current={pathname === i.href ? "page" : undefined}
+                className={`block rounded px-3 py-2 text-sm hover:bg-[rgba(12,34,63,0.5)] hover:text-white ${pathname === i.href ? "text-white" : "text-[var(--muted)]"}`}
+                onClick={() => setOpen(false)}
+              >
                 {i.label}
               </Link>
             </li>
@@ -123,6 +136,7 @@ export default function Navbar() {
                 {i.label}
               </Link>
             ))}
+            <Dropdown parent={nav.about} />
             <Dropdown parent={nav.services} />
             <Dropdown parent={nav.learn} />
             {nav.extra.map((i) => (
@@ -157,6 +171,7 @@ export default function Navbar() {
                   {i.label}
                 </Link>
               ))}
+              <Dropdown parent={nav.about} mobile />
               <Dropdown parent={nav.services} mobile />
               <Dropdown parent={nav.learn} mobile />
               {nav.extra.map((i) => (

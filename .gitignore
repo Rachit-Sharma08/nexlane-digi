@@ -32,3 +32,7 @@ yarn-error.log*
 # user files
 TODO.md
 .opencode/tmp/
+
+# local QA screenshots (never committed)
+screenshots/
+.playwright-mcp/

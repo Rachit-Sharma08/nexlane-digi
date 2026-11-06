@@ -1,13 +1,7 @@
 import Link from 'next/link';
-import Breadcrumbs from '@/components/Breadcrumbs';
 import JsonLd from '@/components/JsonLd';
 import { Section, GlassCard, Muted } from '@/components/ui';
 import { site } from '@/config/site';
-
-const breadcrumbItems = [
-  { name: 'Home', path: '/' },
-  { name: 'Thank you', path: '/thank-you' },
-];
 
 export const metadata = {
   title: 'Thank you — Nexlane Digital',
@@ -19,7 +13,6 @@ export default function ThankYouPage() {
   return (
     <Section>
       <h1 className="font-display text-4xl font-bold mb-8">Thank you</h1>
-      <Breadcrumbs items={breadcrumbItems} />
       <GlassCard>
         <p className="text-[var(--muted)]">
           We have received your message and will reply within {site.REPLY_TIME}. If it is urgent, reach us on

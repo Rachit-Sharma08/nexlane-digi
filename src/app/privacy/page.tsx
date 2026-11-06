@@ -1,4 +1,3 @@
-import Breadcrumbs from '@/components/Breadcrumbs';
 import JsonLd from '@/components/JsonLd';
 import { Section, SectionTitle, GlassCard, Muted } from '@/components/ui';
 import { buildMetadata, breadcrumbSchema } from '@/lib/seo';
@@ -18,7 +17,6 @@ export default function PrivacyPage() {
   return (
     <Section>
       <h1 className="font-display text-4xl font-bold mb-8">Privacy policy</h1>
-      <Breadcrumbs items={breadcrumbItems} />
       <GlassCard>
         <p className="text-[var(--muted)] font-semibold">
           Draft — to be reviewed by a qualified professional before publication.

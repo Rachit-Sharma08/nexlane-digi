@@ -22,8 +22,8 @@ export default function BlogPage() {
 
   return (
     <Section>
-      <h1 className="font-display text-4xl font-bold mb-8">Blog</h1>
       <Breadcrumbs items={breadcrumbItems} />
+      <h1 className="font-display text-4xl font-bold mb-8">Blog</h1>
       {posts.length === 0 ? (
         <GlassCard>
           <p className="text-[var(--muted)]">First posts are being written — check back soon.</p>
