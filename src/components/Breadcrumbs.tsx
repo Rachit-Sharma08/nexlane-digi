@@ -26,7 +26,9 @@ export default function Breadcrumbs({ items }: BreadcrumbsProps) {
             key={item.path}
             className={`flex items-center ${index < crumbs.length - 2 ? 'hidden sm:flex' : ''}`}
           >
-            {index > 0 && <span className="mx-2">/</span>}
+            {index > 0 && (
+              <span className={`mx-2 ${crumbs.length > 2 && index === crumbs.length - 2 ? 'hidden sm:inline' : ''}`}>/</span>
+            )}
             {index === crumbs.length - 1 ? (
               <span aria-current="page">{item.name}</span>
             ) : (

@@ -100,3 +100,13 @@ Branch protection / rulesets / secret scanning = 403 (Pro ya public repo chahiye
   - Navbar: gradient underline on the active item + `aria-current` on the active dropdown parent, mobile menu highlights the current page, 44px tap targets (hamburger p-2.5, menu items py-3).
 - Verification: `npx tsc --noEmit` = 0, `npm run lint` = 0, `npm run build` = 0 (21 routes), production CSP via `npm start` + `curl.exe -I` has **no** `unsafe-eval`.
 - Not in this pass (Stage B/D scope per redesign prompt): scroll progress bar, SectionNav scroll-spy, NextUp card, sliding pill in the navbar.
+
+## Visual QA - Stage A final (2026-11-06, PR #7)
+
+- Production build (
+pm run build + 
+pm start) par 8 pages x 1440/768/360 screenshots: screenshots/stage-a-final/ (gitignored).
+- Fixed: Home nav item never got ria-current/underline (isActive skipped /).
+- Fixed: two competing nav underline rules - removed the global 1px rule so all active items use the same 2px gradient underline (also stopped the logo hover underline).
+- Fixed: mobile breadcrumb showed a leading / (Home hidden, separator left behind); separator now hides with its crumb.
+- Checks: eyebrow above every H1, Home once per breadcrumb, top-level pages have none, 12px eyebrow/H1 gap, no horizontal scroll at 360px.

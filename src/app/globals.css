@@ -293,21 +293,6 @@ select:focus-visible {
 a:not(.btn) { text-decoration-color: transparent; text-underline-offset: 4px; transition: color 180ms ease, text-decoration-color 180ms ease; }
 a:not(.btn):hover { text-decoration-color: currentColor; }
 nav[aria-label="Main navigation"] a:not(.btn) { position: relative; }
-nav[aria-label="Main navigation"] a:not(.btn)::after {
-  position: absolute;
-  right: 0.5rem;
-  bottom: 0.3rem;
-  left: 0.5rem;
-  height: 1px;
-  content: "";
-  background: linear-gradient(90deg, var(--brand), var(--accent));
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-nav[aria-label="Main navigation"] a:not(.btn):hover::after,
-nav[aria-label="Main navigation"] a[aria-current="page"]::after { transform: scaleX(1); }
-
 details > summary { transition: color 180ms ease; }
 details > summary::marker { color: var(--accent); }
 details[open] > summary { color: var(--accent-2); }
