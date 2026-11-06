@@ -1,3 +1,4 @@
+import Image from "next/image";
 import type { TeamMember } from "@/config/site";
 import { GlassCard } from "./ui";
 
@@ -16,13 +17,23 @@ export default function MemberCard({ member }: { member: TeamMember }) {
   return (
     <GlassCard id={member.slug} className="h-full">
       <div className="flex items-center gap-4">
-        {/* Initials avatar — no photos exist yet, and none are invented. */}
-        <span
-          aria-hidden="true"
-          className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-[var(--card-border)] bg-[rgba(30,211,242,0.08)] font-display text-lg font-bold text-[var(--accent)]"
-        >
-          {initials}
-        </span>
+        {/* Initials by default; a real photo only if the owner added one to config. */}
+        {member.photo ? (
+          <Image
+            src={member.photo}
+            alt=""
+            width={56}
+            height={56}
+            className="h-14 w-14 shrink-0 rounded-full object-cover"
+          />
+        ) : (
+          <span
+            aria-hidden="true"
+            className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-[var(--card-border)] bg-[rgba(30,211,242,0.08)] font-display text-lg font-bold text-[var(--accent)]"
+          >
+            {initials}
+          </span>
+        )}
         <div>
           <h2 className="font-display text-xl font-semibold">{member.name}</h2>
           <p className="text-sm text-[var(--accent)]">{member.title}</p>
@@ -57,7 +68,8 @@ export default function MemberCard({ member }: { member: TeamMember }) {
         <div className="mt-5 border-t border-[var(--card-border)] pt-4">
           <p className="text-xs uppercase tracking-widest text-[var(--accent)]">Personal projects</p>
           <ul className="mt-2 space-y-1.5">
-            {member.personalProjects.map((p) => (
+            {/* §4: a card shows at most 3 personal projects */}
+            {member.personalProjects.slice(0, 3).map((p) => (
               <li key={p.title}>
                 <a
                   href={p.url}
