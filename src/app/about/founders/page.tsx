@@ -44,9 +44,7 @@ export default function FoundersPage() {
           Two founders, directly reachable — you talk to the people doing the work.
         </Muted>
 
-        <div className="mt-8">
-          <SectionNav items={sections} />
-        </div>
+        <SectionNav items={sections} />
 
         <section id="founders" aria-label={group.label}>
           <div className="grid gap-10 md:grid-cols-2">
