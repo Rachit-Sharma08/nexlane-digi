@@ -129,6 +129,18 @@ html[data-quality="low"] ::view-transition-new(route-content) {
   --color-chart-3: var(--chart-3);
   --color-chart-2: var(--chart-2);
   --color-chart-1: var(--chart-1);
+  --animate-marquee: marquee var(--duration) infinite linear;
+  --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
+  @keyframes marquee {
+  from {
+    transform: translateX(0); }
+  to {
+    transform: translateX(calc(-100% - var(--gap))); } }
+  @keyframes marquee-vertical {
+  from {
+    transform: translateY(0); }
+  to {
+    transform: translateY(calc(-100% - var(--gap))); } }
 }
 
 html {
@@ -275,6 +287,67 @@ html[data-quality="low"] .depth-card.motion-card:hover {
 .hero-orbit { position: absolute; z-index: 20; width: 0.7rem; height: 0.7rem; border: 1px solid rgba(124, 244, 239, 0.72); border-radius: 50%; background: var(--accent); box-shadow: 0 0 20px rgba(30, 211, 242, 0.8); }
 .hero-orbit-one { top: 7%; right: 6%; animation: orbit-drift 5s ease-in-out infinite; }
 .hero-orbit-two { bottom: 15%; left: 1%; width: 0.45rem; height: 0.45rem; animation: orbit-drift 6s 1s ease-in-out infinite reverse; }
+
+/* Hero stage: CSS depth base, and the whole visual for low/mid tiers (§11.2). */
+.hero-stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border: 1px solid var(--card-border);
+  border-radius: 1.75rem;
+  background: radial-gradient(85% 65% at 50% 12%, rgba(1, 87, 152, 0.55), transparent 72%), #01101f;
+  box-shadow: var(--shadow-deep);
+}
+@media (min-width: 640px) {
+  .hero-stage { aspect-ratio: 1 / 1; }
+}
+.hero-stage-glow {
+  position: absolute;
+  inset: 18% 12% auto;
+  height: 55%;
+  background: radial-gradient(closest-side, rgba(30, 211, 242, 0.26), transparent 75%);
+  filter: blur(22px);
+}
+.hero-stage-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(125, 196, 255, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(125, 196, 255, 0.07) 1px, transparent 1px);
+  background-size: 42px 42px;
+  mask-image: radial-gradient(75% 70% at 50% 40%, #000 25%, transparent 80%);
+}
+.hero-stage-mark {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+}
+.hero-css-lanes {
+  position: absolute;
+  left: -30%;
+  right: -30%;
+  bottom: -6%;
+  height: 68%;
+  background: repeating-linear-gradient(90deg, transparent 0 42px, rgba(30, 211, 242, 0.5) 42px 44px);
+  transform: perspective(480px) rotateX(72deg);
+  transform-origin: 50% 100%;
+  opacity: 0.5;
+  mask-image: linear-gradient(to top, #000 8%, transparent 88%);
+}
+
+/* Scroll-linked blur fade. Pure CSS scroll timeline; browsers without it just show the content. */
+.reveal-blur {
+  animation: blur-in linear both;
+  animation-timeline: view();
+  animation-range: entry 0% entry 28%;
+}
+@keyframes blur-in {
+  from { opacity: 0; transform: translateY(22px); filter: blur(6px); }
+  to { opacity: 1; transform: none; filter: blur(0); }
+}
 .mobile-menu-enter { transform-origin: top; animation: menu-arrive 220ms cubic-bezier(0.16, 1, 0.3, 1) both; }
 .scroll-progress {
   position: fixed;
@@ -412,7 +485,8 @@ h3,
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-  .scroll-reveal, .hero-arrive, .hero-media, .mobile-menu-enter, .hero-orbit { animation: none; }
+  .scroll-reveal, .reveal-blur, .hero-arrive, .hero-media, .mobile-menu-enter, .hero-orbit { animation: none; }
+  .animate-marquee, .animate-marquee-vertical { animation: none; }
   .motion-card:hover { transform: none; }
   .depth-card, .depth-card.motion-card:hover { transform: none; }
   .portfolio-cue { transition: none; }
