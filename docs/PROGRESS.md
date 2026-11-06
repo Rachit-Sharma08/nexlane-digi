@@ -158,3 +158,53 @@ Screenshots: `screenshots/stage-b/` (home, about, founders, team at 1440/768/360
 1. Add square team photos to `public/team/` (800×800, under 150 KB), then set `photo: "/team/<slug>.webp"` in `src/config/site.ts`. None are set yet, so every tile shows initials.
 2. Supply a transparent logo PNG (the current mark still needs `mix-blend-screen`).
 3. Confirm every team title and bio (still the Stage A drafts).
+
+## Stage E — QA (2026-11-06, `feat/qa`)
+
+### Reduced motion + 360 px
+
+- `prefers-reduced-motion: reduce` → `data-quality="low"`, `scroll-behavior: auto`, no canvas, marquee animation `none`. Verified at 360 px.
+- Mobile menu highlights the current page; tap targets ≥ 44 px where possible (SectionNav chips bumped to `py-2.5`).
+
+### Lighthouse (mobile, simulated throttling) — real numbers, not rounded up
+
+| Page | Perf | A11y | BP | SEO | LCP | TBT | CLS |
+|---|---|---|---|---|---|---|---|
+| Home | 79 | 96 | 100 | 100 | 1.0 s | 920 ms | 0 |
+| Home (run 2) | 86 | 96 | 100 | 100 | 1.3 s | 540 ms | 0 |
+| About | 75 | 100 | 100 | 100 | 0.8 s | 1330 ms | 0 |
+| /services/web-development | 71 | 100 | 100 | 100 | 0.8 s | 2180 ms | 0 |
+
+Scores swing ±15 points between runs on this shared machine; TBT is the bottleneck (React hydration of the App Router). Reported as measured, not rounded up. Perf goal (≥85) is met on the best Home run; the median sits just below. No layout shift anywhere (CLS 0).
+
+### Console (production CSP)
+
+- `curl -I http://localhost:3000/` → CSP has no `unsafe-eval` (dev-only).
+- Browser console on Home at 1440 px: 0 errors, 1 warning — `THREE.Clock: This module has been deprecated` from `@react-three/fiber` (library-level, not our code).
+- No "Refused to..." CSP errors.
+
+### npm audit
+
+- 3 low severity, all from `shadcn` → `@shadcn/registry` → `deepmerge` (dev-time CLI dependency, not shipped to production). No production runtime vulnerability. Reported, not `--force` fixed.
+
+### Grep checks (AGENTS.md §redesign-prompt)
+
+- `git grep -nE "[6-9][0-9]{9}" -- src` → empty.
+- `git grep -nEi "class 12|bba|college|school of|years of experience|testimonial|guarantee|10x" -- src` → only the honest disclaimer in `terms/page.tsx` ("We do not guarantee rankings…") and a comment in `config/site.ts`. No team/about hits.
+- `git grep -nEi "tagore" -- src` → empty.
+
+### Components used (free only)
+
+- `motion` (MotionConfig, useScroll/useTransform) — MIT
+- `three` + `@react-three/fiber` — MIT, high tier only
+- `@magicui/marquee` — MIT, free registry
+- Custom: `DepthCard`, `Parallax`, `Container`, `Section`, `SectionHeader`, `Eyebrow`, `GlassCard`, `GradientHeading`, `Muted`, `ArrowMotif`, `ProfileTile`, `SectionNav`, `NextUp`, `HeroVisual`, `HeroCanvas`, `HeroCanvasLoader`, `AppProviders`, `QualityProvider`
+
+### Stage E TODO for the owner (unchanged, carried over)
+
+1. Add square team photos to `public/team/` (800×800, under 150 KB), then set `photo: "/team/<slug>.webp"` in `src/config/site.ts`.
+2. Supply a transparent logo PNG (the current mark still needs `mix-blend-screen`).
+3. Confirm every team title and bio (still the Stage A drafts).
+4. Buy the domain and set `SITE_URL` in env; verify the Vercel plan (Hobby is non-commercial) before launch.
+5. Set up the Vercel WAF rate-limit rule on `/api/*` (Hobby allows 1 rule) — Phase 2.
+6. Add `RESEND_API_KEY` (production must return 503 if missing) and Turnstile keys — Phase 2.
