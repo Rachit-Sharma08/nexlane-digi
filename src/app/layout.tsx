@@ -7,6 +7,7 @@ import WhatsAppFloat from "@/components/WhatsAppFloat";
 import ScrollControls from "@/components/ScrollControls";
 import RouteTransition from "@/components/RouteTransition";
 import JsonLd from "@/components/JsonLd";
+import AppProviders from "@/components/AppProviders";
 import { buildMetadata, organizationSchema, websiteSchema } from "@/lib/seo";
 import "./globals.css";
 
@@ -45,13 +46,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         >
           Skip to content
         </a>
-        <Navbar />
-        <main id="main"><RouteTransition>{children}</RouteTransition></main>
-        <Footer />
-        <WhatsAppFloat />
-        <ScrollControls />
-        <JsonLd data={organizationSchema()} />
-        <JsonLd data={websiteSchema()} />
+        <AppProviders>
+          <Navbar />
+          <main id="main"><RouteTransition>{children}</RouteTransition></main>
+          <Footer />
+          <WhatsAppFloat />
+          <ScrollControls />
+          <JsonLd data={organizationSchema()} />
+          <JsonLd data={websiteSchema()} />
+        </AppProviders>
       </body>
     </html>
   );

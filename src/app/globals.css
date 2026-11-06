@@ -4,10 +4,24 @@
 
 @custom-variant dark (&:is(.dark *));
 
-::view-transition-old(route-content),
+/* Page-open transition: the new page arrives from depth. Enter-only (App Router
+   exit animations are unreliable); low tier gets a plain fade. */
+::view-transition-group(route-content) { animation-duration: 420ms; }
+::view-transition-old(route-content) { animation: none; opacity: 0; }
 ::view-transition-new(route-content) {
-  animation-duration: 160ms;
-  animation-timing-function: ease-in-out;
+  animation: route-open 420ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  transform-origin: 50% 20%;
+}
+html[data-quality="low"] ::view-transition-new(route-content) {
+  animation: route-fade 180ms ease-out both;
+}
+@keyframes route-open {
+  from { opacity: 0; transform: perspective(1200px) translateZ(-90px) rotateX(3deg) scale(0.985); }
+  to { opacity: 1; transform: perspective(1200px) translateZ(0) rotateX(0) scale(1); }
+}
+@keyframes route-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 ::view-transition { pointer-events: none; }
 
@@ -26,6 +40,13 @@
   --muted: #9fb3c8;
   --card-border: rgba(125, 196, 255, 0.14);
   --card-bg: rgba(6, 27, 54, 0.45);
+  /* Depth system: layered surfaces, shadows and one shared easing. */
+  --surface-1: rgba(6, 27, 54, 0.45);
+  --surface-2: rgba(9, 38, 72, 0.62);
+  --shadow-card: 0 18px 50px rgba(0, 28, 60, 0.35);
+  --shadow-deep: 0 40px 90px -30px rgba(0, 120, 220, 0.35);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --header-h: 4rem;
 
   /* shadcn theme variables mapped to our dark palette (site is dark-only). */
   --background: #000d1d;
@@ -112,8 +133,14 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 5.5rem;
+  scroll-padding-top: calc(var(--header-h, 4rem) + 1.5rem);
   color-scheme: dark;
+}
+section[id],
+article[id],
+h2[id],
+h3[id] {
+  scroll-margin-top: calc(var(--header-h, 4rem) + 1.5rem);
 }
 
 body {
@@ -174,6 +201,57 @@ body::after {
   backdrop-filter: blur(8px);
 }
 
+/* CSS 3D depth card (AGENTS.md §11.3). The tilt is written by DepthCard.tsx. */
+.depth-scene {
+  perspective: 900px;
+  height: 100%;
+}
+.depth-card {
+  position: relative;
+  height: 100%;
+  transform-style: preserve-3d;
+  transform: rotateX(var(--depth-rx, 0deg)) rotateY(var(--depth-ry, 0deg));
+  transition: transform 260ms var(--ease-out-expo), border-color 240ms ease,
+    background-color 240ms ease, box-shadow 240ms ease;
+}
+.depth-card.depth-glare::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(
+    420px circle at var(--depth-mx, 50%) var(--depth-my, 50%),
+    rgba(124, 244, 239, 0.12),
+    transparent 55%
+  );
+  transition: opacity 240ms ease;
+}
+.depth-card.depth-glare:hover::after { opacity: 1; }
+.depth-card.motion-card:hover {
+  transform: rotateX(var(--depth-rx, 0deg)) rotateY(var(--depth-ry, 0deg)) translateY(-4px);
+}
+html[data-quality="low"] .depth-card,
+html[data-quality="low"] .depth-card.motion-card:hover {
+  transform: none;
+}
+
+/* "Open portfolio" cue: hover/focus on desktop, always visible on touch. */
+.portfolio-cue {
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 200ms ease, transform 200ms var(--ease-out-expo);
+}
+.group:hover .portfolio-cue,
+.group:focus-within .portfolio-cue {
+  opacity: 1;
+  transform: none;
+}
+@media (hover: none) {
+  .portfolio-cue { opacity: 1; transform: none; }
+}
+
 /* Motion is progressive enhancement: content stays visible without animation support. */
 .motion-card {
   transition: transform 240ms cubic-bezier(0.16, 1, 0.3, 1), border-color 240ms ease, background-color 240ms ease, box-shadow 240ms ease;
@@ -200,8 +278,10 @@ body::after {
 .mobile-menu-enter { transform-origin: top; animation: menu-arrive 220ms cubic-bezier(0.16, 1, 0.3, 1) both; }
 .scroll-progress {
   position: fixed;
-  inset: 0 0 auto;
-  z-index: 70;
+  top: var(--header-h, 4rem);
+  left: 0;
+  right: 0;
+  z-index: 45;
   height: 2px;
   pointer-events: none;
   background: transparent;
@@ -334,6 +414,8 @@ h3,
   }
   .scroll-reveal, .hero-arrive, .hero-media, .mobile-menu-enter, .hero-orbit { animation: none; }
   .motion-card:hover { transform: none; }
+  .depth-card, .depth-card.motion-card:hover { transform: none; }
+  .portfolio-cue { transition: none; }
   .back-to-top { transition: opacity 180ms ease; }
 }
 
