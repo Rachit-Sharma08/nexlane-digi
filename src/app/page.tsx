@@ -101,7 +101,7 @@ export default function HomePage() {
       {/* 1. HERO — the only WebGL moment on the site (§11.2) */}
       <section className="relative overflow-hidden">
         <div className="mx-auto grid w-full max-w-6xl gap-12 px-4 pb-16 pt-14 sm:px-6 sm:pt-20 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
-          <div className="hero-arrive">
+          <div>
             <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-[var(--accent)]">
               Nexlane Digital · Kaithal, Haryana
             </p>
@@ -273,12 +273,10 @@ export default function HomePage() {
           />
           <div className="mt-8 grid gap-4 sm:grid-cols-2">
             {whyUs.map((w, i) => (
-              <div key={w.title} className="reveal-blur">
-                <DepthCard glare className="p-6">
-                  <span className="font-display text-sm font-bold text-gradient">{String(i + 1).padStart(2, "0")}</span>
-                  <h3 className="mt-2 font-display text-lg font-semibold">{w.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-[var(--muted)]">{w.blurb}</p>
-                </DepthCard>
+              <div key={w.title} className="reveal-blur motion-card glass p-6">
+                <span className="font-display text-sm font-bold text-gradient">{String(i + 1).padStart(2, "0")}</span>
+                <h3 className="mt-2 font-display text-lg font-semibold">{w.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-[var(--muted)]">{w.blurb}</p>
               </div>
             ))}
           </div>

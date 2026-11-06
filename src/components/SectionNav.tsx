@@ -50,7 +50,7 @@ export default function SectionNav({
               <a
                 href={`#${item.id}`}
                 aria-current={current ? "location" : undefined}
-                className={`block whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
+                className={`block whitespace-nowrap rounded-full px-3 py-2.5 text-xs font-medium transition-colors ${
                   current
                     ? "bg-[rgba(30,211,242,0.14)] text-white"
                     : "text-[var(--muted)] hover:text-white"
