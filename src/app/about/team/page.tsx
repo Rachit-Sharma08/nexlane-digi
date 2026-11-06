@@ -1,14 +1,17 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { buildMetadata, breadcrumbSchema } from '@/lib/seo';
-import { team } from '@/config/site';
-import { Section, GlassCard, Muted } from '@/components/ui';
+import { team, teamGroups } from '@/config/site';
+import { Section, GlassCard, Muted, Eyebrow } from '@/components/ui';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import JsonLd from '@/components/JsonLd';
 import MemberCard from '@/components/MemberCard';
 
+// See founders page: title/heading/breadcrumb all follow the config label.
+const group = teamGroups.find((g) => g.id === "team")!;
+
 export const metadata: Metadata = buildMetadata({
-  title: "Team",
+  title: group.label,
   description: "The team behind Nexlane Digital — websites, social media and video",
   path: "/about/team"
 });
@@ -16,7 +19,7 @@ export const metadata: Metadata = buildMetadata({
 const breadcrumbItems = [
   { name: "Home", path: "/" },
   { name: "About", path: "/about" },
-  { name: "Team", path: "/about/team" },
+  { name: group.label, path: "/about/team" },
 ];
 
 export default function TeamPage() {
@@ -26,7 +29,8 @@ export default function TeamPage() {
     <>
       <Section>
         <Breadcrumbs items={breadcrumbItems} />
-        <h1 className="text-3xl font-bold mb-4">Team</h1>
+        <Eyebrow>About · {group.label}</Eyebrow>
+        <h1 className="text-3xl font-bold mb-4">{group.label}</h1>
         <Muted>
           The people who build and edit everything Nexlane ships.
         </Muted>

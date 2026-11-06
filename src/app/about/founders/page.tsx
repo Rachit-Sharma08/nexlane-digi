@@ -1,14 +1,18 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { buildMetadata, breadcrumbSchema } from '@/lib/seo';
-import { team } from '@/config/site';
-import { Section, SectionTitle, GlassCard, Muted } from '@/components/ui';
+import { team, teamGroups } from '@/config/site';
+import { Section, SectionTitle, GlassCard, Muted, Eyebrow } from '@/components/ui';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import JsonLd from '@/components/JsonLd';
 import MemberCard from '@/components/MemberCard';
 
+// Page title and heading come from the group label in config, so renaming
+// the group (e.g. to "Core team") updates title, breadcrumb and H1 together.
+const group = teamGroups.find((g) => g.id === "founders")!;
+
 export const metadata: Metadata = buildMetadata({
-  title: "Founders",
+  title: group.label,
   description: "Rachit Sharma and Krish Khati — the founders of Nexlane Digital",
   path: "/about/founders"
 });
@@ -16,7 +20,7 @@ export const metadata: Metadata = buildMetadata({
 const breadcrumbItems = [
   { name: "Home", path: "/" },
   { name: "About", path: "/about" },
-  { name: "Founders", path: "/about/founders" },
+  { name: group.label, path: "/about/founders" },
 ];
 
 export default function FoundersPage() {
@@ -26,7 +30,8 @@ export default function FoundersPage() {
     <>
       <Section>
         <Breadcrumbs items={breadcrumbItems} />
-        <h1 className="text-3xl font-bold mb-4">Founders</h1>
+        <Eyebrow>About · {group.label}</Eyebrow>
+        <h1 className="text-3xl font-bold mb-4">{group.label}</h1>
         <Muted>
           Two founders, directly reachable — you talk to the people doing the work.
         </Muted>
