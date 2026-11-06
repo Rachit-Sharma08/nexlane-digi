@@ -1,7 +1,9 @@
 import Link from 'next/link';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import JsonLd from '@/components/JsonLd';
-import { GlassCard, Section, Eyebrow } from '@/components/ui';
+import { Section, Eyebrow } from '@/components/ui';
+import DepthCard from '@/components/DepthCard';
+import NextUp from '@/components/NextUp';
 import { buildMetadata, breadcrumbSchema } from '@/lib/seo';
 import { notDraft, readingTime } from '@/content/blog';
 
@@ -26,13 +28,13 @@ export default function BlogPage() {
       <Eyebrow>Learn · Blog</Eyebrow>
       <h1 className="font-display text-4xl font-bold mb-8">Blog</h1>
       {posts.length === 0 ? (
-        <GlassCard>
+        <DepthCard>
           <p className="text-[var(--muted)]">First posts are being written — check back soon.</p>
-        </GlassCard>
+        </DepthCard>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {posts.map((post) => (
-            <GlassCard key={post.slug}>
+            <DepthCard key={post.slug}>
               <span className="text-[var(--accent)] uppercase text-xs tracking-widest">{post.category}</span>
               <h2 className="font-display text-xl font-semibold mt-2">
                 <Link href={`/learn/blog/${post.slug}`}>{post.title}</Link>
@@ -40,10 +42,11 @@ export default function BlogPage() {
               <p className="text-[var(--muted)] mt-2">
                 {post.date} · {readingTime(post)} · {post.author}
               </p>
-            </GlassCard>
+            </DepthCard>
           ))}
         </div>
       )}
+      <NextUp title="Browse free resources" href="/learn/resources" cta="Open resources" eyebrow="Keep going" />
       <JsonLd data={breadcrumbSchema(breadcrumbItems)} />
     </Section>
   );

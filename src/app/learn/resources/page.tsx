@@ -1,6 +1,7 @@
 import Breadcrumbs from '@/components/Breadcrumbs';
 import JsonLd from '@/components/JsonLd';
 import { Muted, Section, Eyebrow } from '@/components/ui';
+import NextUp from '@/components/NextUp';
 import { buildMetadata, breadcrumbSchema } from '@/lib/seo';
 import { toolLists } from '@/content/resources';
 
@@ -44,6 +45,7 @@ export default function ResourcesPage() {
           ))}
         </section>
       ))}
+      <NextUp title="Watch YouTube lessons" href="/learn/youtube" cta="Open YouTube" eyebrow="Keep going" />
       <JsonLd data={breadcrumbSchema(breadcrumbItems)} />
     </Section>
   );
