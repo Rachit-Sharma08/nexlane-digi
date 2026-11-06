@@ -66,13 +66,16 @@ export type TeamMember = {
   slug: string;
   name: string;
   group: TeamGroup;
+  /** Left-to-right order inside the group; change it here, not in a page. */
+  order: number;
   title: string;
   skills: string[];
   bio: string;
-  // TODO: owner must confirm each person agrees before linking out.
+  // Owner confirmed portfolio linking permission on 2026-11-06.
   portfolioUrl?: string | null;
   personalProjects: PersonalProject[];
-  // Optional: set only if that person agreed — file lives in /public (initials avatar otherwise).
+  // Optional: add a square image to public/team/<slug>.webp (800x800, <150 KB),
+  // then set this to /team/<slug>.webp. Initials tile is used until then.
   photo?: string;
 };
 
@@ -86,11 +89,11 @@ export const team: TeamMember[] = [
     slug: "rachit",
     name: "Rachit Sharma",
     group: "founders",
+    order: 1,
     title: "Founder · SEO and Growth",
     skills: ["SEO", "AEO/GEO", "Google Ads", "Meta Ads", "AI tools"],
     bio: "Digital marketer focused on SEO (including AEO/GEO), Google Ads and Meta Ads, using AI tools to move faster.",
-    // TODO: owner confirm before go-live — https://rachitportfolio-rouge.vercel.app/
-    portfolioUrl: null,
+    portfolioUrl: "https://rachitportfolio-rouge.vercel.app/",
     personalProjects: [
       { title: "Fitness Website", url: "https://github.com/Rachit-Sharma08/Fitness-website" },
       { title: "Neon Car Racing", url: "https://github.com/Rachit-Sharma08/neon-car-racing-game-" },
@@ -101,11 +104,11 @@ export const team: TeamMember[] = [
     slug: "krish",
     name: "Krish Khati",
     group: "founders",
+    order: 2,
     title: "Founder · Web Development and AI",
     skills: ["Web development", "Python", "AI tools", "Supabase", "Automation"],
     bio: "Builds web apps and AI-powered tools with Python and modern AI APIs.",
-    // TODO: owner confirm before go-live — https://krish-portfolio-dev.vercel.app/
-    portfolioUrl: null,
+    portfolioUrl: "https://krish-portfolio-dev.vercel.app/",
     personalProjects: [
       { title: "Fitness Temple", url: "https://krish-portfolio-dev.vercel.app/projects/fitness-temple" },
       { title: "LinguaBridge", url: "https://krish-portfolio-dev.vercel.app/projects/linguabridge" },
@@ -116,6 +119,7 @@ export const team: TeamMember[] = [
     slug: "neelam",
     name: "Neelam Dhiman",
     group: "team",
+    order: 2,
     title: "Team Member · Websites, Social and Video",
     skills: [
       "HTML/CSS/JavaScript",
@@ -125,8 +129,7 @@ export const team: TeamMember[] = [
       "Python automation",
     ],
     bio: "Builds responsive websites and small automation tools, and helps with YouTube SEO, social media and video.",
-    // TODO: owner confirm before go-live — https://neelamdhiman.vercel.app/
-    portfolioUrl: null,
+    portfolioUrl: "https://neelamdhiman.vercel.app/",
     personalProjects: [
       { title: "Calc Notebook", url: "https://calcnotebook.vercel.app" },
       { title: "Socratic Math Mentor", url: "https://socratic-math-mentor.vercel.app" },
@@ -137,6 +140,7 @@ export const team: TeamMember[] = [
     slug: "jyoti",
     name: "Jyoti",
     group: "team",
+    order: 1,
     title: "Team Member · Video Editor",
     skills: ["Video editing"],
     bio: "Edits the videos for Nexlane's YouTube and Instagram.",

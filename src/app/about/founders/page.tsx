@@ -1,11 +1,12 @@
 import { Metadata } from 'next';
-import Link from 'next/link';
 import { buildMetadata, breadcrumbSchema } from '@/lib/seo';
 import { team, teamGroups } from '@/config/site';
-import { Section, SectionTitle, GlassCard, Muted, Eyebrow } from '@/components/ui';
+import { Container, Muted, Eyebrow, SectionTitle } from '@/components/ui';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import JsonLd from '@/components/JsonLd';
-import MemberCard from '@/components/MemberCard';
+import ProfileTile from '@/components/ProfileTile';
+import SectionNav from '@/components/SectionNav';
+import NextUp from '@/components/NextUp';
 
 // Page title and heading come from the group label in config, so renaming
 // the group (e.g. to "Core team") updates title, breadcrumb and H1 together.
@@ -23,40 +24,66 @@ const breadcrumbItems = [
   { name: group.label, path: "/about/founders" },
 ];
 
+const sections = [
+  { id: "founders", label: group.label },
+  { id: "team-members", label: "Team members" },
+  { id: "why-nexlane", label: "Why we started" },
+];
+
 export default function FoundersPage() {
-  const founders = team.filter((m) => m.group === "founders");
+  const founders = team.filter((m) => m.group === "founders").sort((a, b) => a.order - b.order);
+  const members = team.filter((m) => m.group === "team").sort((a, b) => a.order - b.order);
 
   return (
     <>
-      <Section>
+      <Container className="pb-20 pt-12">
         <Breadcrumbs items={breadcrumbItems} />
         <Eyebrow>About · {group.label}</Eyebrow>
-        <h1 className="text-3xl font-bold mb-4">{group.label}</h1>
+        <h1 className="mb-4 font-display text-4xl font-bold sm:text-5xl">{group.label}</h1>
         <Muted>
           Two founders, directly reachable — you talk to the people doing the work.
         </Muted>
 
-        <div className="mt-8 grid gap-5 md:grid-cols-2">
-          {founders.map((member) => (
-            <MemberCard key={member.slug} member={member} />
-          ))}
+        <div className="mt-8">
+          <SectionNav items={sections} />
         </div>
 
-        <SectionTitle>Why we started Nexlane</SectionTitle>
-        <Muted>
-          Rachit and Krish started Nexlane in 2026 to build real things for local businesses while learning fast —
-          web development, AI tools and honest SEO under one roof.
-        </Muted>
+        <section id="founders" aria-label={group.label}>
+          <div className="grid gap-10 md:grid-cols-2">
+            {founders.map((member) => (
+              <ProfileTile key={member.slug} member={member} />
+            ))}
+          </div>
+        </section>
 
-        <GlassCard className="mt-8">
-          <p className="mb-4 text-[var(--muted)]">
-            Want the wider team too? Meet everyone who builds Nexlane&apos;s work.
-          </p>
-          <Link href="/about/team" className="btn btn-ghost">
-            Meet the team
-          </Link>
-        </GlassCard>
-      </Section>
+        <section id="team-members">
+          <SectionTitle>Team members</SectionTitle>
+          <div className="grid gap-10 md:grid-cols-2">
+            {members.map((member) => (
+              <ProfileTile key={member.slug} member={member} />
+            ))}
+          </div>
+        </section>
+
+        <section id="why-nexlane">
+          <SectionTitle>Why we started Nexlane</SectionTitle>
+          <Muted>
+            Rachit and Krish started Nexlane in 2026 to build real things for local businesses while learning fast —
+            web development, AI tools and honest SEO under one roof.
+          </Muted>
+        </section>
+
+        <div className="mt-16">
+          <NextUp
+            title="See the work our team is building"
+            href="/our-work"
+            cta="Our Work"
+            eyebrow="Keep going"
+          >
+            Client projects are coming; personal projects are labelled as personal.
+          </NextUp>
+        </div>
+      </Container>
       <JsonLd data={breadcrumbSchema(breadcrumbItems)} />
     </>
   );
