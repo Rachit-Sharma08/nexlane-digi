@@ -1,5 +1,5 @@
 import JsonLd from '@/components/JsonLd';
-import { Section, SectionTitle, GlassCard } from '@/components/ui';
+import { Section, SectionTitle, GlassCard, Eyebrow } from '@/components/ui';
 import { buildMetadata, breadcrumbSchema } from '@/lib/seo';
 import { site } from '@/config/site';
 
@@ -20,6 +20,7 @@ export default function ContactPage() {
   const whatsapp = site.whatsappNumber;
   return (
     <Section>
+      <Eyebrow>Contact</Eyebrow>
       <h1 className="font-display text-4xl font-bold mb-8">Get in touch</h1>
       <p className="text-[var(--muted)] mb-4">
         We are a small team, so you will talk to the people doing the work. We reply within {site.REPLY_TIME}.

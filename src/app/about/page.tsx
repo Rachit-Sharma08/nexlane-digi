@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { buildMetadata, breadcrumbSchema } from '@/lib/seo';
-import { Section, SectionTitle, GlassCard, GradientHeading, Muted } from '@/components/ui';
+import { Section, SectionTitle, GlassCard, GradientHeading, Muted, Eyebrow } from '@/components/ui';
 import JsonLd from '@/components/JsonLd';
 
 export const metadata: Metadata = buildMetadata({
@@ -14,6 +14,7 @@ export default function AboutPage() {
   return (
     <>
       <Section>
+        <Eyebrow>About</Eyebrow>
         <h1 className="text-3xl font-bold mb-6">About Nexlane Digital</h1>
         <article className="prose max-w-none">
           <p>We are four friends who started Nexlane Digital in 2026 to learn by building real projects for small local businesses in Kaithal, Haryana.</p>

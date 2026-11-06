@@ -1,5 +1,5 @@
 import JsonLd from '@/components/JsonLd';
-import { Section, SectionTitle, GlassCard, Muted } from '@/components/ui';
+import { Section, SectionTitle, GlassCard, Muted, Eyebrow } from '@/components/ui';
 import { buildMetadata, breadcrumbSchema } from '@/lib/seo';
 import { site } from '@/config/site';
 
@@ -20,6 +20,7 @@ export default function AuditPage() {
   const whatsapp = site.whatsappNumber;
   return (
     <Section>
+      <Eyebrow>Audit</Eyebrow>
       <h1 className="font-display text-4xl font-bold mb-8">{site.audit.title}</h1>
       <p className="text-[var(--muted)] mb-4">{site.audit.includes}</p>
       <Muted>{site.audit.note}</Muted>
