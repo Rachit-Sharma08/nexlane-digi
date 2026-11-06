@@ -2,7 +2,7 @@ import Breadcrumbs from '@/components/Breadcrumbs';
 import JsonLd from '@/components/JsonLd';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { Section } from '@/components/ui';
+import { Section, Eyebrow } from '@/components/ui';
 import { buildMetadata, breadcrumbSchema, articleSchema } from '@/lib/seo';
 import { getPost, notDraft, readingTime, type BlogBlock } from '@/content/blog';
 
@@ -41,6 +41,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   return (
     <Section>
       <Breadcrumbs items={postBreadcrumbItems} />
+      <Eyebrow>Learn · Blog</Eyebrow>
       <h1 className="font-display text-4xl font-bold mb-8">{post.title}</h1>
       <p className="text-[var(--muted)] mb-8">
         {post.category} · {post.date} · {post.author} · {readingTime(post)}

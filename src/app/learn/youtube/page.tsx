@@ -1,6 +1,6 @@
 import Breadcrumbs from '@/components/Breadcrumbs';
 import JsonLd from '@/components/JsonLd';
-import { GlassCard, Section } from '@/components/ui';
+import { GlassCard, Section, Eyebrow } from '@/components/ui';
 import { buildMetadata, breadcrumbSchema } from '@/lib/seo';
 import { site } from '@/config/site';
 
@@ -22,6 +22,7 @@ export default function YouTubePage() {
   return (
     <Section>
       <Breadcrumbs items={breadcrumbItems} />
+      <Eyebrow>Learn · YouTube</Eyebrow>
       <h1 className="font-display text-4xl font-bold mb-8">YouTube lessons</h1>
       <p className="text-[var(--muted)] mb-8">Free video lessons on digital marketing and free AI tools</p>
       {lessons.length === 0 ? (

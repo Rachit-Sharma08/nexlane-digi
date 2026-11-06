@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import JsonLd from '@/components/JsonLd';
-import { GlassCard, Section } from '@/components/ui';
+import { GlassCard, Section, Eyebrow } from '@/components/ui';
 import { buildMetadata, breadcrumbSchema } from '@/lib/seo';
 import { notDraft, readingTime } from '@/content/blog';
 
@@ -23,6 +23,7 @@ export default function BlogPage() {
   return (
     <Section>
       <Breadcrumbs items={breadcrumbItems} />
+      <Eyebrow>Learn · Blog</Eyebrow>
       <h1 className="font-display text-4xl font-bold mb-8">Blog</h1>
       {posts.length === 0 ? (
         <GlassCard>
