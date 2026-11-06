@@ -70,8 +70,10 @@ export type TeamMember = {
   skills: string[];
   bio: string;
   // TODO: owner must confirm each person agrees before linking out.
-  portfolioUrl: string | null;
+  portfolioUrl?: string | null;
   personalProjects: PersonalProject[];
+  // Optional: set only if that person agreed — file lives in /public (initials avatar otherwise).
+  photo?: string;
 };
 
 export const teamGroups: { id: TeamGroup; label: string; path: string }[] = [
@@ -150,10 +152,10 @@ export const nav = {
   ],
   about: {
     label: "About",
+    // Group labels come from teamGroups so renaming a group updates the menu too.
     items: [
       { href: "/about", label: "Our story" },
-      { href: "/about/founders", label: "Founders" },
-      { href: "/about/team", label: "Team" },
+      ...teamGroups.map((g) => ({ href: g.path, label: g.label })),
     ],
   },
   services: {
