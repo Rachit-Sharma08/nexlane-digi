@@ -1,25 +1,11 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import Image from "next/image";
-import { Component, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuality } from "@/lib/quality";
 
-const HeroCanvas = dynamic(() => import("./HeroCanvas"), { ssr: false, loading: () => null });
-
-/** If WebGL throws, keep the static stage instead of an empty box. */
-class CanvasBoundary extends Component<
-  { fallback: React.ReactNode; children: React.ReactNode },
-  { failed: boolean }
-> {
-  state = { failed: false };
-  static getDerivedStateFromError() {
-    return { failed: true };
-  }
-  render() {
-    return this.state.failed ? this.props.fallback : this.props.children;
-  }
-}
+type LoaderProps = { fallback: React.ReactNode };
+type LoaderComponent = React.ComponentType<LoaderProps>;
 
 function StaticStage() {
   return (
@@ -42,15 +28,15 @@ function StaticStage() {
 }
 
 /**
- * Hero visual slot. The WebGL scene loads after first paint and only on the
- * high tier; everyone else, and any WebGL failure, gets the CSS stage.
+ * Hero visual slot. three.js is imported at runtime only on the high tier,
+ * so low/mid visitors never download the WebGL chunk.
  */
 export default function HeroVisual() {
   const quality = useQuality();
   const [ready, setReady] = useState(false);
+  const [Loader, setLoader] = useState<LoaderComponent | null>(null);
 
   useEffect(() => {
-    // Let the H1 and CTA paint first, then load three.js.
     const idle = window.requestIdleCallback?.bind(window);
     if (idle) {
       const id = idle(() => setReady(true), { timeout: 2500 });
@@ -60,14 +46,23 @@ export default function HeroVisual() {
     return () => window.clearTimeout(timer);
   }, []);
 
+  useEffect(() => {
+    if (!ready || quality !== "high" || Loader) return;
+    let cancelled = false;
+    import("./HeroCanvasLoader").then((mod) => {
+      if (!cancelled) setLoader(() => mod.default as LoaderComponent);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [ready, quality, Loader]);
+
   return (
     <div className="hero-stage hero-arrive" aria-hidden="true">
       <span className="hero-stage-glow" />
       <span className="hero-stage-grid" />
-      {ready && quality === "high" ? (
-        <CanvasBoundary fallback={<StaticStage />}>
-          <HeroCanvas />
-        </CanvasBoundary>
+      {ready && quality === "high" && Loader ? (
+        <Loader fallback={<StaticStage />} />
       ) : (
         <StaticStage />
       )}
