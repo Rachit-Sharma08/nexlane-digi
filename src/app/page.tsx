@@ -5,10 +5,9 @@ import { services } from "@/content/services";
 import { notDraft } from "@/content/blog";
 import { homeFaqs } from "@/content/faq";
 import { ArrowMotif, Container, GradientHeading, SectionHeader } from "@/components/ui";
-import DepthCard from "@/components/DepthCard";
+import SectionNav from "@/components/SectionNav";
 import HeroVisual from "@/components/home/HeroVisual";
 import NextUp from "@/components/NextUp";
-import SectionNav from "@/components/SectionNav";
 import { Marquee } from "@/components/ui/marquee";
 import JsonLd from "@/components/JsonLd";
 import { buildMetadata, faqSchema } from "@/lib/seo";
@@ -145,7 +144,7 @@ export default function HomePage() {
 
           <div className="mt-10 grid gap-4 md:grid-cols-6">
             <div className="md:col-span-4">
-              <DepthCard glare className="flex h-full flex-col justify-between gap-8 p-6 sm:p-8">
+              <div className="motion-card glass flex h-full flex-col justify-between gap-8 p-6 sm:p-8">
                 <div>
                   <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">01 · Websites</span>
                   <h3 className="mt-3 font-display text-2xl font-semibold sm:text-3xl">Web Development</h3>
@@ -161,11 +160,11 @@ export default function HomePage() {
                 <Link href="/services/web-development" className={cardLink}>
                   See web development <span aria-hidden="true">→</span>
                 </Link>
-              </DepthCard>
+              </div>
             </div>
 
             <div className="md:col-span-2">
-              <DepthCard glare className="flex h-full flex-col justify-between gap-8 p-6">
+              <div className="motion-card glass flex h-full flex-col justify-between gap-8 p-6">
                 <div>
                   <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">02 · Search</span>
                   <h3 className="mt-3 font-display text-xl font-semibold">{services[1].shortName}</h3>
@@ -181,11 +180,11 @@ export default function HomePage() {
                 <Link href="/services/seo" className={cardLink}>
                   See SEO <span aria-hidden="true">→</span>
                 </Link>
-              </DepthCard>
+              </div>
             </div>
 
             <div className="md:col-span-2">
-              <DepthCard glare className="flex h-full flex-col justify-between gap-8 p-6">
+              <div className="motion-card glass flex h-full flex-col justify-between gap-8 p-6">
                 <div>
                   <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">03 · Play</span>
                   <h3 className="mt-3 font-display text-xl font-semibold">{services[2].shortName}</h3>
@@ -201,11 +200,11 @@ export default function HomePage() {
                 <Link href="/services/game-development" className={cardLink}>
                   See game development <span aria-hidden="true">→</span>
                 </Link>
-              </DepthCard>
+              </div>
             </div>
 
             <div className="md:col-span-4">
-              <DepthCard glare className="flex h-full flex-col justify-between gap-8 p-6 sm:p-8">
+              <div className="motion-card glass flex h-full flex-col justify-between gap-8 p-6 sm:p-8">
                 <div>
                   <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">Free · Learn</span>
                   <h3 className="mt-3 font-display text-2xl font-semibold sm:text-3xl">Learn with us</h3>
@@ -216,7 +215,7 @@ export default function HomePage() {
                 <Link href="/learn/youtube" className={cardLink}>
                   Start learning <span aria-hidden="true">→</span>
                 </Link>
-              </DepthCard>
+              </div>
             </div>
           </div>
         </section>
