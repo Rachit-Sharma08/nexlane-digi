@@ -78,6 +78,7 @@ function Dropdown({ parent, mobile }: { parent: DropdownParent; mobile?: boolean
   const wrapperRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLUListElement>(null);
+  const focusFirstOnOpen = useRef(false);
   const menuId = useId();
   const active = parent.items.some((i) => isRouteActive(pathname, i.href));
   // A menu only counts as open on the route where it was opened; navigation
@@ -87,6 +88,14 @@ function Dropdown({ parent, mobile }: { parent: DropdownParent; mobile?: boolean
     (value: boolean) => setMenu({ path: pathname, open: value }),
     [pathname],
   );
+
+  // Keyboard open moves focus into the menu once React has rendered it.
+  useEffect(() => {
+    if (open && focusFirstOnOpen.current) {
+      focusFirstOnOpen.current = false;
+      menuRef.current?.querySelector<HTMLAnchorElement>("a")?.focus();
+    }
+  }, [open]);
 
   useEffect(() => {
     if (!open || mobile) return;
@@ -117,8 +126,8 @@ function Dropdown({ parent, mobile }: { parent: DropdownParent; mobile?: boolean
   function handleButtonKeyDown(e: React.KeyboardEvent<HTMLButtonElement>) {
     if (e.key === "ArrowDown") {
       e.preventDefault();
+      focusFirstOnOpen.current = true;
       setOpen(true);
-      requestAnimationFrame(() => focusItem(0));
     }
   }
 
