@@ -1,7 +1,7 @@
 import Link from "next/link";
+import Image from "next/image";
 import { nav, site, team } from "@/config/site";
 import { InstagramIcon, WhatsAppIcon, YouTubeIcon } from "./Navbar";
-import { LogoMark } from "./ArrowMotif";
 
 export default function Footer() {
   return (
@@ -9,8 +9,8 @@ export default function Footer() {
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:px-6 md:grid-cols-4">
         <div className="md:col-span-2">
           <div className="flex items-center gap-2">
-            <LogoMark className="h-7 w-7" />
-            <span className="font-display text-lg font-bold tracking-[0.22em]">NEXLANE DIGITAL</span>
+            <Image src="/nexlane-mark.png" alt="" width={400} height={285} className="h-8 w-auto object-contain" />
+            <span className="font-display text-lg font-bold tracking-[0.18em]">NEXLANE DIGITAL</span>
           </div>
           <p className="mt-3 max-w-sm text-sm leading-relaxed text-[var(--muted)]">
             A young digital agency from {site.location}, helping small local businesses grow online — and teaching what we learn, free.

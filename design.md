@@ -11,17 +11,33 @@ Living document. Every animation, motion, or visual polish we add to the site is
 - Brand tokens only: gradient `#0572F5 → #1ED3F2 → #7CF4EF`, bg `#000D1D`, accent `#1ED3F2`. Contrast ≥ 4.5:1.
 - External motion libs: none installed yet. Add only when a real need exists (no "for later" installs).
 
+## Visual direction
+
+- Preserve Nexlane's navy canvas and blue/cyan identity. Use brand glows sparingly; avoid generic purple gradients, stock dashboard cards, and ornamental all-caps labels.
+- The site represents a small, direct local-business studio. Keep claims honest; do not invent clients, metrics, or awards.
+- Preserve responsive layouts, clear hierarchy, and accessible focus states. Motion should not delay reading or navigation.
+- Use the supplied `D:\Downloads\nexlane-logo-clean.png`; the full artwork lives at `public/nexlane-logo.png`, with a cropped mark at `public/nexlane-mark.png` for compact navbar/footer lockups and the full logo featured in the homepage hero.
+
+## Motion decisions
+
+- Focal moment: a short, one-time hero entrance on page load.
+- Continuity: gentle section entry linked to scrolling with CSS scroll-driven animation where supported, plus a thin reading progress bar and back-to-top action.
+- Feedback: glass cards lift on hover, buttons acknowledge press, nav links get a cyan sweep and active route state, accordions reveal answers, and the mobile menu opens with a short transition.
+- Budget: CSS only; no new animation dependency or continuously running canvas. Effects use transform/opacity where practical and respect `prefers-reduced-motion`.
+- Magic UI's official MCP server is enabled in `opencode.json`; the existing shadcn MCP can also resolve the Magic UI registry configured in `components.json`.
+- Ponytail 5.3.3 is installed as a Codex plugin. Restart Codex/new thread is needed for plugin hooks to become active; its lean-change rules were read and followed for this pass.
+
 ## What we may animate (backlog)
 
-- [ ] Hero section entrance (fade + slide-up on load)
-- [ ] Navbar: hide on scroll down, show on scroll up
-- [ ] Section reveal on scroll (fade-in as sections enter viewport)
-- [ ] Glass cards: subtle hover lift + glow
-- [ ] Buttons: hover/press micro-interactions
-- [ ] Page transitions (fade between routes) — optional, check perf first
-- [ ] Arrow motif / logo mark subtle motion
-- [ ] Learn/blog: reading progress indicator
-- [ ] 404 page: playful but light animation
+- [x] Hero section entrance (fade + slide-up on load)
+- [x] Navbar active-route state and link hover sweep
+- [x] Section reveal on scroll (subtle opacity/translate, progressive enhancement)
+- [x] Glass cards: subtle hover lift + glow
+- [x] Buttons: hover/press micro-interactions
+- [x] Page transitions (short React ViewTransition fade; progressive enhancement)
+- [x] Nexlane logo mark is used consistently in the navbar and footer; hero artwork has restrained orbit motion
+- [x] Reading progress indicator and back-to-top control
+- [x] 404 page inherits shared section/card entrance and interaction styling
 
 ## Change log
 
@@ -29,6 +45,13 @@ Living document. Every animation, motion, or visual polish we add to the site is
 |---|---|---|---|
 | 2026-11-05 | — | `design.md` created | Tracking doc for all motion work |
 
+| 2026-11-05 | Home + shared UI | Added hero entrance, scroll-linked section motion, glass-card hover feedback, and button press feedback | CSS only; reduced-motion path included |
+| 2026-11-05 | Navbar + project tooling | Added supplied Nexlane logo assets and enabled official Magic UI MCP for OpenCode | Full logo retained; cropped mark used in compact nav |
+| 2026-11-06 | All pages + shared chrome | Added scroll progress, back-to-top, active nav/link feedback, accordion/menu transitions, hero logo motion, and mobile grid shrink fix | Desktop preview inspected; phone screenshot checked; reduced-motion support maintained |
+| 2026-11-06 | Route navigation | Added a short React ViewTransition fade for client-side route changes | Confirmed a client-side About click starts the transition in Chrome; reduced-motion disables it; unsupported browsers navigate normally |
+| 2026-11-06 | Home hero mobile layout | Constrained the hero grid to the viewport width | Verified at a 390px CSS viewport; document width stayed 390px with no horizontal overflow |
+
 ## Decisions
 
-- (none yet)
+- Keep reveals as progressive enhancement: content remains visible without scroll-timeline support.
+- Prefer one authored entrance over repeating entrance effects on every card.
