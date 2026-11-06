@@ -52,46 +52,96 @@ export const site = {
 } as const;
 
 /** ---------------- TEAM (safe-data rule respected) -----------------
- * Only names, roles, skills and public profile links are shown.
+ * Only names, titles, skills, bios and public profile links are shown.
  * NEVER add ages, school/college names, addresses or personal
  * phone numbers to this file or any page. */
-export type TeamMember = {
-  name: string;
-  role: string;
-  skills: string[];
-  portfolioUrl: string | null;
+export type TeamGroup = "founders" | "team";
+
+export type PersonalProject = {
+  title: string;
+  url: string;
 };
+
+export type TeamMember = {
+  slug: string;
+  name: string;
+  group: TeamGroup;
+  title: string;
+  skills: string[];
+  bio: string;
+  // TODO: owner must confirm each person agrees before linking out.
+  portfolioUrl?: string | null;
+  personalProjects: PersonalProject[];
+  // Optional: set only if that person agreed — file lives in /public (initials avatar otherwise).
+  photo?: string;
+};
+
+export const teamGroups: { id: TeamGroup; label: string; path: string }[] = [
+  { id: "founders", label: "Founders", path: "/about/founders" },
+  { id: "team", label: "Team", path: "/about/team" },
+];
 
 export const team: TeamMember[] = [
   {
+    slug: "rachit",
     name: "Rachit Sharma",
-    role: "Founder",
-    skills: ["SEO (incl. AEO/GEO)", "Google Ads", "Meta Ads", "AI tools"],
-    portfolioUrl: "https://rachitportfolio-rouge.vercel.app/",
+    group: "founders",
+    title: "Founder · SEO and Growth",
+    skills: ["SEO", "AEO/GEO", "Google Ads", "Meta Ads", "AI tools"],
+    bio: "Digital marketer focused on SEO (including AEO/GEO), Google Ads and Meta Ads, using AI tools to move faster.",
+    // TODO: owner confirm before go-live — https://rachitportfolio-rouge.vercel.app/
+    portfolioUrl: null,
+    personalProjects: [
+      { title: "Fitness Website", url: "https://github.com/Rachit-Sharma08/Fitness-website" },
+      { title: "Neon Car Racing", url: "https://github.com/Rachit-Sharma08/neon-car-racing-game-" },
+      { title: "AI Assistant Chatbot", url: "https://github.com/Rachit-Sharma08/ai-assistant" },
+    ],
   },
   {
+    slug: "krish",
     name: "Krish Khati",
-    role: "Founder",
-    skills: ["Web development", "Python", "AI tools & chatbots"],
-    portfolioUrl: "https://krish-portfolio-dev.vercel.app/",
+    group: "founders",
+    title: "Founder · Web Development and AI",
+    skills: ["Web development", "Python", "AI tools", "Supabase", "Automation"],
+    bio: "Builds web apps and AI-powered tools with Python and modern AI APIs.",
+    // TODO: owner confirm before go-live — https://krish-portfolio-dev.vercel.app/
+    portfolioUrl: null,
+    personalProjects: [
+      { title: "Fitness Temple", url: "https://krish-portfolio-dev.vercel.app/projects/fitness-temple" },
+      { title: "LinguaBridge", url: "https://krish-portfolio-dev.vercel.app/projects/linguabridge" },
+      { title: "Memory Match Game", url: "https://krish-portfolio-dev.vercel.app/projects/memory-match-game" },
+    ],
   },
   {
+    slug: "neelam",
     name: "Neelam Dhiman",
-    role: "Co-founder",
+    group: "team",
+    title: "Team Member · Websites, Social and Video",
     skills: [
-      "Web development (HTML/CSS/JS)",
+      "HTML/CSS/JavaScript",
       "YouTube SEO",
       "Social media",
       "Video editing",
       "Python automation",
     ],
-    portfolioUrl: "https://neelamdhiman.vercel.app/",
+    bio: "Builds responsive websites and small automation tools, and helps with YouTube SEO, social media and video.",
+    // TODO: owner confirm before go-live — https://neelamdhiman.vercel.app/
+    portfolioUrl: null,
+    personalProjects: [
+      { title: "Calc Notebook", url: "https://calcnotebook.vercel.app" },
+      { title: "Socratic Math Mentor", url: "https://socratic-math-mentor.vercel.app" },
+      { title: "Rasoi Mitra", url: "https://rasoi-mitra-recipe.onrender.com/" },
+    ],
   },
   {
+    slug: "jyoti",
     name: "Jyoti",
-    role: "Co-founder",
+    group: "team",
+    title: "Team Member · Video Editor",
     skills: ["Video editing"],
-    portfolioUrl: null, // add a link here when a portfolio exists
+    bio: "Edits the videos for Nexlane's YouTube and Instagram.",
+    portfolioUrl: null, // no personal portfolio — do not invent one
+    personalProjects: [],
   },
 ];
 
@@ -99,8 +149,15 @@ export const team: TeamMember[] = [
 export const nav = {
   main: [
     { href: "/", label: "Home" },
-    { href: "/about", label: "About" },
   ],
+  about: {
+    label: "About",
+    // Group labels come from teamGroups so renaming a group updates the menu too.
+    items: [
+      { href: "/about", label: "Our story" },
+      ...teamGroups.map((g) => ({ href: g.path, label: g.label })),
+    ],
+  },
   services: {
     label: "Services",
     items: [
@@ -118,7 +175,7 @@ export const nav = {
     ],
   },
   extra: [
-    { href: "/portfolio", label: "Portfolio" },
+    { href: "/our-work", label: "Our Work" },
     { href: "/contact", label: "Contact" },
   ],
   cta: { href: "/audit", label: "Get a Free Audit" },

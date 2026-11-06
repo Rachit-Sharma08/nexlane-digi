@@ -9,7 +9,8 @@ Last updated: 2026-11-05 · Repo: `Rachit-Sharma08/nexlane-digital` (private) ·
 | **Stage 1 — Foundation** | ✅ Merged PR #1 `2a90d82` | Next 16 + TS + Tailwind v4, CSP/HSTS headers, layout (Sora+Inter, skip-link, Org+WebSite JSON-LD), Navbar/Footer/WhatsAppFloat, `src/config/site.ts` (single config), content data files, `lib/seo.ts`, `lib/formsecurity.ts` (zod/honeypot/min-fill/origin/Turnstile — in-memory rate limit removed), tests 5→4, home page 10 sections, npm audit 0 vuln |
 | **Stage 2 — Services/About/Portfolio** | ✅ Merged PR #2 `2e196c6` | `/services` + 3 SSG `/services/[slug]`, `/about` (honest story, team cards from config), `/portfolio` (client work hidden while empty, practice labelled, flagged chip), `Breadcrumbs` component |
 | **Stage 3 — Learn** | ✅ Merged PR #3 `d13ade2` | `/learn` overview, `/learn/youtube` (honest empty state), `/learn/blog` + `/learn/blog/[slug]` SSG (draft never listed, article/breadcrumb JSON-LD), `/learn/resources` (free-tier caveat). 14 routes, tsc 0, lint 0, build 0 |
-| **Stage 4 — Structure (phase 1)** | ✅ PR pending | `/audit` + `/contact` (form UI shells, submit disabled + "coming soon"), `/thank-you` (noindex), `/terms`, `/privacy` (draft banner + third parties named), `not-found.tsx` (404), `.gitattributes`. **Backend NOT built yet** — per AGENTS.md phase 1, forms send nothing. Backend (Resend/WAF/Turnstile) waits for "phase 2" |
+| **Stage 4 — Structure (phase 1)** | ✅ PR pending | `/audit` + `/contact` (form UI shells, submit disabled + "coming soon"), `/thank-you` (noindex), `/terms`, `/privacy` (draft banner + third parties named), `not-found.tsx` (404), `.gitignore`. **Backend NOT built yet** — per AGENTS.md phase 1, forms send nothing. Backend (Resend/WAF/Turnstile) waits for "phase 2" |
+| **Redesign Stage A — IA restructure** | ✅ PR (this branch) | Dev badge fix (CSP `unsafe-eval` dev-only), breadcrumbs (single Home, hidden on top-level, above H1, mobile last-2-levels), `teamGroups`+`team` in site.ts (portfolioUrl all TODO-null), `/about` hub + `/about/founders` + `/about/team` (MemberCard, initials avatars, #slug anchors, personal-project labels), `/portfolio`→`/our-work` + permanent redirect, Navbar About dropdown + Our Work label, Footer team anchors. 21 routes, tsc 0, lint 0, build 0 |
 
 ## Rules compliance (prompt ke hisaab se)
 
@@ -87,3 +88,25 @@ Cloudflare Turnstile free hai (unlimited verifications). CSP me already `challen
 ## Repo security limits (free plan, private repo)
 
 Branch protection / rulesets / secret scanning = 403 (Pro ya public repo chahiye). Fallback: CI workflow (`lint`+`build` har PR/push), SECURITY.md, `.env*` gitignored, PR-only discipline.
+
+## AGENTS.md sync + section 4/7 diff fixes (2026-11-06, PR #7)
+
+- `AGENTS.md` replaced with the owner's correct 10-section file (before: only nextjs-rules + motion-refresh sections).
+- Diff of sections 4 and 7 vs the Stage A build — code was fixed, never AGENTS.md:
+  - Group labels now drive everything: founders/team H1, metadata title, breadcrumb and the navbar About dropdown all read from `teamGroups` (rename a group in config once).
+  - `TeamMember` gained optional `photo?` (initials avatar stays the default; MemberCard shows a photo only if config has one), `portfolioUrl` now optional, personal projects capped at 3 per card.
+  - Eyebrow label above every H1 (new `Eyebrow` component in `src/components/ui.tsx`, e.g. `ABOUT · FOUNDERS`).
+  - Breadcrumb added to `/services/[slug]` (was JSON-LD only); breadcrumbs remain only on pages ≥2 levels below Home.
+  - Navbar: gradient underline on the active item + `aria-current` on the active dropdown parent, mobile menu highlights the current page, 44px tap targets (hamburger p-2.5, menu items py-3).
+- Verification: `npx tsc --noEmit` = 0, `npm run lint` = 0, `npm run build` = 0 (21 routes), production CSP via `npm start` + `curl.exe -I` has **no** `unsafe-eval`.
+- Not in this pass (Stage B/D scope per redesign prompt): scroll progress bar, SectionNav scroll-spy, NextUp card, sliding pill in the navbar.
+
+## Visual QA - Stage A final (2026-11-06, PR #7)
+
+- Production build (
+pm run build + 
+pm start) par 8 pages x 1440/768/360 screenshots: screenshots/stage-a-final/ (gitignored).
+- Fixed: Home nav item never got ria-current/underline (isActive skipped /).
+- Fixed: two competing nav underline rules - removed the global 1px rule so all active items use the same 2px gradient underline (also stopped the logo hover underline).
+- Fixed: mobile breadcrumb showed a leading / (Home hidden, separator left behind); separator now hides with its crumb.
+- Checks: eyebrow above every H1, Home once per breadcrumb, top-level pages have none, 12px eyebrow/H1 gap, no horizontal scroll at 360px.

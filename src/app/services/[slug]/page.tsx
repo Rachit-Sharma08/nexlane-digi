@@ -2,7 +2,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { site } from "@/config/site";
 import { services, getService } from "@/content/services";
-import { Section, Muted } from "@/components/ui";
+import { Section, Muted, Eyebrow } from "@/components/ui";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import JsonLd from "@/components/JsonLd";
 import { buildMetadata, breadcrumbSchema, serviceSchema, faqSchema } from "@/lib/seo";
 
@@ -42,6 +43,12 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
     <>
       {/* Hero Section */}
       <Section>
+        <Breadcrumbs items={[
+          { name: "Home", path: "/" },
+          { name: "Services", path: "/services" },
+          { name: service.name, path: `/services/${slug}` },
+        ]} />
+        <Eyebrow>Services · {service.name}</Eyebrow>
         <h1 className="font-display text-3xl font-bold sm:text-4xl">{service.name}</h1>
         <div className="mt-3">
           <Muted>{service.summary}</Muted>

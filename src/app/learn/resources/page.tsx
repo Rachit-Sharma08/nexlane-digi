@@ -1,6 +1,6 @@
 import Breadcrumbs from '@/components/Breadcrumbs';
 import JsonLd from '@/components/JsonLd';
-import { Muted, Section } from '@/components/ui';
+import { Muted, Section, Eyebrow } from '@/components/ui';
 import { buildMetadata, breadcrumbSchema } from '@/lib/seo';
 import { toolLists } from '@/content/resources';
 
@@ -19,8 +19,9 @@ export const metadata = buildMetadata({
 export default function ResourcesPage() {
   return (
     <Section>
-      <h1 className="font-display text-4xl font-bold mb-8">Free resources</h1>
       <Breadcrumbs items={breadcrumbItems} />
+      <Eyebrow>Learn · Resources</Eyebrow>
+      <h1 className="font-display text-4xl font-bold mb-8">Free resources</h1>
       <p className="text-[var(--muted)] mb-8">
         All tools listed have usable free tiers at the time of writing — always check the tool&apos;s own limits before relying on them.
       </p>

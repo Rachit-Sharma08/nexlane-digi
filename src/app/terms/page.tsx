@@ -1,6 +1,5 @@
-import Breadcrumbs from '@/components/Breadcrumbs';
 import JsonLd from '@/components/JsonLd';
-import { Section, SectionTitle, GlassCard, Muted } from '@/components/ui';
+import { Section, SectionTitle, GlassCard, Muted, Eyebrow } from '@/components/ui';
 import { buildMetadata, breadcrumbSchema } from '@/lib/seo';
 
 const breadcrumbItems = [
@@ -17,8 +16,8 @@ export const metadata = buildMetadata({
 export default function TermsPage() {
   return (
     <Section>
+      <Eyebrow>Terms</Eyebrow>
       <h1 className="font-display text-4xl font-bold mb-8">Terms of service</h1>
-      <Breadcrumbs items={breadcrumbItems} />
       <Muted>Last updated: TODO — set a real date before publishing.</Muted>
 
       <SectionTitle>Scope</SectionTitle>

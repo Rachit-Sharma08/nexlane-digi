@@ -3,7 +3,6 @@ import Image from "next/image";
 import type { Metadata } from "next";
 import { site } from "@/config/site";
 import { services } from "@/content/services";
-import { practiceProjects } from "@/content/projects";
 import { notDraft } from "@/content/blog";
 import { homeFaqs } from "@/content/faq";
 import { ArrowMotif, GradientHeading, GlassCard, Muted, Section, SectionTitle } from "@/components/ui";
@@ -65,7 +64,6 @@ const process = [
 
 export default function HomePage() {
   const faqs = homeFaqs;
-  const practice = practiceProjects;
   const posts = notDraft();
 
   return (
@@ -172,28 +170,13 @@ export default function HomePage() {
 
       {/* 6. OUR WORK */}
       <Section>
-        <SectionTitle>Our work — practice, clearly labelled</SectionTitle>
+        <SectionTitle>Our work</SectionTitle>
         <Muted>
-          We are new, so we show practice projects instead of pretending they are client work.
-          Client work will appear here only with the client&apos;s written permission.
+          Our first client projects are on the way — they&apos;ll appear here with each client&apos;s written
+          permission. Nothing fake, nothing borrowed.
         </Muted>
-        <div className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {practice.slice(0, 3).map((p) => (
-            <GlassCard key={p.title}>
-              <div className="flex items-center justify-between">
-                <h3 className="font-display font-semibold">{p.title}</h3>
-                {p.status === "flagged" && (
-                  <span className="rounded-full border border-[var(--card-border)] px-2 py-0.5 text-[10px] uppercase tracking-wide text-[var(--muted)]">
-                    pending permission
-                  </span>
-                )}
-              </div>
-              <p className="mt-1 text-xs text-[var(--muted)]">Built by {p.role} · practice project</p>
-            </GlassCard>
-          ))}
-        </div>
-        <Link href="/portfolio" className="mt-6 inline-block text-sm font-semibold text-[var(--accent-2)] hover:text-white">
-          See the full portfolio →
+        <Link href="/our-work" className="mt-6 inline-block text-sm font-semibold text-[var(--accent-2)] hover:text-white">
+          See our work →
         </Link>
       </Section>
 
