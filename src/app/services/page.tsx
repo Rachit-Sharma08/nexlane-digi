@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { services } from "@/content/services";
-import { GlassCard, Muted, Section } from "@/components/ui";
+import { GlassCard, Muted, Section, Eyebrow } from "@/components/ui";
 import JsonLd from "@/components/JsonLd";
 import { buildMetadata, breadcrumbSchema } from "@/lib/seo";
 
@@ -19,6 +19,7 @@ export default function ServicesPage() {
   return (
     <>
       <Section>
+        <Eyebrow>Services</Eyebrow>
         <h1 className="mb-8 font-display text-2xl font-semibold sm:text-3xl">What we can help with</h1>
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {services.map((service) => (
