@@ -88,3 +88,15 @@ Cloudflare Turnstile free hai (unlimited verifications). CSP me already `challen
 ## Repo security limits (free plan, private repo)
 
 Branch protection / rulesets / secret scanning = 403 (Pro ya public repo chahiye). Fallback: CI workflow (`lint`+`build` har PR/push), SECURITY.md, `.env*` gitignored, PR-only discipline.
+
+## AGENTS.md sync + section 4/7 diff fixes (2026-11-06, PR #7)
+
+- `AGENTS.md` replaced with the owner's correct 10-section file (before: only nextjs-rules + motion-refresh sections).
+- Diff of sections 4 and 7 vs the Stage A build — code was fixed, never AGENTS.md:
+  - Group labels now drive everything: founders/team H1, metadata title, breadcrumb and the navbar About dropdown all read from `teamGroups` (rename a group in config once).
+  - `TeamMember` gained optional `photo?` (initials avatar stays the default; MemberCard shows a photo only if config has one), `portfolioUrl` now optional, personal projects capped at 3 per card.
+  - Eyebrow label above every H1 (new `Eyebrow` component in `src/components/ui.tsx`, e.g. `ABOUT · FOUNDERS`).
+  - Breadcrumb added to `/services/[slug]` (was JSON-LD only); breadcrumbs remain only on pages ≥2 levels below Home.
+  - Navbar: gradient underline on the active item + `aria-current` on the active dropdown parent, mobile menu highlights the current page, 44px tap targets (hamburger p-2.5, menu items py-3).
+- Verification: `npx tsc --noEmit` = 0, `npm run lint` = 0, `npm run build` = 0 (21 routes), production CSP via `npm start` + `curl.exe -I` has **no** `unsafe-eval`.
+- Not in this pass (Stage B/D scope per redesign prompt): scroll progress bar, SectionNav scroll-spy, NextUp card, sliding pill in the navbar.
