@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import type { Metadata } from "next";
 import { site } from "@/config/site";
 import { services } from "@/content/services";
@@ -71,8 +72,8 @@ export default function HomePage() {
     <>
       {/* 1. HERO */}
       <section className="relative overflow-hidden">
-        <div className="mx-auto grid max-w-6xl gap-10 px-4 pb-20 pt-16 sm:px-6 sm:pt-24 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
-          <div>
+        <div className="mx-auto grid w-full max-w-6xl gap-10 px-4 pb-20 pt-16 sm:px-6 sm:pt-24 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
+          <div className="hero-arrive">
             <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-[var(--accent)]">
               Nexlane Digital · Kaithal, Haryana
             </p>
@@ -93,9 +94,11 @@ export default function HomePage() {
               )}
             </div>
           </div>
-          <div className="relative flex items-center justify-center">
-            <div className="absolute inset-0 rounded-full bg-[var(--bg-glow-2)] opacity-25 blur-3xl" aria-hidden="true" />
-            <ArrowMotif className="relative h-44 w-44 sm:h-56 sm:w-56 animate-none" />
+          <div className="hero-media relative mx-auto w-full max-w-[28rem]">
+            <div className="hero-media-glow" aria-hidden="true" />
+            <Image src="/nexlane-logo.png" alt="Nexlane Digital logo" width={1024} height={765} priority className="relative z-10 w-full rounded-[1.75rem] border border-[var(--card-border)] shadow-2xl shadow-blue-950/40" />
+            <span className="hero-orbit hero-orbit-one" aria-hidden="true" />
+            <span className="hero-orbit hero-orbit-two" aria-hidden="true" />
           </div>
         </div>
       </section>

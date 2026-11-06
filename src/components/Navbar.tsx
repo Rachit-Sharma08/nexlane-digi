@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { nav, site } from "@/config/site";
-import { LogoMark } from "./ArrowMotif";
 
 /** Thin top strip with WhatsApp / social / email icons (only what is set). */
 function TopBar() {
@@ -112,23 +112,21 @@ export default function Navbar() {
       <nav aria-label="Main navigation" className="border-b border-[var(--card-border)] bg-[rgba(0,13,29,0.78)] backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
           <Link href="/" className="flex items-center gap-2" aria-label={`${site.name} home`}>
-            <LogoMark className="h-8 w-8" />
-            <span className="font-display text-lg font-bold tracking-[0.22em] text-white">
-              NEXLANE<span className="sr-only"> Digital</span>
-            </span>
+            <Image src="/nexlane-mark.png" alt="" width={400} height={285} priority className="h-10 w-auto object-contain" />
+            <span className="font-display text-lg font-bold tracking-[0.18em] text-white">NEXLANE</span>
           </Link>
 
           {/* Desktop */}
           <div className="hidden items-center gap-1 lg:flex">
             {nav.main.map((i) => (
-              <Link key={i.href} href={i.href} className={`rounded px-3 py-2 text-sm hover:text-white ${isActive(i.href) ? "text-white" : "text-[var(--muted)]"}`}>
+              <Link key={i.href} href={i.href} aria-current={isActive(i.href) ? "page" : undefined} className={`rounded px-3 py-2 text-sm hover:text-white ${isActive(i.href) ? "text-white" : "text-[var(--muted)]"}`}>
                 {i.label}
               </Link>
             ))}
             <Dropdown parent={nav.services} />
             <Dropdown parent={nav.learn} />
             {nav.extra.map((i) => (
-              <Link key={i.href} href={i.href} className={`rounded px-3 py-2 text-sm hover:text-white ${isActive(i.href) ? "text-white" : "text-[var(--muted)]"}`}>
+              <Link key={i.href} href={i.href} aria-current={isActive(i.href) ? "page" : undefined} className={`rounded px-3 py-2 text-sm hover:text-white ${isActive(i.href) ? "text-white" : "text-[var(--muted)]"}`}>
                 {i.label}
               </Link>
             ))}
@@ -152,7 +150,7 @@ export default function Navbar() {
 
         {/* Mobile menu */}
         {menuOpen && (
-          <div className="border-t border-[var(--card-border)] bg-[rgba(0,13,29,0.97)] px-4 py-4 lg:hidden">
+          <div className="mobile-menu-enter border-t border-[var(--card-border)] bg-[rgba(0,13,29,0.97)] px-4 py-4 lg:hidden">
             <div className="space-y-3">
               {nav.main.map((i) => (
                 <Link key={i.href} href={i.href} onClick={closeMenu} className="block rounded px-2 py-2 text-sm text-[var(--muted)] hover:text-white">
