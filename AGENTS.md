@@ -114,3 +114,25 @@ Reasons: NN/g says navigation should indicate the user's current location (menu 
 - Cloudflare Turnstile support on, with exact setup steps documented.
 - Privacy page names third parties (Vercel, Resend, Cloudflare Turnstile) and is marked "draft, to be reviewed by a qualified professional".
 - Before launch: Vercel plan check (Hobby is for non-commercial use), domain, Search Console, WAF rule published.
+
+## 11. Design direction v2: depth and 3D (owner decision, 2026-11-06)
+
+The owner did not like the flat Stage A look. New direction: the whole site feels like a 3D space (depth, layers, tilt, parallax), with a special 3D page-open transition. This section extends section 6 and never relaxes sections 5 and 9. Speed and low-end phones come first: many visitors are small businesses in Haryana on cheap phones.
+
+1. **Quality tiers.** Build one client hook (for example `src/lib/quality.ts` with a provider) that returns `low`, `mid` or `high`:
+   - `low`: prefers-reduced-motion, `navigator.connection.saveData`, `deviceMemory <= 2`, `hardwareConcurrency <= 2`, or any screen under 768 px. No WebGL, no tilt, no parallax, no 3D transition. Static layered CSS depth only (shadows, gradients, glass), plain fade at most.
+   - `mid`: normal laptops and tablets. CSS 3D (perspective, tilt on fine pointers only, scroll parallax).
+   - `high`: desktop (1024 px or wider, 4+ cores, not saveData). The only tier that may load the WebGL hero.
+   Default to `low` on the server and first render, then upgrade after hydration, so there is no layout shift and no hydration mismatch.
+2. **Real 3D (WebGL) only in the Home hero, one scene.** Use React Three Fiber (`three`, `@react-three/fiber`, optionally `@react-three/drei`, minimum needed). Load with `next/dynamic` (`ssr: false`) after first paint (`requestIdleCallback` or after load). The H1 and CTA are the LCP and must never wait for the canvas. Concept that fits the name: glowing lanes of light receding in perspective with a rising arrow (simple geometry, brand gradient colors). Low poly, `dpr` capped at 1.5, pause rendering when offscreen (IntersectionObserver) and when the tab is hidden, dispose on unmount. Provide a static fallback (CSS glow plus the logo) for `low` and `mid` and for WebGL failure. Do not ship any 3D model file or any asset that needs a license.
+3. **CSS 3D everywhere else.** Reusable components: `DepthCard` (perspective tilt toward the pointer, glare optional, `mid` and `high` with fine pointer only), `Parallax` layer (scroll-linked translate with `motion`), layered backgrounds with depth. Reveals 600 ms or less. At most one hero-level effect per page.
+4. **3D page-open transition.** The new page enters from depth (slight scale and rotateX or translateZ plus fade), 500 ms or less, never blocks navigation or text, keeps scroll restoration, and is a plain fade or nothing in `low`. First read the Next.js docs for the installed version (View Transitions support, `template.tsx`) and use what is stable; exit animations in the App Router are unreliable, so an enter-only animation is acceptable. Say which approach you used.
+5. **Founders and Team layout (from the owner's sketch).** One `ProfileTile` component used on both pages:
+   - Large square (1:1) photo tile, info below it: name, title, bio, skill chips, personal projects (max 3, labeled "Personal project by <name>, not Nexlane client work").
+   - If config has `photo`: show it with `next/image`. If not: large gradient initials tile.
+   - If config has `portfolioUrl`: the whole tile is a link that opens the person's portfolio in a new tab (`target="_blank"`, `rel="noopener noreferrer"`), with a visible "Open portfolio" cue on hover, focus and always on touch. If not: not a link, no hover cue, no empty promise.
+   - `/about/founders`: two tiles, Rachit left, Krish right (stacked on mobile), then a "Team members" row below with the same tiles for the two team members, then the shared "Why we started Nexlane" section.
+   - `/about/team`: the same two tiles, ordered as in the sketch: Jyoti left, Neelam right. This supersedes the order in section 4. Keep the order in config (an `order` field) so the owner can flip it in one place.
+   - Owner confirmed permission for portfolio links on 2026-11-06. Set `portfolioUrl` for Rachit, Krish and Neelam (URLs are in `docs/redesign-prompt.md`). Jyoti has none. Photos: none yet. Support `photo` paths like `/team/<slug>.webp` and document in `docs/PROGRESS.md` that the owner adds square images (800x800, under 150 KB) to `public/team/` and sets the field.
+6. **Budgets.** Home initial JS must not grow for `low` visitors: the WebGL chunk loads only in `high`. Report real bundle sizes from the build. Lighthouse mobile goal for Home: performance 85 or more; report the real numbers and never round them up.
+7. **Skills to use** (opencode): `frontend-design`, `impeccable`, `magicuidesign`, `shadcn`. Do not load other design skills (no brand-clone DESIGN.md skills, no Figma skills). Components must be free (Magic UI MIT, unlumen free items only).
