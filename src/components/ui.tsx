@@ -65,6 +65,27 @@ export function Eyebrow({ children }: { children: React.ReactNode }) {
   );
 }
 
+/** Eyebrow + section title + intro, used for every long-page section. */
+export function SectionHeader({
+  eyebrow,
+  title,
+  intro,
+}: {
+  eyebrow?: string;
+  title: string;
+  intro?: string;
+}) {
+  return (
+    <div className="max-w-2xl">
+      {eyebrow && (
+        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">{eyebrow}</p>
+      )}
+      <h2 className="mt-2 font-display text-2xl font-semibold sm:text-3xl">{title}</h2>
+      {intro && <p className="mt-3 text-sm leading-relaxed text-[var(--muted)] sm:text-base">{intro}</p>}
+    </div>
+  );
+}
+
 /** Small paragraph used as section intro/body copy. */
 export function Muted({ children }: { children: React.ReactNode }) {
   return <p className="text-[var(--muted)] leading-relaxed">{children}</p>;
