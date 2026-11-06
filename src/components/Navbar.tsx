@@ -37,6 +37,10 @@ function TopBar() {
 
 type NavItem = { href: string; label: string };
 
+/** Gradient underline under the active item (AGENTS.md §7.1). */
+const activeUnderline =
+  "after:absolute after:inset-x-3 after:-bottom-1.5 after:h-0.5 after:rounded-full after:bg-gradient-to-r after:from-[var(--brand-2)] after:to-[var(--accent)] after:content-['']";
+
 function Dropdown({ parent, mobile }: { parent: { label: string } & { items: NavItem[] }; mobile?: boolean }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -69,7 +73,7 @@ function Dropdown({ parent, mobile }: { parent: { label: string } & { items: Nav
               <Link
                 href={i.href}
                 aria-current={pathname === i.href ? "page" : undefined}
-                className={`block rounded px-2 py-1.5 text-sm hover:text-white ${pathname === i.href ? "text-white" : "text-[var(--muted)]"}`}
+                className={`block rounded px-2 py-3 text-sm hover:text-white ${pathname === i.href ? "text-white" : "text-[var(--muted)]"}`}
                 onClick={() => setOpen(false)}
               >
                 {i.label}
@@ -86,8 +90,9 @@ function Dropdown({ parent, mobile }: { parent: { label: string } & { items: Nav
       <button
         aria-expanded={open}
         aria-haspopup="true"
+        aria-current={active ? "page" : undefined}
         onClick={() => setOpen((v) => !v)}
-        className={`flex items-center gap-1 rounded px-3 py-2 text-sm hover:text-white ${active ? "text-white" : "text-[var(--muted)]"}`}
+        className={`relative flex items-center gap-1 rounded px-3 py-2 text-sm hover:text-white ${active ? `text-white ${activeUnderline}` : "text-[var(--muted)]"}`}
       >
         {parent.label}
         <Chevron className={`h-3 w-3 transition-transform ${open ? "rotate-180" : ""}`} />
@@ -132,7 +137,7 @@ export default function Navbar() {
           {/* Desktop */}
           <div className="hidden items-center gap-1 lg:flex">
             {nav.main.map((i) => (
-              <Link key={i.href} href={i.href} aria-current={isActive(i.href) ? "page" : undefined} className={`rounded px-3 py-2 text-sm hover:text-white ${isActive(i.href) ? "text-white" : "text-[var(--muted)]"}`}>
+              <Link key={i.href} href={i.href} aria-current={isActive(i.href) ? "page" : undefined} className={`relative rounded px-3 py-2 text-sm hover:text-white ${isActive(i.href) ? `text-white ${activeUnderline}` : "text-[var(--muted)]"}`}>
                 {i.label}
               </Link>
             ))}
@@ -140,7 +145,7 @@ export default function Navbar() {
             <Dropdown parent={nav.services} />
             <Dropdown parent={nav.learn} />
             {nav.extra.map((i) => (
-              <Link key={i.href} href={i.href} aria-current={isActive(i.href) ? "page" : undefined} className={`rounded px-3 py-2 text-sm hover:text-white ${isActive(i.href) ? "text-white" : "text-[var(--muted)]"}`}>
+              <Link key={i.href} href={i.href} aria-current={isActive(i.href) ? "page" : undefined} className={`relative rounded px-3 py-2 text-sm hover:text-white ${isActive(i.href) ? `text-white ${activeUnderline}` : "text-[var(--muted)]"}`}>
                 {i.label}
               </Link>
             ))}
@@ -151,7 +156,7 @@ export default function Navbar() {
 
           {/* Hamburger */}
           <button
-            className="rounded p-2 text-white lg:hidden"
+            className="rounded p-2.5 text-white lg:hidden"
             aria-expanded={menuOpen}
             aria-label={menuOpen ? "Close menu" : "Open menu"}
             onClick={() => setMenuOpen((v) => !v)}
@@ -167,7 +172,7 @@ export default function Navbar() {
           <div className="mobile-menu-enter border-t border-[var(--card-border)] bg-[rgba(0,13,29,0.97)] px-4 py-4 lg:hidden">
             <div className="space-y-3">
               {nav.main.map((i) => (
-                <Link key={i.href} href={i.href} onClick={closeMenu} className="block rounded px-2 py-2 text-sm text-[var(--muted)] hover:text-white">
+                <Link key={i.href} href={i.href} onClick={closeMenu} aria-current={isActive(i.href) ? "page" : undefined} className={`block rounded px-2 py-3 text-sm hover:text-white ${isActive(i.href) ? "text-white" : "text-[var(--muted)]"}`}>
                   {i.label}
                 </Link>
               ))}
@@ -175,7 +180,7 @@ export default function Navbar() {
               <Dropdown parent={nav.services} mobile />
               <Dropdown parent={nav.learn} mobile />
               {nav.extra.map((i) => (
-                <Link key={i.href} href={i.href} onClick={closeMenu} className="block rounded px-2 py-2 text-sm text-[var(--muted)] hover:text-white">
+                <Link key={i.href} href={i.href} onClick={closeMenu} aria-current={isActive(i.href) ? "page" : undefined} className={`block rounded px-2 py-3 text-sm hover:text-white ${isActive(i.href) ? "text-white" : "text-[var(--muted)]"}`}>
                   {i.label}
                 </Link>
               ))}
