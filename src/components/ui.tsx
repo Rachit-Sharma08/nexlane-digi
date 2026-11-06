@@ -44,6 +44,15 @@ export function GradientHeading({ children }: { children: React.ReactNode }) {
   return <span className="text-gradient">{children}</span>;
 }
 
+/** Uppercase label above every H1 (e.g. "ABOUT · FOUNDERS"). */
+export function Eyebrow({ children }: { children: React.ReactNode }) {
+  return (
+    <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-[var(--accent)]">
+      {children}
+    </p>
+  );
+}
+
 /** Small paragraph used as section intro/body copy. */
 export function Muted({ children }: { children: React.ReactNode }) {
   return <p className="text-[var(--muted)] leading-relaxed">{children}</p>;
