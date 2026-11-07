@@ -401,6 +401,8 @@ html[data-quality="low"] .depth-card.motion-card:hover {
 @keyframes media-arrive { from { opacity: 0; transform: translateY(24px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
 @keyframes menu-arrive { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes orbit-drift { 0%, 100% { transform: translate3d(0, 0, 0); } 50% { transform: translate3d(0, -10px, 0); } }
+@keyframes nav-indicator-in { from { transform: scaleX(0.3); opacity: 0; } to { transform: scaleX(1); opacity: 1; } }
+.nav-indicator { transform-origin: left center; animation: nav-indicator-in 0.28s ease-out; }
 
 /* Buttons */
 .btn {
@@ -496,4 +498,17 @@ h3,
 @media (max-width: 640px) {
   .back-to-top { right: 1rem; bottom: 5.25rem; }
   .glass { backdrop-filter: blur(6px); }
+}
+
+/* Low tier (small screens, cheap phones, reduced motion): backdrop blur is the
+   most expensive paint on mobile, and the card backgrounds are already tinted. */
+[data-quality="low"] .glass,
+[data-quality="low"] .back-to-top {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+[data-quality="low"] header nav {
+  background: rgba(0, 13, 29, 0.96);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
