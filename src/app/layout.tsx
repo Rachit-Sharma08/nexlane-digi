@@ -39,7 +39,13 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en-IN" className={`${inter.variable} ${sora.variable}`}>
+    // data-quality on the server = first paint is already the cheap low tier
+    // (AGENTS §11.1); QualityProvider upgrades it after hydration.
+    <html
+      lang="en-IN"
+      data-quality="low"
+      className={`${inter.variable} ${sora.variable}`}
+    >
       <body>
         <a
           href="#main"
