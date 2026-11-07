@@ -4,9 +4,10 @@ import { ImageResponse } from "next/og";
 /* eslint-disable @next/next/no-img-element -- <img> is required inside next/og ImageResponse */
 
 // Site-wide OG image (AGENTS §12.9): brand gradient + the logo mark.
-// Inlined as a data URL: next/og fetches images at build time, where no
-// server or absolute URL is available.
-const mark = `data:image/webp;base64,${readFileSync("public/nexlane-mark.webp").toString("base64")}`;
+// Inlined as a PNG data URL: next/og fetches images at build time, where no
+// server or absolute URL is available, and its renderer decodes PNG reliably
+// (webp was silently dropped).
+const mark = `data:image/png;base64,${readFileSync("src/app/og-mark.png").toString("base64")}`;
 
 export const alt = "Nexlane Digital — digital marketing agency in Kaithal, Haryana";
 export const size = { width: 1200, height: 630 };
