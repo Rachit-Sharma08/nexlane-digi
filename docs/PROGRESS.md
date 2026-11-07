@@ -228,7 +228,7 @@ Removed during Stage E for speed: the `motion` library (the navbar underline is 
 ### 3. Preview chatbot (local answers; Grok API wiring is Phase 2)
 
 - `src/lib/chatbot.ts` — keyword knowledge base built ONLY from real site content (`site`, `services`, `homeFaqs`) plus honest general digital-marketing explanations (no guarantees, no invented numbers). `askBot()` is the async seam where `/api/chat` (Grok) lands later; local stays as fallback.
-- `src/components/Chatbot.tsx` — FAB **bottom-left** (`fixed bottom-5 left-5`, clear of WhatsApp/back-to-top on the right), glass panel, quick-reply chips, typing delay, `Esc` closes, `role="dialog"` + `aria-live`, reduced-motion skips the typing delay. Header is labelled **"Preview · AI answers coming soon"** — it never pretends to be live AI.
+- `src/components/Chatbot.tsx` — FAB **bottom-right** (owner correction: `fixed bottom-5 right-5`; WhatsApp float moved to `bottom-36` so the stack is WhatsApp → back-to-top → robot, back-to-top `bottom-5.75rem` sits just above the 64 px FAB), glass panel opens from its bottom-right corner, quick-reply chips, typing delay, `Esc` closes, `role="dialog"` + `aria-live`, reduced-motion skips the typing delay. Header is labelled **"Preview · AI answers coming soon"** — it never pretends to be live AI. FAB avatar is a **CSS-3D robot mascot** (`RobotHead` in the same file — see the rework note below).
 - `src/components/ChatbotLoader.tsx` — idle-load via `next/dynamic` (`ssr: false` after `requestIdleCallback`), so the **16 KB chatbot chunk is not in the 9 initial scripts of Home (603 KB raw)**.
 - Wired in `layout.tsx` after `ScrollControls`.
 
@@ -241,9 +241,16 @@ Removed during Stage E for speed: the `motion` library (the navbar underline is 
 
 ### Chatbot design pass (impeccable `polish`, same day)
 
-- Placement confirmed **bottom-left** (owner asked; WhatsApp + back-to-top keep the right).
-- FAB: brand-blue gradient (`#0461d6 → #0572F5`) + depth shadow + cyan pulse ring (hidden on `low` tier, when open, and under reduced motion), hover lift/press.
-- Panel: gradient hairline border (padding-box/border-box trick, no blur cost), enters from its bottom-left corner (`chat-arrive`, 260 ms expo-out), header with `LogoMark` avatar tile + honest preview chip + the site's gradient hairline divider.
+- Placement **bottom-right** (owner first asked bottom-left, then corrected to right side). WhatsApp float moved to `bottom-36`; back-to-top stays at `bottom-5.75rem`, just above the FAB.
+- FAB: dark glass + cyan rim (the robot is the visual now) + depth shadow + cyan pulse ring (hidden on `low` tier, when open, and under reduced motion), hover lift/press; on hover the robot head straightens to face the pointer.
+- Panel: gradient hairline border (padding-box/border-box trick, no blur cost), enters from its bottom-right corner (`chat-arrive`, 260 ms expo-out), header with a small robot tile + honest preview chip + the site's gradient hairline divider.
 - Bubbles: glass bot / blue-gradient user (white text, ≥4.5:1 on the tint used), `break-words` for long links; animated 3-dot typing indicator.
 - Chats chrome: themed thin cyan scrollbar (`.chat-scroll`), hidden scrollbar on the chip row, visible `focus-visible` rings on every control, disabled send state.
 - Impeccable detector run on the changed files: only 2 findings, both **pre-existing brand styles outside this diff** (`.text-gradient` background-clip line 197, `.hero-stage-grid` line 312) — kept as the incumbent world. No findings in the chatbot code.
+
+### Chatbot robot rework (owner request: "right side par karo, 3D bnao, proper robot shape", same day)
+
+- **3D choice:** CSS 3D only — AGENTS §11.2 keeps real WebGL in the Home hero alone, and speed 90+ is compulsory, so a `RobotHead` component (local, inside `Chatbot.tsx`) with `perspective` + `preserve-3d` renders the mascot: antenna with glowing ball, side ears, inset face, cyan visor with two glowing eyes, mouth bar. All sizes in `em` → `text-[Npx]` on the root scales the whole bot (32 px in the 64 px FAB, 18 px in the 36 px header tile; 42 px was rejected because the ears would overflow the circle).
+- **Motion:** idle float + head sway (`robot-tip`, ±7° rotateY), blink every ~4.4 s, antenna glow pulse, and an eye-scan animation while `data-typing="true"` (verified live: attribute toggles `true → false` around a reply). Hover straightens the head. All of it static on `html[data-quality="low"]` and `animation: none` under `prefers-reduced-motion` (§11.1), so phones get a static layered-CSS robot.
+- Panel entrance origin flipped `bottom left → bottom right` to match the new side.
+- Verification (this round): `npx tsc --noEmit` 0, `npm run lint` 0, `npm run build` 21 routes; robot CSS confirmed inside the production chunk (`.next/static/chunks/*.css`). Browser 1440: robot bottom-right, panel opens from the right, chat answer correct (`Details: /services/seo`), console 0 errors (only the known `THREE.Clock` warning). Browser 360: panel full-width and readable, robot FAB static (low tier). Impeccable detector re-run on the 3 changed files: same 2 pre-existing findings only. Screenshots: `robot-fab-1440`, `robot-panel-1440`, `robot-answer-1440`, `robot-360` in `screenshots/chatbot-scroll/`.
