@@ -6,9 +6,9 @@ import { notDraft } from "@/content/blog";
 import { homeFaqs } from "@/content/faq";
 import { ArrowMotif, Container, GradientHeading, SectionHeader } from "@/components/ui";
 import DepthCard from "@/components/DepthCard";
+import SectionNav from "@/components/SectionNav";
 import HeroVisual from "@/components/home/HeroVisual";
 import NextUp from "@/components/NextUp";
-import SectionNav from "@/components/SectionNav";
 import { Marquee } from "@/components/ui/marquee";
 import JsonLd from "@/components/JsonLd";
 import { buildMetadata, faqSchema } from "@/lib/seo";
@@ -101,7 +101,7 @@ export default function HomePage() {
       {/* 1. HERO — the only WebGL moment on the site (§11.2) */}
       <section className="relative overflow-hidden">
         <div className="mx-auto grid w-full max-w-6xl gap-12 px-4 pb-16 pt-14 sm:px-6 sm:pt-20 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
-          <div className="hero-arrive">
+          <div>
             <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-[var(--accent)]">
               Nexlane Digital · Kaithal, Haryana
             </p>
@@ -143,7 +143,7 @@ export default function HomePage() {
             intro="Three services, one small team. Every project starts with a free chat and a written scope."
           />
 
-          <div className="mt-10 grid gap-4 md:grid-cols-6">
+          <div className="stagger mt-10 grid gap-4 md:grid-cols-6">
             <div className="md:col-span-4">
               <DepthCard glare className="flex h-full flex-col justify-between gap-8 p-6 sm:p-8">
                 <div>
@@ -271,15 +271,13 @@ export default function HomePage() {
             title="Why Nexlane"
             intro="A young studio, so we compete on being direct, exact and easy to reach."
           />
-          <div className="mt-8 grid gap-4 sm:grid-cols-2">
+          <div className="stagger mt-8 grid gap-4 sm:grid-cols-2">
             {whyUs.map((w, i) => (
-              <div key={w.title} className="reveal-blur">
-                <DepthCard glare className="p-6">
-                  <span className="font-display text-sm font-bold text-gradient">{String(i + 1).padStart(2, "0")}</span>
-                  <h3 className="mt-2 font-display text-lg font-semibold">{w.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-[var(--muted)]">{w.blurb}</p>
-                </DepthCard>
-              </div>
+              <DepthCard key={w.title} glare className="p-6">
+                <span className="font-display text-sm font-bold text-gradient">{String(i + 1).padStart(2, "0")}</span>
+                <h3 className="mt-2 font-display text-lg font-semibold">{w.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-[var(--muted)]">{w.blurb}</p>
+              </DepthCard>
             ))}
           </div>
         </section>
@@ -379,7 +377,7 @@ export default function HomePage() {
               className="pointer-events-none absolute inset-x-0 -top-24 mx-auto h-48 w-48 rounded-full bg-[var(--brand-2)] opacity-25 blur-3xl"
             />
             <div className="relative flex flex-col items-center gap-4">
-              <ArrowMotif className="h-12 w-12" />
+              <ArrowMotif className="parallax-drift h-12 w-12" />
               <h2 className="max-w-2xl font-display text-2xl font-bold sm:text-3xl">
                 Not sure where your business is losing customers online?{" "}
                 <GradientHeading>We&apos;ll look for free.</GradientHeading>

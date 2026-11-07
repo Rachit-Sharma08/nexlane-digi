@@ -1,13 +1,8 @@
 "use client";
 
-import { MotionConfig } from "motion/react";
 import { QualityProvider } from "@/lib/quality";
 
-/** One client boundary for site-wide motion + device quality preferences. */
+/** Site-wide device quality preference. Motion is handled via CSS (see globals.css). */
 export default function AppProviders({ children }: { children: React.ReactNode }) {
-  return (
-    <QualityProvider>
-      <MotionConfig reducedMotion="user">{children}</MotionConfig>
-    </QualityProvider>
-  );
+  return <QualityProvider>{children}</QualityProvider>;
 }
