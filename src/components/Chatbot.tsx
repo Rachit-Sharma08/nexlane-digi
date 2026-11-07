@@ -48,6 +48,20 @@ export default function Chatbot() {
   const [typing, setTyping] = useState(false);
   const listRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const fabRef = useRef<HTMLButtonElement>(null);
+
+  // Close when clicking outside the panel (owner request 2026-11-08).
+  useEffect(() => {
+    if (!open) return;
+    const onDown = (e: MouseEvent) => {
+      const t = e.target as Node;
+      if (panelRef.current?.contains(t) || fabRef.current?.contains(t)) return;
+      setOpen(false);
+    };
+    document.addEventListener("mousedown", onDown);
+    return () => document.removeEventListener("mousedown", onDown);
+  }, [open]);
 
   useEffect(() => {
     if (!open) return;
@@ -85,6 +99,7 @@ export default function Chatbot() {
     <>
       <button
         type="button"
+        ref={fabRef}
         data-open={open}
         data-typing={typing}
         onClick={() => setOpen((o) => !o)}
@@ -97,6 +112,7 @@ export default function Chatbot() {
 
       {open && (
         <div
+          ref={panelRef}
           role="dialog"
           aria-label="Chat with Nexlane Digital"
           className="chat-panel fixed bottom-24 left-4 right-4 z-50 flex max-h-[70vh] flex-col overflow-hidden rounded-2xl shadow-2xl shadow-black/50 sm:left-auto sm:right-5 sm:w-[24rem]"
