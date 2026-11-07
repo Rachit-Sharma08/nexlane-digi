@@ -30,8 +30,11 @@ export const site = {
    * Format: country code + digits only, no + or spaces.
    */
   whatsappNumber: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "",
-  // TODO: set a real agency email. Empty = link hidden everywhere.
-  contactEmail: "",
+  // Owner-approved public business contact details (AGENTS §5, 2026-11-08).
+  // Email/phones are NEVER put in JSON-LD schema; no other number may be added.
+  contactEmail: "nexlanedigitalservice@gmail.com",
+  phoneCountryCode: "+91",
+  phones: ["8307151186", "9306091154"],
   instagramUrl: "", // TODO: add
   youtubeUrl: "", // TODO: add
 

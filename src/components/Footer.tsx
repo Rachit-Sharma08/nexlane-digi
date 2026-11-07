@@ -15,6 +15,18 @@ export default function Footer() {
           <p className="mt-3 max-w-sm text-sm leading-relaxed text-[var(--muted)]">
             A young digital agency from {site.location}, helping small local businesses grow online — and teaching what we learn, free.
           </p>
+          <div className="mt-3 space-y-1 text-sm text-[var(--muted)]">
+            {site.contactEmail && (
+              <a href={`mailto:${site.contactEmail}`} className="block hover:text-white">
+                {site.contactEmail}
+              </a>
+            )}
+            {site.phones.map((p) => (
+              <a key={p} href={`tel:${site.phoneCountryCode}${p}`} className="block hover:text-white">
+                {site.phoneCountryCode} {p}
+              </a>
+            ))}
+          </div>
           <div className="mt-4 flex items-center gap-3 text-sm text-[var(--muted)]">
             {site.whatsappNumber && (
               <a href={`https://wa.me/${site.whatsappNumber}`} aria-label="WhatsApp" className="hover:text-white" rel="noopener noreferrer" target="_blank">

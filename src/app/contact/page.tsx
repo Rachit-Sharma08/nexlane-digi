@@ -41,6 +41,19 @@ export default function ContactPage() {
           ) : (
             <li>Email: coming soon</li>
           )}
+          {site.phones.length > 0 ? (
+            <li>
+              Phone:{' '}
+              {site.phones.map((p, i) => (
+                <span key={p}>
+                  {i > 0 ? ' · ' : ''}
+                  <a href={`tel:${site.phoneCountryCode}${p}`} className="text-[var(--accent-2)] underline">
+                    {site.phoneCountryCode} {p}
+                  </a>
+                </span>
+              ))}
+            </li>
+          ) : null}
           {whatsapp ? (
             <li>
               WhatsApp:{' '}
@@ -85,7 +98,7 @@ export default function ContactPage() {
               name="name"
               type="text"
               autoComplete="name"
-              className="w-full rounded-lg border border-[var(--card-border)] bg-[rgba(0,13,29,0.6)] px-3 py-2 text-white"
+              className="w-full rounded-lg border border-[var(--card-border)] bg-[rgba(0,8,20,0.6)] px-3 py-2 text-white"
             />
           </div>
           <div>
@@ -97,7 +110,7 @@ export default function ContactPage() {
               name="email"
               type="email"
               autoComplete="email"
-              className="w-full rounded-lg border border-[var(--card-border)] bg-[rgba(0,13,29,0.6)] px-3 py-2 text-white"
+              className="w-full rounded-lg border border-[var(--card-border)] bg-[rgba(0,8,20,0.6)] px-3 py-2 text-white"
             />
           </div>
           <div>
@@ -108,7 +121,7 @@ export default function ContactPage() {
               id="contact-message"
               name="message"
               rows={5}
-              className="w-full rounded-lg border border-[var(--card-border)] bg-[rgba(0,13,29,0.6)] px-3 py-2 text-white"
+              className="w-full rounded-lg border border-[var(--card-border)] bg-[rgba(0,8,20,0.6)] px-3 py-2 text-white"
             />
           </div>
           <div className="hidden" aria-hidden="true">
