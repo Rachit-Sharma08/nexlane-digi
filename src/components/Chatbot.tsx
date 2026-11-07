@@ -2,13 +2,15 @@
 
 import { useEffect, useRef, useState } from "react";
 import { MessageCircle, Send, X } from "lucide-react";
+import { LogoMark } from "@/components/ArrowMotif";
 import { askBot, suggestQuestions, type ChatMessage } from "@/lib/chatbot";
 
 const chips = suggestQuestions();
 
 /**
- * Floating site chat (bottom-left, away from WhatsApp/back-to-top on the right).
- * Phase 1: local answers from src/lib/chatbot.ts — clearly labelled as preview.
+ * Floating site chat — anchored bottom-left (WhatsApp + back-to-top own the
+ * right side). Phase 1: local answers from src/lib/chatbot.ts, clearly
+ * labelled as a preview until the Grok API lands in Phase 2.
  */
 export default function Chatbot() {
   const [open, setOpen] = useState(false);
@@ -52,66 +54,97 @@ export default function Chatbot() {
     setMessages((m) => [...m, { role: "bot", text: reply }]);
   }
 
+  const focusRing =
+    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]";
+
   return (
     <>
       <button
         type="button"
+        data-open={open}
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
         aria-label={open ? "Close chat" : "Open chat with Nexlane Digital"}
-        className="fixed bottom-5 left-5 z-50 flex h-14 w-14 items-center justify-center rounded-full border border-[var(--accent)]/40 bg-[var(--brand)] text-white shadow-lg shadow-black/40 transition-transform hover:scale-105"
+        className={`chat-fab fixed bottom-5 left-5 z-50 grid h-14 w-14 place-items-center rounded-full text-white ${focusRing}`}
       >
-        {open ? <X className="h-6 w-6" aria-hidden="true" /> : <MessageCircle className="h-6 w-6" aria-hidden="true" />}
+        {open ? (
+          <X className="h-6 w-6" aria-hidden="true" />
+        ) : (
+          <MessageCircle className="h-6 w-6" aria-hidden="true" />
+        )}
       </button>
 
       {open && (
         <div
           role="dialog"
           aria-label="Chat with Nexlane Digital"
-          className="fixed bottom-24 left-4 right-4 z-50 flex max-h-[70vh] flex-col overflow-hidden rounded-2xl border border-[var(--card-border)] bg-[rgba(4,20,40,0.97)] shadow-2xl shadow-black/50 sm:right-auto sm:left-5 sm:w-96"
+          className="chat-panel fixed bottom-24 left-4 right-4 z-50 flex max-h-[70vh] flex-col overflow-hidden rounded-2xl shadow-2xl shadow-black/50 sm:right-auto sm:left-5 sm:w-[24rem]"
         >
-          <div className="flex items-center justify-between gap-3 border-b border-[var(--card-border)] px-4 py-3">
-            <div>
-              <p className="font-display text-sm font-semibold">Nexlane Digital</p>
-              <p className="text-[11px] uppercase tracking-wider text-[var(--accent)]">Preview · AI answers coming soon</p>
+          <div className="flex items-center gap-3 px-4 pt-4 pb-3">
+            <span
+              aria-hidden="true"
+              className="grid h-9 w-9 shrink-0 place-items-center rounded-xl border border-[var(--card-border)] bg-[rgba(9,38,72,0.75)]"
+            >
+              <LogoMark className="h-5 w-5" />
+            </span>
+            <div className="min-w-0">
+              <p className="font-display text-sm font-semibold text-white">Nexlane Digital</p>
+              <p className="mt-0.5 inline-flex w-fit rounded-full border border-[var(--accent)]/30 bg-[rgba(30,211,242,0.08)] px-2 py-0.5 text-[10px] font-semibold tracking-wide text-[var(--accent)]">
+                Preview · AI answers coming soon
+              </p>
             </div>
             <button
               type="button"
               onClick={() => setOpen(false)}
               aria-label="Close chat"
-              className="rounded-full p-1.5 text-[var(--muted)] transition-colors hover:text-white"
+              className={`ml-auto rounded-full p-2 text-[var(--muted)] transition-colors hover:bg-[rgba(30,211,242,0.1)] hover:text-white ${focusRing}`}
             >
               <X className="h-4 w-4" aria-hidden="true" />
             </button>
           </div>
+          <div
+            aria-hidden="true"
+            className="h-px bg-gradient-to-r from-transparent via-[var(--accent)] to-transparent opacity-60"
+          />
 
-          <div ref={listRef} className="flex-1 space-y-3 overflow-y-auto p-4" aria-live="polite">
+          <div
+            ref={listRef}
+            className="chat-scroll flex-1 space-y-3 overflow-y-auto overscroll-contain p-4"
+            aria-live="polite"
+          >
             {messages.map((m, i) => (
               <div
                 key={i}
-                className={`chat-bubble max-w-[85%] whitespace-pre-wrap rounded-2xl px-3.5 py-2 text-sm leading-relaxed ${
+                className={`chat-bubble max-w-[85%] break-words whitespace-pre-wrap px-3.5 py-2 text-sm leading-relaxed text-white ${
                   m.role === "user"
-                    ? "ml-auto bg-[var(--brand)] text-white"
-                    : "border border-[var(--card-border)] bg-[rgba(9,38,72,0.6)] text-white"
+                    ? "ml-auto rounded-2xl rounded-tr-md bg-[linear-gradient(135deg,#0461d6,#0572f5)] shadow-[0_6px_18px_rgba(4,80,190,0.35)]"
+                    : "rounded-2xl rounded-tl-md border border-[var(--card-border)] bg-[rgba(9,38,72,0.65)]"
                 }`}
               >
                 {m.text}
               </div>
             ))}
             {typing && (
-              <div className="chat-bubble w-fit rounded-2xl border border-[var(--card-border)] bg-[rgba(9,38,72,0.6)] px-3.5 py-2 text-sm text-[var(--muted)]">
-                typing…
+              <div
+                className="chat-bubble w-fit rounded-2xl rounded-tl-md border border-[var(--card-border)] bg-[rgba(9,38,72,0.65)] px-4 py-3"
+                aria-label="Nexlane is typing"
+              >
+                <span className="chat-dots" aria-hidden="true">
+                  <i />
+                  <i />
+                  <i />
+                </span>
               </div>
             )}
           </div>
 
-          <div className="flex gap-2 overflow-x-auto border-t border-[var(--card-border)] px-3 py-2">
+          <div className="chat-chips flex gap-2 overflow-x-auto border-t border-[var(--card-border)] px-3 py-2.5">
             {chips.map((q) => (
               <button
                 key={q}
                 type="button"
                 onClick={() => send(q)}
-                className="whitespace-nowrap rounded-full border border-[var(--card-border)] bg-[rgba(9,38,72,0.5)] px-3 py-1 text-xs text-[var(--muted)] transition-colors hover:border-[var(--accent)]/50 hover:text-white"
+                className={`whitespace-nowrap rounded-full border border-[var(--card-border)] bg-[rgba(9,38,72,0.5)] px-3 py-1.5 text-xs text-[var(--muted)] transition-colors hover:border-[var(--accent)]/50 hover:bg-[rgba(30,211,242,0.08)] hover:text-white ${focusRing}`}
               >
                 {q}
               </button>
@@ -131,13 +164,13 @@ export default function Chatbot() {
               onChange={(e) => setDraft(e.target.value)}
               placeholder="Ask a question…"
               aria-label="Your message"
-              className="min-w-0 flex-1 rounded-full border border-[var(--card-border)] bg-[rgba(9,38,72,0.5)] px-4 py-2 text-sm text-white outline-none transition-colors placeholder:text-[var(--muted)] focus:border-[var(--accent)]"
+              className="min-w-0 flex-1 rounded-full border border-[var(--card-border)] bg-[rgba(9,38,72,0.5)] px-4 py-2.5 text-sm text-white outline-none transition-all placeholder:text-[var(--muted)] focus:border-[var(--accent)] focus:bg-[rgba(9,38,72,0.75)] focus:ring-2 focus:ring-[var(--accent)]/25"
             />
             <button
               type="submit"
               aria-label="Send message"
-              className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[var(--brand)] text-white transition-transform hover:scale-105 disabled:opacity-50"
               disabled={!draft.trim() || typing}
+              className={`chat-send grid h-10 w-10 shrink-0 place-items-center rounded-full text-white transition-transform hover:scale-105 active:scale-95 disabled:pointer-events-none disabled:opacity-40 ${focusRing}`}
             >
               <Send className="h-4 w-4" aria-hidden="true" />
             </button>
