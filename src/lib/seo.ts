@@ -38,6 +38,10 @@ export function buildMetadata(opts: {
       description: opts.description,
       url,
       siteName: site.name,
+      // The app/opengraph-image.tsx file-convention image is NOT merged when an
+      // openGraph object is set, so reference its route explicitly (verified:
+      // GET /opengraph-image → image/png). Absolute URL for scrapers.
+      images: [{ url: absoluteUrl("/opengraph-image"), width: 1200, height: 630, alt: `${site.name} — ${title}` }],
       type: "website",
       locale: "en_IN",
     },

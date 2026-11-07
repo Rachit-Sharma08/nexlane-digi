@@ -172,7 +172,7 @@ section("robots.txt");
   else if (mode === "noindex" && !/^Disallow: \/$/m.test(body)) fail(`robots.txt → expected "Disallow: /", got:\n${body}`);
   else if (mode === "index") {
     if (!/^Allow: \/$/m.test(body)) fail('robots.txt → expected "Allow: /"');
-    if (!body.includes("sitemap:")) fail("robots.txt → missing sitemap line");
+    if (!/^sitemap:/im.test(body)) fail("robots.txt → missing sitemap line");
     if (body.match(/^Allow/m)) pass("robots.txt → allows all + sitemap");
   } else pass('robots.txt → "Disallow: /" (switch off)');
 }
