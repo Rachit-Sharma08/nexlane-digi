@@ -1,6 +1,6 @@
 # Nexlane Digital — Progress
 
-Last updated: 2026-11-05 · Repo: `Rachit-Sharma08/nexlane-digital` (private) · Deploy: Vercel (pending)
+Last updated: 2026-11-07 · Repo: `Rachit-Sharma08/nexlane-digital` (private) · Deploy: Vercel (pending)
 
 ## Kya bana hai
 
@@ -210,3 +210,31 @@ Removed during Stage E for speed: the `motion` library (the navbar underline is 
 4. Buy the domain and set `SITE_URL` in env; verify the Vercel plan (Hobby is non-commercial) before launch.
 5. Set up the Vercel WAF rate-limit rule on `/api/*` (Hobby allows 1 rule) — Phase 2.
 6. Add `RESEND_API_KEY` (production must return 503 if missing) and Turnstile keys — Phase 2.
+
+## Stage F — contact-form animation reuse + scroll feel + preview chatbot (2026-11-07, `feat/chatbot-scroll`)
+
+### 1. DepthCard tilt reused (the contact inquiry form animation)
+
+- Home bento (all 4 service/learn cards) and the Why Nexlane grid (4 cards) now use `<DepthCard glare>` — same pointer-tilt + glare as the contact form. Hover lift still works because the tilt lives on the inner card and the reveal animation on the wrapper.
+- Tier-gated as before: tilt only on `mid`/`high` with a mouse pointer; `low` (all phones < 768 px) and touch keep the static card.
+
+### 2. Premium scroll feel (pure CSS, no animation library)
+
+- Stronger reveals: `section-arrive` (0 → 1 opacity, 36 px rise), `blur-in` (30 px + 8 px blur), all still `animation-timeline: view()` — no JS, no main-thread work.
+- New `.stagger` utility: grid children cascade on offset `view()` slices (nth-child 2–6), used on the bento grid + Why grid.
+- New `.parallax-drift`: scroll-linked drift for decorative elements (CTA `ArrowMotif`).
+- All of it `animation: none` under `prefers-reduced-motion`; browsers without scroll-driven animations fall back to the end state (content visible). No Lenis/smooth-scroll library (perf risk on low-end phones — `html { scroll-behavior: smooth }` stays).
+
+### 3. Preview chatbot (local answers; Grok API wiring is Phase 2)
+
+- `src/lib/chatbot.ts` — keyword knowledge base built ONLY from real site content (`site`, `services`, `homeFaqs`) plus honest general digital-marketing explanations (no guarantees, no invented numbers). `askBot()` is the async seam where `/api/chat` (Grok) lands later; local stays as fallback.
+- `src/components/Chatbot.tsx` — FAB **bottom-left** (`fixed bottom-5 left-5`, clear of WhatsApp/back-to-top on the right), glass panel, quick-reply chips, typing delay, `Esc` closes, `role="dialog"` + `aria-live`, reduced-motion skips the typing delay. Header is labelled **"Preview · AI answers coming soon"** — it never pretends to be live AI.
+- `src/components/ChatbotLoader.tsx` — idle-load via `next/dynamic` (`ssr: false` after `requestIdleCallback`), so the **16 KB chatbot chunk is not in the 9 initial scripts of Home (603 KB raw)**.
+- Wired in `layout.tsx` after `ScrollControls`.
+
+### Verification
+
+- `npx tsc --noEmit` 0, `npm run lint` 0, `npm run build` 21 routes.
+- Browser (production CSP): tilt sets/resets `--depth-rx/ry` at 1440 (`data-quality="high"`), no tilt at 360 (`low` — by design). Stagger mid-reveal captured on screenshot. Chat: pricing question → real FAQ answer; chip → services list; `Esc` closes; panel fits 360 px viewport. Console: 0 errors, 0 CSP refusals, 1 warning (known `THREE.Clock`).
+- `npm audit`: 3 low (shadcn dev CLI → deepmerge), same as Stage E, reported not force-fixed.
+- Screenshots: `screenshots/chatbot-scroll/` (home-1440/768/360, chat-1440, chat-360, bento-tilt-1440). Note for future captures: scroll-driven reveals are reversible — scroll to the **bottom** before a full-page screenshot, otherwise below-fold sections shoot at `opacity: 0`.
