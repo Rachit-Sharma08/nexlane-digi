@@ -486,7 +486,7 @@ details[open] > p { animation: answer-arrive 220ms cubic-bezier(0.16, 1, 0.3, 1)
 /* Chat widget (Stage F): panel entrance from its corner, FAB depth + pulse,
    typing dots, themed scrollbars. All transform/opacity, CSS only. */
 .chat-panel {
-  transform-origin: bottom left;
+  transform-origin: bottom right;
   border: 1px solid transparent;
   background:
     linear-gradient(180deg, rgba(6, 24, 48, 0.985), rgba(3, 16, 34, 0.985)) padding-box,
@@ -497,14 +497,25 @@ details[open] > p { animation: answer-arrive 220ms cubic-bezier(0.16, 1, 0.3, 1)
   from { opacity: 0; transform: translateY(14px) scale(0.96); }
   to { opacity: 1; transform: none; }
 }
+/* Dark glass + cyan rim — the CSS-3D robot inside is the visual now. */
 .chat-fab {
-  background: linear-gradient(135deg, #0461d6, var(--brand));
-  box-shadow: 0 10px 30px rgba(2, 60, 130, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.25);
-  transition: transform 240ms var(--ease-out-expo), box-shadow 240ms ease;
+  background:
+    radial-gradient(120% 120% at 50% 0%, rgba(30, 211, 242, 0.16), transparent 60%),
+    linear-gradient(165deg, rgba(9, 38, 72, 0.95), rgba(3, 16, 34, 0.97));
+  border: 1px solid rgba(30, 211, 242, 0.5);
+  box-shadow: 0 10px 30px rgba(1, 12, 26, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  transition: transform 240ms var(--ease-out-expo), box-shadow 240ms ease,
+    border-color 240ms ease;
 }
 .chat-fab:hover {
   transform: translateY(-2px) scale(1.05);
-  box-shadow: 0 14px 36px rgba(5, 114, 245, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  border-color: rgba(124, 244, 239, 0.85);
+  box-shadow: 0 14px 36px rgba(30, 211, 242, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+.chat-fab:hover .robot-head {
+  /* Straightens to look at the pointer; idle sway pauses. */
+  animation: none;
+  transform: translateX(-50%) rotateX(0deg) rotateY(0deg);
 }
 .chat-fab:active { transform: scale(0.96); }
 .chat-fab::after {
@@ -549,6 +560,140 @@ html[data-quality="low"] .chat-fab::after { display: none; }
 .chat-chips { scrollbar-width: none; }
 .chat-chips::-webkit-scrollbar { display: none; }
 
+/* CSS-3D robot mascot (AGENTS §11.3 — WebGL stays hero-only). All sizes in
+   em: `text-[Npx]` on the .robot root scales the whole bot. Static on the
+   low tier and under reduced motion (below). */
+.robot {
+  position: relative;
+  display: inline-block;
+  width: 1.5em;
+  height: 1.5em;
+  perspective: 7em;
+  line-height: 1;
+  animation: robot-idle 5s ease-in-out infinite;
+}
+.robot-antenna {
+  position: absolute;
+  left: 50%;
+  top: 0.16em;
+  width: 0.06em;
+  height: 0.24em;
+  transform: translateX(-50%);
+  background: linear-gradient(180deg, rgba(124, 244, 239, 0.25), rgba(124, 244, 239, 0.85));
+}
+.robot-antenna i {
+  position: absolute;
+  left: 50%;
+  top: -0.16em;
+  width: 0.17em;
+  height: 0.17em;
+  border-radius: 999px;
+  transform: translateX(-50%);
+  background: var(--accent-2);
+  box-shadow: 0 0 0.4em var(--accent), 0 0 0.9em rgba(30, 211, 242, 0.6);
+  animation: robot-glow 2.6s ease-in-out infinite;
+}
+.robot-head {
+  position: absolute;
+  left: 50%;
+  top: 0.36em;
+  width: 1.16em;
+  height: 0.98em;
+  transform: translateX(-50%) rotateX(6deg) rotateY(-7deg);
+  transform-style: preserve-3d;
+  border-radius: 0.36em;
+  background: linear-gradient(160deg, #123a63, #071c36 70%);
+  border: 1px solid rgba(124, 244, 239, 0.55);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    inset 0 -0.24em 0.45em rgba(2, 12, 26, 0.8),
+    0 0.22em 0.55em rgba(1, 10, 22, 0.55);
+  animation: robot-tip 5s ease-in-out infinite;
+}
+.robot-ear {
+  position: absolute;
+  top: 0.24em;
+  width: 0.14em;
+  height: 0.46em;
+  border-radius: 0.07em;
+  background: linear-gradient(180deg, var(--brand-2), var(--brand));
+  border: 1px solid rgba(30, 211, 242, 0.6);
+}
+.robot-ear-l { left: -0.18em; }
+.robot-ear-r { right: -0.18em; }
+.robot-face {
+  position: absolute;
+  inset: 0.12em 0.14em;
+  transform: translateZ(0.06em);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.09em;
+  border-radius: 0.26em;
+  background: linear-gradient(180deg, rgba(2, 12, 26, 0.95), rgba(1, 8, 18, 0.98));
+  border: 1px solid rgba(30, 211, 242, 0.25);
+}
+.robot-visor {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.22em;
+  width: 80%;
+  height: 0.3em;
+  overflow: hidden;
+  border-radius: 0.15em;
+  background: rgba(1, 6, 14, 0.9);
+  border: 1px solid rgba(30, 211, 242, 0.35);
+  box-shadow: inset 0 0 0.4em rgba(30, 211, 242, 0.25);
+}
+.robot-eye {
+  width: 0.13em;
+  height: 0.13em;
+  border-radius: 999px;
+  background: var(--accent-2);
+  box-shadow: 0 0 0.32em var(--accent), 0 0 0.65em rgba(30, 211, 242, 0.7);
+  animation: robot-blink 4.4s ease-in-out infinite;
+}
+.robot-eye:nth-child(2) { animation-delay: 60ms; }
+.robot-mouth {
+  width: 44%;
+  height: 0.1em;
+  border-radius: 999px;
+  background: rgba(30, 211, 242, 0.8);
+  box-shadow: 0 0 0.3em rgba(30, 211, 242, 0.55);
+}
+@keyframes robot-idle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-0.05em); }
+}
+@keyframes robot-tip {
+  0%, 100% { transform: translateX(-50%) rotateX(6deg) rotateY(-7deg); }
+  50% { transform: translateX(-50%) rotateX(6deg) rotateY(7deg); }
+}
+@keyframes robot-blink {
+  0%, 92%, 100% { transform: scaleY(1); }
+  94%, 96% { transform: scaleY(0.12); }
+}
+@keyframes robot-glow {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+/* Eyes scan side-to-side while the bot is "thinking". */
+.chat-fab[data-typing="true"] .robot-eye {
+  animation: robot-scan 0.7s ease-in-out infinite alternate;
+}
+@keyframes robot-scan {
+  from { transform: translateX(-0.11em); }
+  to { transform: translateX(0.11em); }
+}
+/* Low tier (small screens, cheap phones): static layered CSS depth only. */
+html[data-quality="low"] .robot,
+html[data-quality="low"] .robot-head,
+html[data-quality="low"] .robot-eye,
+html[data-quality="low"] .robot-antenna i { animation: none; }
+html[data-quality="low"] .chat-fab:hover .robot-head { animation: none; }
+
 h1,
 h2,
 h3,
@@ -583,7 +728,9 @@ h3,
     transition-duration: 0.01ms !important;
   }
   .scroll-reveal, .reveal-blur, .stagger > *, .parallax-drift, .hero-arrive, .hero-media, .mobile-menu-enter, .hero-orbit { animation: none; }
-  .chat-panel, .chat-fab::after, .chat-dots i { animation: none; }
+  .chat-panel, .chat-fab::after, .chat-dots i, .chat-fab { animation: none; }
+  .robot, .robot-head, .robot-eye, .robot-antenna i { animation: none !important; }
+  .chat-fab:hover { transform: none; }
   .animate-marquee, .animate-marquee-vertical { animation: none; }
   .motion-card:hover { transform: none; }
   .depth-card, .depth-card.motion-card:hover { transform: none; }

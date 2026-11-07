@@ -1,16 +1,40 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { MessageCircle, Send, X } from "lucide-react";
-import { LogoMark } from "@/components/ArrowMotif";
+import { Send, X } from "lucide-react";
 import { askBot, suggestQuestions, type ChatMessage } from "@/lib/chatbot";
 
 const chips = suggestQuestions();
 
 /**
- * Floating site chat — anchored bottom-left (WhatsApp + back-to-top own the
- * right side). Phase 1: local answers from src/lib/chatbot.ts, clearly
- * labelled as a preview until the Grok API lands in Phase 2.
+ * CSS-3D robot mascot (AGENTS §11.3 — CSS 3D everywhere, WebGL only in the
+ * hero). All sizes in `em`, so `text-[Npx]` on the root scales the whole bot.
+ */
+function RobotHead({ className = "" }: { className?: string }) {
+  return (
+    <span className={`robot ${className}`} aria-hidden="true">
+      <span className="robot-antenna">
+        <i />
+      </span>
+      <span className="robot-head">
+        <span className="robot-ear robot-ear-l" />
+        <span className="robot-ear robot-ear-r" />
+        <span className="robot-face">
+          <span className="robot-visor">
+            <i className="robot-eye" />
+            <i className="robot-eye" />
+          </span>
+          <span className="robot-mouth" />
+        </span>
+      </span>
+    </span>
+  );
+}
+
+/**
+ * Floating site chat — bottom-right, stacked under WhatsApp/back-to-top.
+ * Phase 1: local answers from src/lib/chatbot.ts, clearly labelled as a
+ * preview until the Grok API lands in Phase 2.
  */
 export default function Chatbot() {
   const [open, setOpen] = useState(false);
@@ -62,30 +86,27 @@ export default function Chatbot() {
       <button
         type="button"
         data-open={open}
+        data-typing={typing}
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
         aria-label={open ? "Close chat" : "Open chat with Nexlane Digital"}
-        className={`chat-fab fixed bottom-5 left-5 z-50 grid h-14 w-14 place-items-center rounded-full text-white ${focusRing}`}
+        className={`chat-fab fixed bottom-5 right-5 z-50 grid h-16 w-16 place-items-center rounded-full ${focusRing}`}
       >
-        {open ? (
-          <X className="h-6 w-6" aria-hidden="true" />
-        ) : (
-          <MessageCircle className="h-6 w-6" aria-hidden="true" />
-        )}
+        <RobotHead className="text-[32px]" />
       </button>
 
       {open && (
         <div
           role="dialog"
           aria-label="Chat with Nexlane Digital"
-          className="chat-panel fixed bottom-24 left-4 right-4 z-50 flex max-h-[70vh] flex-col overflow-hidden rounded-2xl shadow-2xl shadow-black/50 sm:right-auto sm:left-5 sm:w-[24rem]"
+          className="chat-panel fixed bottom-24 left-4 right-4 z-50 flex max-h-[70vh] flex-col overflow-hidden rounded-2xl shadow-2xl shadow-black/50 sm:left-auto sm:right-5 sm:w-[24rem]"
         >
           <div className="flex items-center gap-3 px-4 pt-4 pb-3">
             <span
               aria-hidden="true"
               className="grid h-9 w-9 shrink-0 place-items-center rounded-xl border border-[var(--card-border)] bg-[rgba(9,38,72,0.75)]"
             >
-              <LogoMark className="h-5 w-5" />
+              <RobotHead className="text-[18px]" />
             </span>
             <div className="min-w-0">
               <p className="font-display text-sm font-semibold text-white">Nexlane Digital</p>
