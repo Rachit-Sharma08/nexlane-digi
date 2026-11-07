@@ -2,13 +2,12 @@
 
 Read this file fully before doing anything. Then read `docs/PROGRESS.md` (what is done). `docs/site-prompt.md` is the older brief: where it conflicts with this file, **this file wins**.
 
-## 1. Current phase: STRUCTURE + DESIGN (frontend only)
+## 1. Current phase: BACKEND STARTED (owner decision 2026-11-08)
 
-- DO: pages, layouts, components, navigation, config, placeholder text marked `TODO`, visual design and animation (section 6).
-- DO NOT (yet): API routes, email sending (Resend), Turnstile, rate limiting, analytics, real blog posts, or invented content.
-- Forms are **UI shells only**: fields render, the submit button is disabled or says "coming soon". No data is sent anywhere.
-- If backend code already exists (API routes, form libs), do not extend it and do not delete it. Tell me it exists.
-- "Phase 2" means the backend work starts (decisions already made are in section 9).
+- Frontend structure/design is largely done. **Backend work is now ALLOWED**: API routes, auth, file storage, the `/admin` panel.
+- Still NOT built unless the owner asks: Resend email sending, Cloudflare Turnstile, Vercel WAF, analytics (decisions in section 10 unchanged).
+- Honesty rules (section 5) and SEO/security (section 9) apply to backend code too.
+- Owner's exact words: "ab ham backend ka kam bhi kar rhe h esiliye rule change".
 
 ## 2. Project
 
@@ -55,7 +54,8 @@ Team (in `src/config/site.ts`, shaped as `teamGroups` + `team` members with `slu
 - **Personal projects are not Nexlane work.** They appear only on the person's own profile card, labeled "Personal project by <name>, not Nexlane client work". Never in Our Work, never described as "ours".
 - **Tagore Global School:** do not show it anywhere on the site, not even as "pending permission", until the owner confirms written permission. Keep it only in the TODO list in `docs/PROGRESS.md`.
 - Team pages: name, title, skills, and a link to their own portfolio only if that person agreed. **No age, school or college or class, address, personal phone number or personal email.** Some team members may be minors. Use initials avatars by default; show a real photo only if the person agreed and the owner adds it to config.
-- Phone numbers: never in source code, schema or team cards. The WhatsApp number comes only from the env variable `NEXT_PUBLIC_WHATSAPP_NUMBER`. If it is empty, render no WhatsApp button or link. Never commit real `.env` files; `.env.example` holds fake values only.
+- Phone numbers in **schema and team cards**: never (unchanged). WhatsApp button: still only from env `NEXT_PUBLIC_WHATSAPP_NUMBER`; if empty, render no WhatsApp link.
+- **Owner approval 2026-11-08:** the two business numbers `8307151186` and `9306091154`, and the email `nexlanedigitalservice@gmail.com`, MAY appear in `src/config/site.ts` and on the Contact page/footer as public business contact details. They are still forbidden in JSON-LD schema. Never add any other phone number.
 - Animated components must not fake social proof: no number counters with made-up numbers, no marquee of client logos or testimonials, no "someone just signed up" style notifications. A marquee of **tools we really use** is fine.
 - Do not copy text or layout wording from other agencies.
 
@@ -90,7 +90,7 @@ Reasons: NN/g says navigation should indicate the user's current location (menu 
 1. One stage at a time. Subagents are allowed, maximum 2 at once, with separate file ownership.
 2. **Never trust a subagent's summary.** After each one: check with `git status` that the files really exist, then run `npx tsc --noEmit`, `npm run lint`, `npm run build` and show the output.
 3. If a subagent fails or says "completed" but files are missing, redo that work yourself with one agent.
-4. Work on a branch (`feat/...`), push, open a Pull Request. Never push straight to `main`.
+4. **Owner override 2026-11-08:** push directly to `main` in small logical commits — "direct push kar diya karo jab tak ma na kahu". No new Pull Requests until the owner says otherwise (existing PRs #13/#14 were closed by his request).
 5. Use absolute paths. Verify the working directory before writing files (the Write tool once wrote outside the project).
 6. If the Edit tool says `oldString` not found: Read the file, then Write the whole file. On Windows, check line endings; `.gitattributes` should contain `* text=auto eol=lf`.
 7. Never claim something works unless you ran it. Say clearly what you could not test.
