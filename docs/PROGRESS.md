@@ -238,3 +238,12 @@ Removed during Stage E for speed: the `motion` library (the navbar underline is 
 - Browser (production CSP): tilt sets/resets `--depth-rx/ry` at 1440 (`data-quality="high"`), no tilt at 360 (`low` — by design). Stagger mid-reveal captured on screenshot. Chat: pricing question → real FAQ answer; chip → services list; `Esc` closes; panel fits 360 px viewport. Console: 0 errors, 0 CSP refusals, 1 warning (known `THREE.Clock`).
 - `npm audit`: 3 low (shadcn dev CLI → deepmerge), same as Stage E, reported not force-fixed.
 - Screenshots: `screenshots/chatbot-scroll/` (home-1440/768/360, chat-1440, chat-360, bento-tilt-1440). Note for future captures: scroll-driven reveals are reversible — scroll to the **bottom** before a full-page screenshot, otherwise below-fold sections shoot at `opacity: 0`.
+
+### Chatbot design pass (impeccable `polish`, same day)
+
+- Placement confirmed **bottom-left** (owner asked; WhatsApp + back-to-top keep the right).
+- FAB: brand-blue gradient (`#0461d6 → #0572F5`) + depth shadow + cyan pulse ring (hidden on `low` tier, when open, and under reduced motion), hover lift/press.
+- Panel: gradient hairline border (padding-box/border-box trick, no blur cost), enters from its bottom-left corner (`chat-arrive`, 260 ms expo-out), header with `LogoMark` avatar tile + honest preview chip + the site's gradient hairline divider.
+- Bubbles: glass bot / blue-gradient user (white text, ≥4.5:1 on the tint used), `break-words` for long links; animated 3-dot typing indicator.
+- Chats chrome: themed thin cyan scrollbar (`.chat-scroll`), hidden scrollbar on the chip row, visible `focus-visible` rings on every control, disabled send state.
+- Impeccable detector run on the changed files: only 2 findings, both **pre-existing brand styles outside this diff** (`.text-gradient` background-clip line 197, `.hero-stage-grid` line 312) — kept as the incumbent world. No findings in the chatbot code.
