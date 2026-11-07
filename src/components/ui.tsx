@@ -1,6 +1,18 @@
 import { ArrowMotif } from "./ArrowMotif";
 
-/** Simple reusable building blocks (section, card, gradient heading). */
+/** Simple reusable building blocks (container, section, card, gradient heading). */
+
+export function Container({
+  children,
+  className = "",
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <div className={`mx-auto w-full max-w-6xl px-4 sm:px-6 ${className}`}>{children}</div>
+  );
+}
 
 export function Section({
   id,
@@ -12,8 +24,8 @@ export function Section({
   className?: string;
 }) {
   return (
-    <section id={id} className={`scroll-reveal mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 ${className}`}>
-      {children}
+    <section id={id} className={`scroll-reveal w-full py-16 ${className}`}>
+      <Container>{children}</Container>
     </section>
   );
 }

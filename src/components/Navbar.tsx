@@ -3,7 +3,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
+import { motion } from "motion/react";
 import { nav, site } from "@/config/site";
 
 /** Thin top strip with WhatsApp / social / email icons (only what is set). */
@@ -36,24 +37,76 @@ function TopBar() {
 }
 
 type NavItem = { href: string; label: string };
+type DropdownParent = { label: string } & { items: NavItem[] };
 
-/** Gradient underline under the active item (AGENTS.md §7.1). */
-const activeUnderline =
-  "after:absolute after:inset-x-3 after:-bottom-1.5 after:h-0.5 after:rounded-full after:bg-gradient-to-r after:from-[var(--brand-2)] after:to-[var(--accent)] after:content-['']";
+const navBase = "relative flex items-center rounded px-3 py-2 text-sm transition-colors";
+const navIdle = "text-[var(--muted)] hover:text-white";
 
-function Dropdown({ parent, mobile }: { parent: { label: string } & { items: NavItem[] }; mobile?: boolean }) {
-  const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
+/** One layoutId makes the gradient underline slide between the active items. */
+function ActiveIndicator() {
+  return (
+    <motion.span
+      layoutId="nav-active"
+      aria-hidden="true"
+      className="absolute inset-x-2 -bottom-[7px] h-0.5 rounded-full bg-gradient-to-r from-[var(--brand-2)] to-[var(--accent)]"
+      transition={{ type: "spring", stiffness: 380, damping: 32 }}
+    />
+  );
+}
+
+function isRouteActive(pathname: string, href: string) {
+  return href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`);
+}
+
+function DesktopLink({ item, pathname }: { item: NavItem; pathname: string }) {
+  const active = isRouteActive(pathname, item.href);
+  return (
+    <Link
+      href={item.href}
+      aria-current={active ? "page" : undefined}
+      className={`${navBase} ${active ? "text-white" : navIdle}`}
+    >
+      {item.label}
+      {active && <ActiveIndicator />}
+    </Link>
+  );
+}
+
+function Dropdown({ parent, mobile }: { parent: DropdownParent; mobile?: boolean }) {
+  const [menu, setMenu] = useState<{ path: string; open: boolean }>({ path: "", open: false });
   const pathname = usePathname();
-  // Parent counts as active when the current route is one of its children.
-  const active = parent.items.some((i) => i.href !== "/" && pathname.startsWith(i.href));
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLUListElement>(null);
+  const focusFirstOnOpen = useRef(false);
+  const menuId = useId();
+  const active = parent.items.some((i) => isRouteActive(pathname, i.href));
+  // A menu only counts as open on the route where it was opened; navigation
+  // therefore closes it without a setState-in-effect.
+  const open = menu.open && menu.path === pathname;
+  const setOpen = useCallback(
+    (value: boolean) => setMenu({ path: pathname, open: value }),
+    [pathname],
+  );
+
+  // Keyboard open moves focus into the menu once React has rendered it.
+  useEffect(() => {
+    if (open && focusFirstOnOpen.current) {
+      focusFirstOnOpen.current = false;
+      menuRef.current?.querySelector<HTMLAnchorElement>("a")?.focus();
+    }
+  }, [open]);
 
   useEffect(() => {
-    if (!open) return;
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    if (!open || mobile) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setOpen(false);
+        buttonRef.current?.focus();
+      }
+    };
     const onClick = (e: MouseEvent) => {
-      if (mobile) return; // mobile menu keeps items always visible
-      if (!ref.current?.contains(e.target as Node)) setOpen(false);
+      if (!wrapperRef.current?.contains(e.target as Node)) setOpen(false);
     };
     document.addEventListener("keydown", onKey);
     document.addEventListener("click", onClick);
@@ -61,56 +114,119 @@ function Dropdown({ parent, mobile }: { parent: { label: string } & { items: Nav
       document.removeEventListener("keydown", onKey);
       document.removeEventListener("click", onClick);
     };
-  }, [open, mobile]);
+  }, [open, mobile, setOpen]);
+
+  function focusItem(index: number) {
+    const items = Array.from(menuRef.current?.querySelectorAll<HTMLAnchorElement>("a") ?? []);
+    if (items.length === 0) return;
+    const next = (index + items.length) % items.length;
+    items[next]?.focus();
+  }
+
+  function handleButtonKeyDown(e: React.KeyboardEvent<HTMLButtonElement>) {
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      focusFirstOnOpen.current = true;
+      setOpen(true);
+    }
+  }
+
+  function handleMenuKeyDown(e: React.KeyboardEvent<HTMLUListElement>) {
+    const items = Array.from(menuRef.current?.querySelectorAll<HTMLAnchorElement>("a") ?? []);
+    const current = items.indexOf(document.activeElement as HTMLAnchorElement);
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      focusItem(current + 1);
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      focusItem(current - 1);
+    } else if (e.key === "Home") {
+      e.preventDefault();
+      focusItem(0);
+    } else if (e.key === "End") {
+      e.preventDefault();
+      focusItem(items.length - 1);
+    } else if (e.key === "Escape") {
+      e.preventDefault();
+      setOpen(false);
+      buttonRef.current?.focus();
+    } else if (e.key === "Tab") {
+      setOpen(false);
+    }
+  }
 
   if (mobile) {
     return (
       <div className="ml-3 border-l border-[var(--card-border)] pl-3">
-        <span className="text-xs font-semibold uppercase tracking-widest text-[var(--accent)]">{parent.label}</span>
+        <span className={`text-xs font-semibold uppercase tracking-widest ${active ? "text-white" : "text-[var(--accent)]"}`}>
+          {parent.label}
+        </span>
         <ul className="mt-1 space-y-1">
-          {parent.items.map((i) => (
-            <li key={i.href}>
-              <Link
-                href={i.href}
-                aria-current={pathname === i.href ? "page" : undefined}
-                className={`block rounded px-2 py-3 text-sm hover:text-white ${pathname === i.href ? "text-white" : "text-[var(--muted)]"}`}
-                onClick={() => setOpen(false)}
-              >
-                {i.label}
-              </Link>
-            </li>
-          ))}
+          {parent.items.map((i) => {
+            const itemActive = pathname === i.href;
+            return (
+              <li key={i.href}>
+                <Link
+                  href={i.href}
+                  aria-current={itemActive ? "page" : undefined}
+                  className={`block rounded px-2 py-3 text-sm ${
+                    itemActive
+                      ? "border-l-2 border-[var(--accent)] bg-[rgba(30,211,242,0.08)] pl-2 text-white"
+                      : "text-[var(--muted)] hover:text-white"
+                  }`}
+                >
+                  {i.label}
+                </Link>
+              </li>
+            );
+          })}
         </ul>
       </div>
     );
   }
 
   return (
-    <div ref={ref} className="relative">
+    <div ref={wrapperRef} className="relative" onBlur={(e) => {
+      if (!wrapperRef.current?.contains(e.relatedTarget as Node)) setOpen(false);
+    }}>
       <button
+        ref={buttonRef}
+        type="button"
         aria-expanded={open}
-        aria-haspopup="true"
+        aria-controls={menuId}
         aria-current={active ? "page" : undefined}
-        onClick={() => setOpen((v) => !v)}
-        className={`relative flex items-center gap-1 rounded px-3 py-2 text-sm hover:text-white ${active ? `text-white ${activeUnderline}` : "text-[var(--muted)]"}`}
+        onClick={() => setOpen(!open)}
+        onKeyDown={handleButtonKeyDown}
+        className={`${navBase} gap-1 ${active || open ? "text-white" : navIdle}`}
       >
         {parent.label}
         <Chevron className={`h-3 w-3 transition-transform ${open ? "rotate-180" : ""}`} />
+        {active && <ActiveIndicator />}
       </button>
       {open && (
-        <ul className="glass absolute left-0 top-full z-50 mt-1 w-56 p-2 shadow-xl">
-          {parent.items.map((i) => (
-            <li key={i.href}>
-              <Link
-                href={i.href}
-                aria-current={pathname === i.href ? "page" : undefined}
-                className={`block rounded px-3 py-2 text-sm hover:bg-[rgba(12,34,63,0.5)] hover:text-white ${pathname === i.href ? "text-white" : "text-[var(--muted)]"}`}
-                onClick={() => setOpen(false)}
-              >
-                {i.label}
-              </Link>
-            </li>
-          ))}
+        <ul
+          ref={menuRef}
+          id={menuId}
+          onKeyDown={handleMenuKeyDown}
+          className="glass absolute left-0 top-full z-50 mt-2 w-56 p-2 shadow-xl"
+        >
+          {parent.items.map((i) => {
+            const itemActive = pathname === i.href;
+            return (
+              <li key={i.href}>
+                <Link
+                  href={i.href}
+                  aria-current={itemActive ? "page" : undefined}
+                  className={`block rounded px-3 py-2 text-sm hover:bg-[rgba(12,34,63,0.5)] hover:text-white ${
+                    itemActive ? "bg-[rgba(30,211,242,0.08)] text-white" : "text-[var(--muted)]"
+                  }`}
+                  onClick={() => setOpen(false)}
+                >
+                  {i.label}
+                </Link>
+              </li>
+            );
+          })}
         </ul>
       )}
     </div>
@@ -119,35 +235,50 @@ function Dropdown({ parent, mobile }: { parent: { label: string } & { items: Nav
 
 export default function Navbar() {
   const pathname = usePathname();
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [menu, setMenu] = useState<{ path: string; open: boolean }>({ path: "", open: false });
+  const menuOpen = menu.open && menu.path === pathname;
+  const setMenuOpen = (value: boolean) => setMenu({ path: pathname, open: value });
+  const headerRef = useRef<HTMLElement>(null);
 
-  const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
-  const closeMenu = () => setMenuOpen(false);
+  // SectionNav and anchor offsets read the real header height (top bar included).
+  useEffect(() => {
+    const header = headerRef.current;
+    if (!header) return;
+    const setHeight = () =>
+      document.documentElement.style.setProperty("--header-h", `${header.offsetHeight}px`);
+    setHeight();
+    const observer = new ResizeObserver(setHeight);
+    observer.observe(header);
+    return () => observer.disconnect();
+  }, []);
 
   return (
-    <header className="sticky top-0 z-50">
+    <header ref={headerRef} className="sticky top-0 z-50">
       <TopBar />
       <nav aria-label="Main navigation" className="border-b border-[var(--card-border)] bg-[rgba(0,13,29,0.78)] backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
           <Link href="/" className="flex items-center gap-2" aria-label={`${site.name} home`}>
-            <Image src="/nexlane-mark.png" alt="" width={400} height={285} priority className="h-10 w-auto object-contain" />
+            <Image
+              src="/nexlane-mark.png"
+              alt=""
+              width={400}
+              height={285}
+              priority
+              className="logo-blend h-10 w-auto object-contain mix-blend-screen"
+            />
             <span className="font-display text-lg font-bold tracking-[0.18em] text-white">NEXLANE</span>
           </Link>
 
           {/* Desktop */}
           <div className="hidden items-center gap-1 lg:flex">
             {nav.main.map((i) => (
-              <Link key={i.href} href={i.href} aria-current={isActive(i.href) ? "page" : undefined} className={`relative rounded px-3 py-2 text-sm hover:text-white ${isActive(i.href) ? `text-white ${activeUnderline}` : "text-[var(--muted)]"}`}>
-                {i.label}
-              </Link>
+              <DesktopLink key={i.href} item={i} pathname={pathname} />
             ))}
             <Dropdown parent={nav.about} />
             <Dropdown parent={nav.services} />
             <Dropdown parent={nav.learn} />
             {nav.extra.map((i) => (
-              <Link key={i.href} href={i.href} aria-current={isActive(i.href) ? "page" : undefined} className={`relative rounded px-3 py-2 text-sm hover:text-white ${isActive(i.href) ? `text-white ${activeUnderline}` : "text-[var(--muted)]"}`}>
-                {i.label}
-              </Link>
+              <DesktopLink key={i.href} item={i} pathname={pathname} />
             ))}
             <Link href={nav.cta.href} className="btn btn-primary ml-2 text-sm">
               {nav.cta.label}
@@ -159,7 +290,7 @@ export default function Navbar() {
             className="rounded p-2.5 text-white lg:hidden"
             aria-expanded={menuOpen}
             aria-label={menuOpen ? "Close menu" : "Open menu"}
-            onClick={() => setMenuOpen((v) => !v)}
+            onClick={() => setMenuOpen(!menuOpen)}
           >
             <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true" focusable="false">
               {menuOpen ? <path d="M5 5l14 14M19 5L5 19" /> : <path d="M4 7h16M4 12h16M4 17h16" />}
@@ -171,20 +302,46 @@ export default function Navbar() {
         {menuOpen && (
           <div className="mobile-menu-enter border-t border-[var(--card-border)] bg-[rgba(0,13,29,0.97)] px-4 py-4 lg:hidden">
             <div className="space-y-3">
-              {nav.main.map((i) => (
-                <Link key={i.href} href={i.href} onClick={closeMenu} aria-current={isActive(i.href) ? "page" : undefined} className={`block rounded px-2 py-3 text-sm hover:text-white ${isActive(i.href) ? "text-white" : "text-[var(--muted)]"}`}>
-                  {i.label}
-                </Link>
-              ))}
+              {nav.main.map((i) => {
+                const active = isRouteActive(pathname, i.href);
+                return (
+                  <Link
+                    key={i.href}
+                    href={i.href}
+                    onClick={() => setMenuOpen(false)}
+                    aria-current={active ? "page" : undefined}
+                    className={`block rounded px-2 py-3 text-sm ${
+                      active
+                        ? "border-l-2 border-[var(--accent)] bg-[rgba(30,211,242,0.08)] pl-2 text-white"
+                        : "text-[var(--muted)] hover:text-white"
+                    }`}
+                  >
+                    {i.label}
+                  </Link>
+                );
+              })}
               <Dropdown parent={nav.about} mobile />
               <Dropdown parent={nav.services} mobile />
               <Dropdown parent={nav.learn} mobile />
-              {nav.extra.map((i) => (
-                <Link key={i.href} href={i.href} onClick={closeMenu} aria-current={isActive(i.href) ? "page" : undefined} className={`block rounded px-2 py-3 text-sm hover:text-white ${isActive(i.href) ? "text-white" : "text-[var(--muted)]"}`}>
-                  {i.label}
-                </Link>
-              ))}
-              <Link href={nav.cta.href} onClick={closeMenu} className="btn btn-primary w-full">
+              {nav.extra.map((i) => {
+                const active = isRouteActive(pathname, i.href);
+                return (
+                  <Link
+                    key={i.href}
+                    href={i.href}
+                    onClick={() => setMenuOpen(false)}
+                    aria-current={active ? "page" : undefined}
+                    className={`block rounded px-2 py-3 text-sm ${
+                      active
+                        ? "border-l-2 border-[var(--accent)] bg-[rgba(30,211,242,0.08)] pl-2 text-white"
+                        : "text-[var(--muted)] hover:text-white"
+                    }`}
+                  >
+                    {i.label}
+                  </Link>
+                );
+              })}
+              <Link href={nav.cta.href} onClick={() => setMenuOpen(false)} className="btn btn-primary w-full">
                 {nav.cta.label}
               </Link>
             </div>
