@@ -505,10 +505,8 @@ h3,
 [data-quality="low"] .glass,
 [data-quality="low"] .back-to-top {
   backdrop-filter: none;
-  -webkit-backdrop-filter: none;
 }
 [data-quality="low"] header nav {
   background: rgba(0, 13, 29, 0.96);
   backdrop-filter: none;
-  -webkit-backdrop-filter: none;
 }
