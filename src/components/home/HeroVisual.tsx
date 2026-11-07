@@ -13,7 +13,7 @@ function StaticStage() {
       <span className="hero-css-lanes" aria-hidden="true" />
       <span className="hero-stage-mark">
         <Image
-          src="/nexlane-mark.png"
+          src="/nexlane-mark.webp"
           alt=""
           width={400}
           height={285}

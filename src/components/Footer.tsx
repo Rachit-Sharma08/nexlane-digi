@@ -9,7 +9,7 @@ export default function Footer() {
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:px-6 md:grid-cols-4">
         <div className="md:col-span-2">
           <div className="flex items-center gap-2">
-            <Image src="/nexlane-mark.png" alt="" width={400} height={285} className="logo-blend h-8 w-auto object-contain mix-blend-screen" />
+            <Image src="/nexlane-mark.webp" alt="" width={400} height={285} className="logo-blend h-8 w-auto object-contain mix-blend-screen" />
             <span className="font-display text-lg font-bold tracking-[0.18em]">NEXLANE DIGITAL</span>
           </div>
           <p className="mt-3 max-w-sm text-sm leading-relaxed text-[var(--muted)]">

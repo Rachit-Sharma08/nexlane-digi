@@ -256,7 +256,7 @@ export default function Navbar() {
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
           <Link href="/" className="flex items-center gap-2" aria-label={`${site.name} home`}>
             <Image
-              src="/nexlane-mark.png"
+              src="/nexlane-mark.webp"
               alt=""
               width={400}
               height={285}

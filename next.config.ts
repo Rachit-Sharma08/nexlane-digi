@@ -40,6 +40,8 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
+  // AGENTS §12.8: serve modern formats from next/image.
+  images: { formats: ["image/avif", "image/webp"] },
   async redirects() {
     return [
       // Renamed in the IA restructure — permanent, keeps old links alive.
