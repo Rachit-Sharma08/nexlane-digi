@@ -46,7 +46,7 @@ export default function AuditPage() {
               name="name"
               type="text"
               autoComplete="name"
-              className="w-full rounded-lg border border-[var(--card-border)] bg-[rgba(0,13,29,0.6)] px-3 py-2 text-white"
+              className="w-full rounded-lg border border-[var(--card-border)] bg-[rgba(0,8,20,0.6)] px-3 py-2 text-white"
             />
           </div>
           <div>
@@ -58,7 +58,7 @@ export default function AuditPage() {
               name="email"
               type="email"
               autoComplete="email"
-              className="w-full rounded-lg border border-[var(--card-border)] bg-[rgba(0,13,29,0.6)] px-3 py-2 text-white"
+              className="w-full rounded-lg border border-[var(--card-border)] bg-[rgba(0,8,20,0.6)] px-3 py-2 text-white"
             />
           </div>
           <div>
@@ -70,7 +70,7 @@ export default function AuditPage() {
               name="url"
               type="url"
               inputMode="url"
-              className="w-full rounded-lg border border-[var(--card-border)] bg-[rgba(0,13,29,0.6)] px-3 py-2 text-white"
+              className="w-full rounded-lg border border-[var(--card-border)] bg-[rgba(0,8,20,0.6)] px-3 py-2 text-white"
             />
           </div>
           <div>
@@ -81,7 +81,7 @@ export default function AuditPage() {
               id="audit-message"
               name="message"
               rows={4}
-              className="w-full rounded-lg border border-[var(--card-border)] bg-[rgba(0,13,29,0.6)] px-3 py-2 text-white"
+              className="w-full rounded-lg border border-[var(--card-border)] bg-[rgba(0,8,20,0.6)] px-3 py-2 text-white"
             />
           </div>
           {/* Honeypot — humans never fill this; kept hidden. */}

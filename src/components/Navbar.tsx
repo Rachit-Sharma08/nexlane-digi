@@ -22,7 +22,7 @@ function TopBar() {
 
   if (links.length === 0) return null;
   return (
-    <div className="border-b border-[var(--card-border)] bg-[rgba(0,13,29,0.85)]">
+    <div className="border-b border-[var(--card-border)] bg-[rgba(0,8,20,0.85)]">
       <div className="mx-auto flex max-w-6xl items-center justify-end gap-5 px-4 py-1.5 sm:px-6">
         {links.map((l) => (
           <a key={l.label} href={l.href} aria-label={l.label} className="flex items-center gap-1.5 text-xs text-[var(--muted)] hover:text-white" rel="noopener noreferrer" target="_blank">
@@ -252,7 +252,7 @@ export default function Navbar() {
   return (
     <header ref={headerRef} className="sticky top-0 z-50">
       <TopBar />
-      <nav aria-label="Main navigation" className="border-b border-[var(--card-border)] bg-[rgba(0,13,29,0.78)] backdrop-blur-md">
+      <nav aria-label="Main navigation" className="border-b border-[var(--card-border)] bg-[rgba(0,8,20,0.78)] backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
           <Link href="/" className="flex items-center gap-2" aria-label={`${site.name} home`}>
             <Image
@@ -297,7 +297,7 @@ export default function Navbar() {
 
         {/* Mobile menu */}
         {menuOpen && (
-          <div className="mobile-menu-enter border-t border-[var(--card-border)] bg-[rgba(0,13,29,0.97)] px-4 py-4 lg:hidden">
+          <div className="mobile-menu-enter border-t border-[var(--card-border)] bg-[rgba(0,8,20,0.97)] px-4 py-4 lg:hidden">
             <div className="space-y-3">
               {nav.main.map((i) => {
                 const active = isRouteActive(pathname, i.href);

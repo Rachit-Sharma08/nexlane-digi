@@ -40,7 +40,7 @@ export default function SectionNav({
   return (
     <nav
       aria-label={label}
-      className="sticky top-[var(--header-h,4rem)] z-40 -mx-4 my-8 border-y border-[var(--card-border)] bg-[rgba(0,13,29,0.9)] px-2 py-2 backdrop-blur-md sm:mx-0 sm:w-fit sm:rounded-full sm:border"
+      className="sticky top-[var(--header-h,4rem)] z-40 -mx-4 my-8 border-y border-[var(--card-border)] bg-[rgba(0,8,20,0.9)] px-2 py-2 backdrop-blur-md sm:mx-0 sm:w-fit sm:rounded-full sm:border"
     >
       <ul className="flex gap-1 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {items.map((item) => {

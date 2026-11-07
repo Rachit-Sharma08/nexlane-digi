@@ -59,7 +59,7 @@ export default function ProfileTile({ member }: { member: TeamMember }) {
             aria-label={`Open ${member.name}'s portfolio in a new tab`}
             className="absolute inset-0 z-10 rounded-3xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
           >
-            <span className="portfolio-cue absolute right-4 top-4 rounded-full border border-[var(--accent)]/40 bg-[rgba(0,13,29,0.86)] px-3 py-1.5 text-xs font-semibold text-[var(--accent-2)] backdrop-blur">
+            <span className="portfolio-cue absolute right-4 top-4 rounded-full border border-[var(--accent)]/40 bg-[rgba(0,8,20,0.86)] px-3 py-1.5 text-xs font-semibold text-[var(--accent-2)] backdrop-blur">
               Open portfolio <span aria-hidden="true">↗</span>
             </span>
           </a>

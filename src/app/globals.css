@@ -29,9 +29,9 @@ html[data-quality="low"] ::view-transition-new(route-content) {
    Nexlane Digital — design tokens (sampled from the logo)
    ================================================================== */
 :root {
-  --bg: #000d1d;
-  --bg-glow-1: #003d66;
-  --bg-glow-2: #015798;
+  --bg: #000814;
+  --bg-glow-1: #002b4d;
+  --bg-glow-2: #014879;
   --brand: #0572f5;
   --brand-2: #10a9f2;
   --accent: #1ed3f2;
@@ -49,7 +49,7 @@ html[data-quality="low"] ::view-transition-new(route-content) {
   --header-h: 4rem;
 
   /* shadcn theme variables mapped to our dark palette (site is dark-only). */
-  --background: #000d1d;
+  --background: #000814;
   --foreground: #ffffff;
   --card: rgba(6, 27, 54, 0.45);
   --card-foreground: #ffffff;
@@ -755,7 +755,7 @@ h3,
   backdrop-filter: none;
 }
 [data-quality="low"] header nav {
-  background: rgba(0, 13, 29, 0.96);
+  background: rgba(0, 8, 20, 0.96);
   backdrop-filter: none;
 }
 /* Low tier: animated blur is the most expensive paint on a phone, so scroll
