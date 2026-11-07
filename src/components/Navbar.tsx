@@ -4,7 +4,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
-import { motion } from "motion/react";
 import { nav, site } from "@/config/site";
 
 /** Thin top strip with WhatsApp / social / email icons (only what is set). */
@@ -42,14 +41,12 @@ type DropdownParent = { label: string } & { items: NavItem[] };
 const navBase = "relative flex items-center rounded px-3 py-2 text-sm transition-colors";
 const navIdle = "text-[var(--muted)] hover:text-white";
 
-/** One layoutId makes the gradient underline slide between the active items. */
+/** CSS-only gradient underline (motion lib would add ~145 KB to every page). */
 function ActiveIndicator() {
   return (
-    <motion.span
-      layoutId="nav-active"
+    <span
       aria-hidden="true"
-      className="absolute inset-x-2 -bottom-[7px] h-0.5 rounded-full bg-gradient-to-r from-[var(--brand-2)] to-[var(--accent)]"
-      transition={{ type: "spring", stiffness: 380, damping: 32 }}
+      className="nav-indicator absolute inset-x-2 -bottom-[7px] h-0.5 rounded-full bg-gradient-to-r from-[var(--brand-2)] to-[var(--accent)]"
     />
   );
 }
