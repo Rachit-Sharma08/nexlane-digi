@@ -1,0 +1,28 @@
+# Nexlane Digital
+
+> Nexlane Digital is a young digital marketing and web agency from Kaithal, Haryana, India. We started in 2026 and we are honest about it: we have no client projects to show yet, so we offer a free audit instead of pretending to have case studies.
+
+We build websites, do SEO (including AEO and GEO, so AI assistants can understand and quote your content), run Google Ads and Meta Ads, make small browser games, and teach what we learn for free.
+
+We work in person around Kaithal and remotely across Haryana. Written scope before any work starts; quote after a free chat; no guarantees of rankings — nobody can honestly promise those.
+
+## Pages
+
+- [Home](/): Who we are — a digital marketing agency in Kaithal, Haryana.
+- [About](/about): Our story from Kaithal, started in 2026.
+- [Founders](/about/founders): Rachit Sharma (SEO and growth) and Krish Khati (web development and AI).
+- [Team](/about/team): The team that builds websites, edits video and runs our content.
+- [Services](/services): Everything we do — digital marketing, SEO, web development, games.
+- [Digital Marketing](/services/digital-marketing): Google Ads, Meta Ads, social media and YouTube/Instagram content.
+- [SEO](/services/seo): Local SEO, on-page and technical SEO, plus AEO/GEO.
+- [Web Development](/services/web-development): Fast, mobile-friendly websites with a written scope.
+- [Game Development](/services/game-development): Small browser games for brands, events and learning.
+- [Learn](/learn): Free digital marketing lessons — no charge, no catch.
+- [YouTube Lessons](/learn/youtube): Free video lessons on digital marketing and AI tools.
+- [Blog](/learn/blog): Plain-language articles on SEO, local search and AI tools.
+- [Free Resources](/learn/resources): Checklists and AI tool lists for small businesses.
+- [Our Work](/our-work): Honest empty state — we will list projects here as we earn them.
+- [Free Audit](/audit): A free written review of your website or Google profile.
+- [Contact](/contact): Tell us about your business and we will reply.
+- [Privacy](/privacy): How this site handles data (draft, pending professional review).
+- [Terms](/terms): Terms for using this site and our services.
