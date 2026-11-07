@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import WhatsAppFloat from "@/components/WhatsAppFloat";
 import ScrollControls from "@/components/ScrollControls";
+import ChatbotLoader from "@/components/ChatbotLoader";
 import RouteTransition from "@/components/RouteTransition";
 import JsonLd from "@/components/JsonLd";
 import AppProviders from "@/components/AppProviders";
@@ -52,6 +53,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Footer />
           <WhatsAppFloat />
           <ScrollControls />
+          <ChatbotLoader />
           <JsonLd data={organizationSchema()} />
           <JsonLd data={websiteSchema()} />
         </AppProviders>

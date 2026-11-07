@@ -5,6 +5,7 @@ import { services } from "@/content/services";
 import { notDraft } from "@/content/blog";
 import { homeFaqs } from "@/content/faq";
 import { ArrowMotif, Container, GradientHeading, SectionHeader } from "@/components/ui";
+import DepthCard from "@/components/DepthCard";
 import SectionNav from "@/components/SectionNav";
 import HeroVisual from "@/components/home/HeroVisual";
 import NextUp from "@/components/NextUp";
@@ -142,9 +143,9 @@ export default function HomePage() {
             intro="Three services, one small team. Every project starts with a free chat and a written scope."
           />
 
-          <div className="mt-10 grid gap-4 md:grid-cols-6">
+          <div className="stagger mt-10 grid gap-4 md:grid-cols-6">
             <div className="md:col-span-4">
-              <div className="motion-card glass flex h-full flex-col justify-between gap-8 p-6 sm:p-8">
+              <DepthCard glare className="flex h-full flex-col justify-between gap-8 p-6 sm:p-8">
                 <div>
                   <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">01 · Websites</span>
                   <h3 className="mt-3 font-display text-2xl font-semibold sm:text-3xl">Web Development</h3>
@@ -160,11 +161,11 @@ export default function HomePage() {
                 <Link href="/services/web-development" className={cardLink}>
                   See web development <span aria-hidden="true">→</span>
                 </Link>
-              </div>
+              </DepthCard>
             </div>
 
             <div className="md:col-span-2">
-              <div className="motion-card glass flex h-full flex-col justify-between gap-8 p-6">
+              <DepthCard glare className="flex h-full flex-col justify-between gap-8 p-6">
                 <div>
                   <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">02 · Search</span>
                   <h3 className="mt-3 font-display text-xl font-semibold">{services[1].shortName}</h3>
@@ -180,11 +181,11 @@ export default function HomePage() {
                 <Link href="/services/seo" className={cardLink}>
                   See SEO <span aria-hidden="true">→</span>
                 </Link>
-              </div>
+              </DepthCard>
             </div>
 
             <div className="md:col-span-2">
-              <div className="motion-card glass flex h-full flex-col justify-between gap-8 p-6">
+              <DepthCard glare className="flex h-full flex-col justify-between gap-8 p-6">
                 <div>
                   <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">03 · Play</span>
                   <h3 className="mt-3 font-display text-xl font-semibold">{services[2].shortName}</h3>
@@ -200,11 +201,11 @@ export default function HomePage() {
                 <Link href="/services/game-development" className={cardLink}>
                   See game development <span aria-hidden="true">→</span>
                 </Link>
-              </div>
+              </DepthCard>
             </div>
 
             <div className="md:col-span-4">
-              <div className="motion-card glass flex h-full flex-col justify-between gap-8 p-6 sm:p-8">
+              <DepthCard glare className="flex h-full flex-col justify-between gap-8 p-6 sm:p-8">
                 <div>
                   <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">Free · Learn</span>
                   <h3 className="mt-3 font-display text-2xl font-semibold sm:text-3xl">Learn with us</h3>
@@ -215,7 +216,7 @@ export default function HomePage() {
                 <Link href="/learn/youtube" className={cardLink}>
                   Start learning <span aria-hidden="true">→</span>
                 </Link>
-              </div>
+              </DepthCard>
             </div>
           </div>
         </section>
@@ -270,13 +271,13 @@ export default function HomePage() {
             title="Why Nexlane"
             intro="A young studio, so we compete on being direct, exact and easy to reach."
           />
-          <div className="mt-8 grid gap-4 sm:grid-cols-2">
+          <div className="stagger mt-8 grid gap-4 sm:grid-cols-2">
             {whyUs.map((w, i) => (
-              <div key={w.title} className="reveal-blur motion-card glass p-6">
+              <DepthCard key={w.title} glare className="p-6">
                 <span className="font-display text-sm font-bold text-gradient">{String(i + 1).padStart(2, "0")}</span>
                 <h3 className="mt-2 font-display text-lg font-semibold">{w.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-[var(--muted)]">{w.blurb}</p>
-              </div>
+              </DepthCard>
             ))}
           </div>
         </section>
@@ -376,7 +377,7 @@ export default function HomePage() {
               className="pointer-events-none absolute inset-x-0 -top-24 mx-auto h-48 w-48 rounded-full bg-[var(--brand-2)] opacity-25 blur-3xl"
             />
             <div className="relative flex flex-col items-center gap-4">
-              <ArrowMotif className="h-12 w-12" />
+              <ArrowMotif className="parallax-drift h-12 w-12" />
               <h2 className="max-w-2xl font-display text-2xl font-bold sm:text-3xl">
                 Not sure where your business is losing customers online?{" "}
                 <GradientHeading>We&apos;ll look for free.</GradientHeading>

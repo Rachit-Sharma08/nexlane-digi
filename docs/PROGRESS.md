@@ -1,6 +1,6 @@
 # Nexlane Digital — Progress
 
-Last updated: 2026-11-05 · Repo: `Rachit-Sharma08/nexlane-digital` (private) · Deploy: Vercel (pending)
+Last updated: 2026-11-07 · Repo: `Rachit-Sharma08/nexlane-digital` (private) · Deploy: Vercel (pending)
 
 ## Kya bana hai
 
@@ -210,3 +210,55 @@ Removed during Stage E for speed: the `motion` library (the navbar underline is 
 4. Buy the domain and set `SITE_URL` in env; verify the Vercel plan (Hobby is non-commercial) before launch.
 5. Set up the Vercel WAF rate-limit rule on `/api/*` (Hobby allows 1 rule) — Phase 2.
 6. Add `RESEND_API_KEY` (production must return 503 if missing) and Turnstile keys — Phase 2.
+
+## Stage F — contact-form animation reuse + scroll feel + preview chatbot (2026-11-07, `feat/chatbot-scroll`)
+
+### 1. DepthCard tilt reused (the contact inquiry form animation)
+
+- Home bento (all 4 service/learn cards) and the Why Nexlane grid (4 cards) now use `<DepthCard glare>` — same pointer-tilt + glare as the contact form. Hover lift still works because the tilt lives on the inner card and the reveal animation on the wrapper.
+- Tier-gated as before: tilt only on `mid`/`high` with a mouse pointer; `low` (all phones < 768 px) and touch keep the static card.
+
+### 2. Premium scroll feel (pure CSS, no animation library)
+
+- Stronger reveals: `section-arrive` (0 → 1 opacity, 36 px rise), `blur-in` (30 px + 8 px blur), all still `animation-timeline: view()` — no JS, no main-thread work.
+- New `.stagger` utility: grid children cascade on offset `view()` slices (nth-child 2–6), used on the bento grid + Why grid.
+- New `.parallax-drift`: scroll-linked drift for decorative elements (CTA `ArrowMotif`).
+- All of it `animation: none` under `prefers-reduced-motion`; browsers without scroll-driven animations fall back to the end state (content visible). No Lenis/smooth-scroll library (perf risk on low-end phones — `html { scroll-behavior: smooth }` stays).
+
+### 3. Preview chatbot (local answers; Grok API wiring is Phase 2)
+
+- `src/lib/chatbot.ts` — keyword knowledge base built ONLY from real site content (`site`, `services`, `homeFaqs`) plus honest general digital-marketing explanations (no guarantees, no invented numbers). `askBot()` is the async seam where `/api/chat` (Grok) lands later; local stays as fallback.
+- `src/components/Chatbot.tsx` — FAB **bottom-right** (owner correction: `fixed bottom-5 right-5`; WhatsApp float moved to `bottom-36` so the stack is WhatsApp → back-to-top → robot, back-to-top `bottom-5.75rem` sits just above the 64 px FAB), glass panel opens from its bottom-right corner, quick-reply chips, typing delay, `Esc` closes, `role="dialog"` + `aria-live`, reduced-motion skips the typing delay. Header is labelled **"Preview · AI answers coming soon"** — it never pretends to be live AI. FAB avatar is a **CSS-3D robot mascot** (`RobotHead` in the same file — see the rework note below).
+- `src/components/ChatbotLoader.tsx` — idle-load via `next/dynamic` (`ssr: false` after `requestIdleCallback`), so the **16 KB chatbot chunk is not in the 9 initial scripts of Home (603 KB raw)**.
+- Wired in `layout.tsx` after `ScrollControls`.
+
+### Verification
+
+- `npx tsc --noEmit` 0, `npm run lint` 0, `npm run build` 21 routes.
+- Browser (production CSP): tilt sets/resets `--depth-rx/ry` at 1440 (`data-quality="high"`), no tilt at 360 (`low` — by design). Stagger mid-reveal captured on screenshot. Chat: pricing question → real FAQ answer; chip → services list; `Esc` closes; panel fits 360 px viewport. Console: 0 errors, 0 CSP refusals, 1 warning (known `THREE.Clock`).
+- `npm audit`: 3 low (shadcn dev CLI → deepmerge), same as Stage E, reported not force-fixed.
+- Screenshots: `screenshots/chatbot-scroll/` (home-1440/768/360, chat-1440, chat-360, bento-tilt-1440). Note for future captures: scroll-driven reveals are reversible — scroll to the **bottom** before a full-page screenshot, otherwise below-fold sections shoot at `opacity: 0`.
+
+### Chatbot design pass (impeccable `polish`, same day)
+
+- Placement **bottom-right** (owner first asked bottom-left, then corrected to right side). WhatsApp float moved to `bottom-36`; back-to-top stays at `bottom-5.75rem`, just above the FAB.
+- FAB: dark glass + cyan rim (the robot is the visual now) + depth shadow + cyan pulse ring (hidden on `low` tier, when open, and under reduced motion), hover lift/press; on hover the robot head straightens to face the pointer.
+- Panel: gradient hairline border (padding-box/border-box trick, no blur cost), enters from its bottom-right corner (`chat-arrive`, 260 ms expo-out), header with a small robot tile + honest preview chip + the site's gradient hairline divider.
+- Bubbles: glass bot / blue-gradient user (white text, ≥4.5:1 on the tint used), `break-words` for long links; animated 3-dot typing indicator.
+- Chats chrome: themed thin cyan scrollbar (`.chat-scroll`), hidden scrollbar on the chip row, visible `focus-visible` rings on every control, disabled send state.
+- Impeccable detector run on the changed files: only 2 findings, both **pre-existing brand styles outside this diff** (`.text-gradient` background-clip line 197, `.hero-stage-grid` line 312) — kept as the incumbent world. No findings in the chatbot code.
+
+### Chatbot robot rework (owner request: "right side par karo, 3D bnao, proper robot shape", same day)
+
+- **3D choice:** CSS 3D only — AGENTS §11.2 keeps real WebGL in the Home hero alone, and speed 90+ is compulsory, so a `RobotHead` component (local, inside `Chatbot.tsx`) with `perspective` + `preserve-3d` renders the mascot: antenna with glowing ball, side ears, inset face, cyan visor with two glowing eyes, mouth bar. All sizes in `em` → `text-[Npx]` on the root scales the whole bot (32 px in the 64 px FAB, 18 px in the 36 px header tile; 42 px was rejected because the ears would overflow the circle).
+- **Motion:** idle float + head sway (`robot-tip`, ±7° rotateY), blink every ~4.4 s, antenna glow pulse, and an eye-scan animation while `data-typing="true"` (verified live: attribute toggles `true → false` around a reply). Hover straightens the head. All of it static on `html[data-quality="low"]` and `animation: none` under `prefers-reduced-motion` (§11.1), so phones get a static layered-CSS robot.
+- Panel entrance origin flipped `bottom left → bottom right` to match the new side.
+- Verification (this round): `npx tsc --noEmit` 0, `npm run lint` 0, `npm run build` 21 routes; robot CSS confirmed inside the production chunk (`.next/static/chunks/*.css`). Browser 1440: robot bottom-right, panel opens from the right, chat answer correct (`Details: /services/seo`), console 0 errors (only the known `THREE.Clock` warning). Browser 360: panel full-width and readable, robot FAB static (low tier). Impeccable detector re-run on the 3 changed files: same 2 pre-existing findings only. Screenshots: `robot-fab-1440`, `robot-panel-1440`, `robot-answer-1440`, `robot-360` in `screenshots/chatbot-scroll/`.
+
+### Founder photos added (owner request, same day) — §11.5 photo pipeline now live
+
+- Owner supplied the two founders' photos in `D:\Downloads`. Converted with ffmpeg to **800×800 WebP** in `public/team/`: `rachit.webp` (31 KB, from `Rachit Sharma.png` — center-crop 1158² from x=100, face stays fully inside) and `krish.webp` (26 KB, from `Krish Khati.jpeg`, already square). Both far under the 150 KB budget.
+- `src/config/site.ts`: `photo: "/team/rachit.webp"` and `photo: "/team/krish.webp"` set on the two founders. **Neelam and Jyoti got no photos** (owner only sent founders') — their tiles keep the gradient initials, as designed.
+- Owner instruction on 2026-11-07 = the §11.5 permission to show these two real photos. Team-member photos stay gated on the owner adding files + config fields the same way.
+- Verification: `tsc`/`lint`/`build` green; founders HTML contains both `/team/*.webp` paths; `/next/image` optimizer serves correct bytes; in-page canvas draw of both `<img>` elements returns the right pixels (grey studio bg / dark bokeh bg); element screenshots pixel-tested (corner + face-center RGB); 360 px: both images loaded, no horizontal overflow; console 0 errors. Screenshots: `founders-photos-1440`, `founders-photos-1440b`, `founders-photos-768`, `founders-photos-360`.
+- Tooling note for this session: the local image-**viewer** showed wrong/stale pictures for some files (webp reads and full-page screenshots) — every claim above was re-checked numerically (file MD5, `signalstats` YAVG, top-left pixel RGB via System.Drawing, in-browser canvas `getImageData`); the bytes on disk and in the browser are correct.
