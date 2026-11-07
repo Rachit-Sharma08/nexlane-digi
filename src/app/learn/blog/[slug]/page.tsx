@@ -3,6 +3,7 @@ import JsonLd from '@/components/JsonLd';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Section, Eyebrow } from '@/components/ui';
+import NextUp from '@/components/NextUp';
 import { buildMetadata, breadcrumbSchema, articleSchema } from '@/lib/seo';
 import { getPost, notDraft, readingTime, type BlogBlock } from '@/content/blog';
 
@@ -78,6 +79,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           See what we do in web development
         </Link>
       </div>
+      <NextUp title="Back to the blog" href="/learn/blog" cta="All posts" eyebrow="Keep going" />
       <JsonLd data={breadcrumbSchema(postBreadcrumbItems)} />
       <JsonLd
         data={articleSchema({

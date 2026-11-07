@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { site } from "@/config/site";
 import { services, getService } from "@/content/services";
 import { Section, Muted, Eyebrow } from "@/components/ui";
+import NextUp from "@/components/NextUp";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import JsonLd from "@/components/JsonLd";
 import { buildMetadata, breadcrumbSchema, serviceSchema, faqSchema } from "@/lib/seo";
@@ -118,6 +119,7 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
         path: `/services/${slug}`,
       })} />
       <JsonLd data={faqSchema(service.faqs)} />
+      <NextUp title="Get a free audit of your site" href="/audit" cta="Get a Free Audit" eyebrow="Keep going" />
     </>
   );
 }

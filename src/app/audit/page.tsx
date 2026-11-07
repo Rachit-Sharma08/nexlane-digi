@@ -1,5 +1,7 @@
 import JsonLd from '@/components/JsonLd';
-import { Section, SectionTitle, GlassCard, Muted, Eyebrow } from '@/components/ui';
+import { Section, SectionTitle, Muted, Eyebrow } from '@/components/ui';
+import DepthCard from '@/components/DepthCard';
+import NextUp from '@/components/NextUp';
 import { buildMetadata, breadcrumbSchema } from '@/lib/seo';
 import { site } from '@/config/site';
 
@@ -33,7 +35,7 @@ export default function AuditPage() {
       </ul>
 
       <SectionTitle>Request your audit</SectionTitle>
-      <GlassCard>
+      <DepthCard>
         <form className="space-y-4" action="#" method="post" aria-describedby="audit-form-note">
           <div>
             <label htmlFor="audit-name" className="block text-sm font-medium mb-1">
@@ -110,9 +112,10 @@ export default function AuditPage() {
             .
           </p>
         </form>
-      </GlassCard>
+      </DepthCard>
 
       <JsonLd data={breadcrumbSchema(breadcrumbItems)} />
+      <NextUp title="Reach us directly" href="/contact" cta="Contact us" eyebrow="Keep going" />
     </Section>
   );
 }
