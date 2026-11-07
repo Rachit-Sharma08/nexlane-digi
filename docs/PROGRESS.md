@@ -319,3 +319,67 @@ All runs: CLS 0, LCP 0.9 s, FCP 0.9 s. **No score was rounded up.** Why Fix C ex
 - Chatbot behaviour after Fix C (browser check): FAB appears after `load` + 6 s, panel opens (384×308), Esc closes, `data-quality="high"` + WebGL hero on desktop, 0 errors.
 - Screenshots: `screenshots/perf/{home,about,seo}-{1440,768,360}.png`. **Capture note:** Chrome's full-page (beyond-viewport) screenshot skips `content-visibility: auto` content, so Playwright captures first scroll the page through (fills the reversible view-timeline reveals) and force `.scroll-reveal { content-visibility: visible }` via an injected style for the shot only. Verified numerically: 27–43 % uniform rows, no blank bands (pre-cv reference: 33 %). Real users are unaffected — content renders as they scroll.
 - Low-tier correctness kept: server HTML has `data-quality="low"`, low tier has no animated blur (§11.1), reduced-motion path unchanged, honesty rules untouched (§5/§9).
+
+---
+
+## Part 2 — on-page SEO / AEO / GEO (branch `feat/seo-onpage`, base `perf/mobile-90`)
+
+Spec: AGENTS §12 + `docs/seo-content.md`. No new npm dependencies.
+
+### What was built
+
+1. **Indexing switch (§12.5):** `NEXT_PUBLIC_ALLOW_INDEXING` in `.env.example` (default off). Off = every page `<meta name="robots" content="noindex, nofollow">` (via `buildMetadata`) + `robots.txt` `Disallow: /`. `/thank-you` and the 404 page are always noindex regardless. Owner flips the env at launch (build-time → rebuild needed).
+2. **Exact metadata (§12.10):** every route's title/description now comes from `docs/seo-content.md` (title ≤60c, description ≤160c, unique). `buildMetadata` appends " | Nexlane Digital" only when the brand is missing, so nothing doubles. Canonical + OG + Twitter on all pages; `metadataBase` already set. Fixed the old double-brand bug on `/thank-you` and 404 (root template was appending twice — now `title: { absolute }`).
+3. **OG image (§12.9):** `src/app/opengraph-image.tsx` via `next/og` — text + brand gradient, no logo file, 1200×630. Note: Next does NOT merge the file-convention image when a page sets an `openGraph` object, so `buildMetadata` references `/opengraph-image` explicitly (verified `GET /opengraph-image` → `image/png`). Replaced the broken `/brand/og-placeholder.png` reference (that file never existed).
+4. **New route `/services/digital-marketing` (§12.4):** content entry in `src/content/services.ts` (facts only: Google Ads, Meta Ads, social, YouTube/Instagram, video editing, free audit first; owner-confirmable claims marked `TODO`). Wired automatically into the dynamic `/services/[slug]` route, services hub (grid now 2×2 for 4 cards), Navbar Services dropdown (click-based, `aria-current` verified), footer, chatbot KB, sitemap.
+5. **`src/app/robots.ts` + `src/app/sitemap.ts`:** 18 public URLs (no `/thank-you`, no `/portfolio`, blog posts only when non-draft), switch-aware robots + sitemap line.
+6. **`public/llms.txt`:** built only from config facts — who we are, honest "no client projects yet" note, services, Kaithal/Haryana location, page list. Relative links (no hardcoded domain, survives the domain change). No phone, no address.
+7. **Schema (§12.6–7):** `WebSite` + `ProfessionalService` now carry `alternateName: "Nexlane"`; org gained `logo` (the converted mark); `sameAs` no longer contains a `mailto:`; new `personSchema` for both founders on `/about/founders` (name, jobTitle, worksFor, url = portfolio when set). `JsonLd` remains the single escaping component. No Review/AggregateRating/telephone/email/streetAddress anywhere (enforced by the checker).
+8. **Content (§12.11):** home hero = the answer-first 2-sentence intro from seo-content; home FAQs replaced with 4 from the doc (incl. the Hinglish cost question); service `summary` fields are now the doc's answer-first intros; every service page keeps its visible "For businesses in and around Kaithal" section + visible FAQ (already rendered by the template) and gains a **"Related services"** internal-links nav with descriptive anchors; chatbot KB fallbacks retargeted to the new FAQs and the new service page.
+9. **Images (§12.8):** `images.formats: ['image/avif','image/webp']` in `next.config.ts`; `nexlane-mark.png` (119 KB) converted to `nexlane-mark.webp` (9 KB) with all 3 references updated (Navbar/Footer/HeroVisual), PNG removed. `nexlane-logo.png` is unreferenced source artwork — kept untouched.
+10. **`scripts/seo-check.mjs`** (Node 18+, zero deps): per-page title/desc length + uniqueness, robots vs mode, canonical, OG/Twitter, single h1, lang, JSON-LD parse + forbidden types/keys/mailto, 404+noindex, robots.txt per mode, sitemap contents, llms.txt honesty checks, og:image endpoint, all internal links resolve. Run with `--mode=noindex` and `--mode=index`.
+
+### seo-check results (both modes — both exit 0)
+
+- `--mode=noindex` (shipping config): **ALL CHECKS PASSED** → `screenshots/seo/seo-check-noindex.txt`
+- `--mode=index` (owner's flip): **ALL CHECKS PASSED** → `screenshots/seo/seo-check-index.txt`
+- One checker bug found and fixed during the run: Next writes `Sitemap:` (capital S), my check was case-sensitive.
+
+### Lighthouse (production build, mobile emulation)
+
+| run | performance | seo (switch OFF) |
+|---|---|---|
+| 1 | 0.99 | 0.69 |
+| 2 | 0.93 | 0.69 |
+| 3 | 0.99 | 0.69 |
+| 4 | 0.94 | 0.69 |
+| 5 | 0.99 | 0.69 |
+
+- **Performance median = 0.99** (Part 1 goal of ≥0.90 still met after all SEO changes; TBT 100–140 ms, CLS 0; the two 0.93/0.94 runs were LCP variance 2.9–3.0 s, reported as measured).
+- **SEO 0.69 with the switch off is correct, not a bug:** the single failing audit is `is-crawlable` ("Page is blocked from indexing") — exactly what noindex should do pre-launch. Every other SEO audit passes.
+- With `NEXT_PUBLIC_ALLOW_INDEXING=true` rebuilt: **SEO = 1.00 in 3/3 runs** (`screenshots/seo/lh-indexed-*.json`).
+
+### Gates (final shipping build)
+
+- `npx tsc --noEmit` 0 · `npm run lint` 0 · `npm test` 4/4 · `npm run build` green — measured build = gated build.
+- Grep checks (redesign-prompt): phone-digit regex **empty**, Tagore **empty**, honesty-words = 5 hits all in comments/disclaimers/keyword triggers (0 on team/about pages, none are claims).
+- `npm audit`: 3 low (shadcn dev CLI + deepmerge), pre-existing, reported not force-fixed.
+- Browser pass: 0 console errors (no CSP refusals), webp logo loads through next/image, nav dropdown shows Digital Marketing with `aria-current="page"`, DM page renders all sections + 3 related-service links + 5 JSON-LD blocks, home shows the 4 new FAQs.
+- Screenshots: `screenshots/seo/{home,services,dm,seo,founders}-{1440,768,360}.png` (15 files, verified numerically: 19–47 % uniform rows, no blank bands; same content-visibility capture workaround as Part 1).
+
+### Owner-only checklist (agent cannot do these — §12.12)
+
+- [ ] Buy the domain, set `SITE_URL` in Vercel env (and `.env`).
+- [ ] Flip `NEXT_PUBLIC_ALLOW_INDEXING="true"` in Vercel, redeploy — then re-run `node scripts/seo-check.mjs <live-url> --mode=index`.
+- [ ] Google Search Console + Bing Webmaster Tools: verify domain, submit `/sitemap.xml`.
+- [ ] Google Business Profile (service-area, no visible address) — largest local ranking factor.
+- [ ] Instagram + YouTube bios: same name "Nexlane Digital" + site URL.
+- [ ] Validate the keyword candidates in Google Keyword Planner; later check Search Console.
+- [ ] Confirm the `TODO` claims on `/services/digital-marketing` (what you actually offer as paid work).
+- [ ] Privacy page: still marked draft — review by a qualified professional before launch.
+- [ ] After domain + flip: re-run Lighthouse on the live URL (local numbers above are localhost).
+
+### Not testable here
+
+- Real Google/Bing indexing, GBP verification, Keyword Planner volumes (need the owner's accounts).
+- `llms.txt` effect on AI citations: no AI provider confirms using it; shipped because it is cheap, with **no claimed effect** (§12.9).
