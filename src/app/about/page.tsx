@@ -7,8 +7,9 @@ import NextUp from '@/components/NextUp';
 import JsonLd from '@/components/JsonLd';
 
 export const metadata: Metadata = buildMetadata({
-  title: "About",
-  description: "Four friends building real projects to help small local businesses get found online",
+  title: "About Nexlane Digital | Our Story from Kaithal, Haryana",
+  description:
+    "Four friends in Kaithal started Nexlane Digital in 2026 to build real digital projects for local businesses and teach what we learn. Read our honest story.",
   path: "/about"
 });
 

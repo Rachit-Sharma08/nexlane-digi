@@ -11,9 +11,9 @@ const breadcrumbItems = [
 ];
 
 export const metadata = buildMetadata({
-  title: 'Contact us',
+  title: 'Contact Nexlane Digital | Kaithal, Haryana',
   description:
-    'Get in touch with Nexlane Digital — a small team from Kaithal, Haryana. We reply within 24 to 48 hours.',
+    'Contact Nexlane Digital, a small digital marketing and web team in Kaithal, Haryana. Tell us about your business and we will reply.',
   path: '/contact',
 });
 

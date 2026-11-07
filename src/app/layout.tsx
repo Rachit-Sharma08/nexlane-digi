@@ -25,7 +25,8 @@ export const metadata: Metadata = {
   ...layoutMeta,
   metadataBase: new URL(site.SITE_URL),
   title: {
-    default: `${site.name} — ${site.tagline}`,
+    // ≤60 chars; only a fallback — every page sets its own absolute title.
+    default: `${site.name} | ${site.tagline}`,
     template: `%s | ${site.name}`,
   },
   description: site.description,

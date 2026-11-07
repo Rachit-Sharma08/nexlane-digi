@@ -4,7 +4,8 @@ import { Section, GlassCard, Muted, Eyebrow } from '@/components/ui';
 import { site } from '@/config/site';
 
 export const metadata = {
-  title: 'Thank you — Nexlane Digital',
+  // absolute: the root title template would otherwise double the brand.
+  title: { absolute: 'Thank you — Nexlane Digital' },
   description: 'Your message has been received. We will reply within 24 to 48 hours.',
   robots: { index: false, follow: false },
 };

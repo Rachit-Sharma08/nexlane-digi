@@ -14,8 +14,9 @@ import JsonLd from "@/components/JsonLd";
 import { buildMetadata, faqSchema } from "@/lib/seo";
 
 export const metadata: Metadata = buildMetadata({
-  title: site.tagline,
-  description: site.description,
+  title: "Nexlane Digital | Digital Marketing Agency in Kaithal",
+  description:
+    "Nexlane Digital is a young digital marketing agency in Kaithal, Haryana. Websites, SEO and ads for local businesses, plus free lessons. Get a free audit.",
   path: "/",
 });
 

@@ -12,8 +12,9 @@ const breadcrumbItems = [
 ];
 
 export const metadata = buildMetadata({
-  title: 'Free resources',
-  description: 'Curated list of free tools and services',
+  title: 'Free Digital Marketing Resources | Nexlane Digital',
+  description:
+    'Free checklists and AI tool lists for small businesses and creators, shared by the Nexlane Digital team. Resources are being added.',
   path: '/learn/resources',
 });
 

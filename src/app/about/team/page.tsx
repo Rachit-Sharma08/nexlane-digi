@@ -11,8 +11,9 @@ import NextUp from '@/components/NextUp';
 const group = teamGroups.find((g) => g.id === "team")!;
 
 export const metadata: Metadata = buildMetadata({
-  title: group.label,
-  description: "The team behind Nexlane Digital — websites, social media and video",
+  title: "Team | Nexlane Digital, Kaithal",
+  description:
+    "Meet the Nexlane Digital team members who build websites, edit videos and run our YouTube and Instagram content from Kaithal, Haryana.",
   path: "/about/team"
 });
 

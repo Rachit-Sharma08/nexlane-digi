@@ -4,7 +4,8 @@ import DepthCard from '@/components/DepthCard';
 import NextUp from '@/components/NextUp';
 
 export const metadata = {
-  title: 'Page not found — Nexlane Digital',
+  // absolute: the root title template would otherwise double the brand.
+  title: { absolute: 'Page not found | Nexlane Digital' },
   description: 'The page you are looking for does not exist.',
   robots: { index: false, follow: false },
 };

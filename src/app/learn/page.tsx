@@ -11,8 +11,9 @@ const breadcrumbItems = [
 ];
 
 export const metadata = buildMetadata({
-  title: 'Learn digital marketing — free',
-  description: 'Free lessons, guides and tool lists — the same stuff we use ourselves.',
+  title: 'Free Digital Marketing Lessons | Nexlane Digital',
+  description:
+    'Free lessons on digital marketing, SEO and AI tools from the Nexlane Digital team: YouTube videos, a blog and free resources.',
   path: '/learn',
 });
 

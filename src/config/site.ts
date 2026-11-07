@@ -12,6 +12,8 @@
 
 export const site = {
   name: "Nexlane Digital",
+  /** Short brand alias used in schema.org alternateName (AGENTS §12.6). */
+  alternateName: "Nexlane",
   // TODO: replace with the real domain once bought.
   SITE_URL: process.env.SITE_URL ?? "https://nexlanedigital.vercel.app",
   tagline: "Websites, SEO and growth for local businesses",
@@ -167,6 +169,7 @@ export const nav = {
   services: {
     label: "Services",
     items: [
+      { href: "/services/digital-marketing", label: "Digital Marketing" },
       { href: "/services/web-development", label: "Web Development" },
       { href: "/services/seo", label: "SEO" },
       { href: "/services/game-development", label: "Game Development" },

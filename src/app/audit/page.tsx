@@ -11,9 +11,9 @@ const breadcrumbItems = [
 ];
 
 export const metadata = buildMetadata({
-  title: 'Free Website and Marketing Audit',
+  title: 'Free Website and SEO Audit in Kaithal | Nexlane Digital',
   description:
-    'A free written review of your website, Google profile or social media with 3 to 5 practical suggestions you can act on. No obligation to hire us.',
+    'Get a free written review of your website or Google profile from Nexlane Digital: 3 to 5 practical suggestions, no obligation.',
   path: '/audit',
 });
 

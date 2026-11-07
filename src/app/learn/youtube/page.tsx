@@ -13,8 +13,9 @@ const breadcrumbItems = [
 ];
 
 export const metadata = buildMetadata({
-  title: 'YouTube lessons',
-  description: 'Free video lessons on digital marketing and free AI tools',
+  title: 'YouTube Lessons on Digital Marketing | Nexlane Digital',
+  description:
+    'Free video lessons on digital marketing and free AI tools from Nexlane Digital. The first lessons are on the way.',
   path: '/learn/youtube',
 });
 

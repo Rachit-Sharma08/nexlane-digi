@@ -13,8 +13,9 @@ import NextUp from '@/components/NextUp';
 const group = teamGroups.find((g) => g.id === "founders")!;
 
 export const metadata: Metadata = buildMetadata({
-  title: group.label,
-  description: "Rachit Sharma and Krish Khati — the founders of Nexlane Digital",
+  title: "Founders | Digital Marketers in Kaithal | Nexlane Digital",
+  description:
+    "Meet Rachit Sharma (SEO and growth) and Krish Khati (web development and AI), the founders of Nexlane Digital, a digital agency in Kaithal, Haryana.",
   path: "/about/founders"
 });
 

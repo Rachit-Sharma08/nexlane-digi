@@ -4,34 +4,44 @@ import { site } from "@/config/site";
 /** Full canonical URL for a path ("/about" → https://…/about). */
 export const absoluteUrl = (path: string) => new URL(path, site.SITE_URL).toString();
 
-const DEFAULT_OG = "/brand/og-placeholder.png"; // TODO: replace with a designed OG image after the real logo arrives
+/**
+ * AGENTS §12.5 indexing switch: the site must NOT be indexed under a temporary
+ * URL. Anything but "true" = noindex everywhere (robots.ts disallows all too).
+ * Owner flips it at launch; it is a build-time env, so flipping requires a rebuild.
+ */
+export const allowIndexing = process.env.NEXT_PUBLIC_ALLOW_INDEXING === "true";
 
 /**
  * Next.js Metadata helper — unique title/description/canonical/OG per page.
  * Every page must call this with its own title + description (SEO rule).
+ * `title` may be the full SERP title (docs/seo-content.md) or just the page
+ * part — the brand is appended only when it is missing, so nothing doubles up.
+ * og:image comes from the app/opengraph-image.tsx file convention (no explicit
+ * images here, or they would override it with a broken placeholder).
  */
 export function buildMetadata(opts: {
   title: string;
   description: string;
   path: string;
-  ogImage?: string;
 }): Metadata {
   const url = absoluteUrl(opts.path);
-  const image = opts.ogImage ?? DEFAULT_OG;
+  const title = opts.title.includes(site.alternateName)
+    ? opts.title
+    : `${opts.title} | ${site.name}`;
   return {
-    title: opts.title,
+    title: { absolute: title },
     description: opts.description,
     alternates: { canonical: url },
+    ...(allowIndexing ? {} : { robots: { index: false, follow: false } as const }),
     openGraph: {
-      title: opts.title,
+      title,
       description: opts.description,
       url,
       siteName: site.name,
-      images: [{ url: image, width: 1200, height: 630, alt: `${site.name} — ${opts.title}` }],
       type: "website",
       locale: "en_IN",
     },
-    twitter: { card: "summary_large_image", title: opts.title, description: opts.description, images: [image] },
+    twitter: { card: "summary_large_image", title, description: opts.description },
   };
 }
 
@@ -43,12 +53,15 @@ const orgContext = {
 
 /** Organization (ProfessionalService) — no street address exists, so none is invented. */
 export function organizationSchema() {
-  const sameAs = [site.instagramUrl, site.youtubeUrl, site.contactEmail ? `mailto:${site.contactEmail}` : null].filter(Boolean);
+  // sameAs: social profiles only — never mailto: (AGENTS §12.6).
+  const sameAs = [site.instagramUrl, site.youtubeUrl].filter(Boolean);
   return {
     ...orgContext,
     "@type": "ProfessionalService",
     name: site.name,
+    alternateName: site.alternateName,
     url: site.SITE_URL,
+    logo: absoluteUrl("/nexlane-logo.png"),
     description: site.description,
     foundingDate: "2026",
     slogan: site.tagline,
@@ -66,9 +79,27 @@ export function websiteSchema() {
     "@context": "https://schema.org",
     "@type": "WebSite",
     name: site.name,
+    alternateName: site.alternateName,
     url: site.SITE_URL,
     description: site.description,
     inLanguage: "en-IN",
+  };
+}
+
+/** Person schema for founders (AGENTS §12.7) — name, jobTitle, worksFor, url. */
+export function personSchema(m: {
+  name: string;
+  jobTitle: string;
+  /** portfolioUrl when the person has one, else their profile page. */
+  url: string;
+}) {
+  return {
+    ...orgContext,
+    "@type": "Person",
+    name: m.name,
+    jobTitle: m.jobTitle,
+    worksFor: { "@type": "ProfessionalService", name: site.name, url: site.SITE_URL },
+    url: m.url.startsWith("http") ? m.url : absoluteUrl(m.url),
   };
 }
 

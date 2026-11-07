@@ -14,8 +14,9 @@ const breadcrumbItems = [
 ];
 
 export const metadata = buildMetadata({
-  title: 'Blog',
-  description: 'In-depth guides and case studies',
+  title: 'Blog: SEO and Digital Marketing Tips | Nexlane Digital',
+  description:
+    'Plain-language articles on SEO, local search and AI tools for small businesses, written by the Nexlane Digital team. First posts coming soon.',
   path: '/learn/blog',
 });
 

@@ -9,10 +9,10 @@ import { buildMetadata, breadcrumbSchema } from "@/lib/seo";
 
 // Unique meta description for the overview page (per-page SEO rule).
 const SERVICES_OVERVIEW_DESCRIPTION =
-  "Web development, local and technical SEO (plus AEO/GEO) and small browser games for local businesses — custom quote after a free chat.";
+  "Nexlane Digital services in Kaithal, Haryana: digital marketing, SEO (including AEO and GEO), web development and browser games. Free audit, written scope.";
 
 export const metadata: Metadata = buildMetadata({
-  title: "Services",
+  title: "Digital Marketing, SEO & Web Development | Nexlane Digital",
   description: SERVICES_OVERVIEW_DESCRIPTION,
   path: "/services",
 });

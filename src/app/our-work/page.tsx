@@ -6,8 +6,9 @@ import DepthCard from '@/components/DepthCard';
 import NextUp from '@/components/NextUp';
 
 export const metadata: Metadata = buildMetadata({
-  title: "Our Work",
-  description: "Nexlane is new — our first client projects will be listed here, with each client's permission.",
+  title: "Our Work | Nexlane Digital",
+  description:
+    "Nexlane Digital is new and has no client projects yet. We will list our first projects here with each client's permission. Ask for a free audit.",
   path: "/our-work"
 });
 

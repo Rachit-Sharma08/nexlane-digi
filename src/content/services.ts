@@ -7,7 +7,9 @@ export type Service = {
   slug: string;
   name: string;
   shortName: string;
-  summary: string; // shown on cards
+  /** Full SERP title from docs/seo-content.md (≤60 chars incl. brand). */
+  metaTitle: string;
+  summary: string; // shown on cards + as the answer-first hero intro on the detail page
   description: string; // meta description + Service schema
   whatIsIncluded: string[];
   whoItIsFor: string[];
