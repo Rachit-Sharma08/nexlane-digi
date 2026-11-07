@@ -94,6 +94,7 @@ export const team: TeamMember[] = [
     skills: ["SEO", "AEO/GEO", "Google Ads", "Meta Ads", "AI tools"],
     bio: "Digital marketer focused on SEO (including AEO/GEO), Google Ads and Meta Ads, using AI tools to move faster.",
     portfolioUrl: "https://rachitportfolio-rouge.vercel.app/",
+    photo: "/team/rachit.webp",
     personalProjects: [
       { title: "Fitness Website", url: "https://github.com/Rachit-Sharma08/Fitness-website" },
       { title: "Neon Car Racing", url: "https://github.com/Rachit-Sharma08/neon-car-racing-game-" },
@@ -109,6 +110,7 @@ export const team: TeamMember[] = [
     skills: ["Web development", "Python", "AI tools", "Supabase", "Automation"],
     bio: "Builds web apps and AI-powered tools with Python and modern AI APIs.",
     portfolioUrl: "https://krish-portfolio-dev.vercel.app/",
+    photo: "/team/krish.webp",
     personalProjects: [
       { title: "Fitness Temple", url: "https://krish-portfolio-dev.vercel.app/projects/fitness-temple" },
       { title: "LinguaBridge", url: "https://krish-portfolio-dev.vercel.app/projects/linguabridge" },
