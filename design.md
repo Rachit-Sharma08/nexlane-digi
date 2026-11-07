@@ -50,6 +50,7 @@ Living document. Every animation, motion, or visual polish we add to the site is
 | 2026-11-06 | All pages + shared chrome | Added scroll progress, back-to-top, active nav/link feedback, accordion/menu transitions, hero logo motion, and mobile grid shrink fix | Desktop preview inspected; phone screenshot checked; reduced-motion support maintained |
 | 2026-11-06 | Route navigation | Added a short React ViewTransition fade for client-side route changes | Confirmed a client-side About click starts the transition in Chrome; reduced-motion disables it; unsupported browsers navigate normally |
 | 2026-11-06 | Home hero mobile layout | Constrained the hero grid to the viewport width | Verified at a 390px CSS viewport; document width stayed 390px with no horizontal overflow |
+| 2026-11-07 | Chat widget | Moved the chat FAB to the bottom-right (owner correction) and replaced the avatar with a CSS-3D robot mascot (antenna, ears, visor eyes with blink + typing eye-scan); FAB restyled dark glass + cyan rim; panel now opens from the bottom-right corner; WhatsApp float raised to `bottom-36` | CSS 3D only — WebGL stays hero-only (§11.2); robot animations static on the low tier and under reduced motion; verified at 1440/360, build 21 routes, 0 console errors |
 
 ## Decisions
 
