@@ -2,6 +2,15 @@
 
 Last updated: 2026-11-07 · Repo: `Rachit-Sharma08/nexlane-digital` (private) · Deploy: Vercel (pending)
 
+## SEO and speed run plan (2026-11-07/08, branch `perf/mobile-90` → `feat/seo-onpage`)
+
+One run, two parts, no waiting for "next" (owner instruction overrides §8 rule 11 for this run).
+
+1. **Step 0:** base = `feat/qa` (PR #11 merged only into the stacked chain; #9 still open; main lacks Stages C–F; `feat/qa` tree == `feat/chatbot-scroll`). AGENTS §12 + `docs/seo-content.md` committed.
+2. **Part 1 — `perf/mobile-90`:** Lighthouse mobile ×5 on `/`, `/about`, `/services/seo` (baseline medians ~79/75/71, TBT 540–920 ms) → top-5 causes from `bootup-time`/`mainthread-work-breakdown`/`unused-javascript`/`legacy-javascript`/`third-party-summary` → fix in impact order, re-measure ×5 and commit each → gates (tsc/lint/build, CSP no `unsafe-eval`, design screenshots 1440/768/360) → PR to `feat/qa`.
+3. **Part 2 — `feat/seo-onpage` (from Part 1 branch):** AGENTS §12 + `docs/seo-content.md`: config (`SITE_URL`, locale `en-IN`, indexing switch), per-route metadata + canonical/OG/Twitter, `html lang`, `/services/digital-marketing` new page, `robots.ts`/`sitemap.ts`/`llms.txt`, one escaping JSON-LD component (WebSite/Organization/Breadcrumb/Service/Person/FAQPage — no Review/rating/address/phone), answer-first content + Kaithal sections + FAQs, image formats/alt/webp, `scripts/seo-check.mjs` (run with indexing off and on), gates + grep checks + Lighthouse re-run → PR to `perf/mobile-90`.
+4. Stop conditions: gate failing after 3 attempts or context full → `RESUME POINT:` in this file, commit, push.
+
 ## Kya bana hai
 
 | Stage | Status | Details |
