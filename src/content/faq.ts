@@ -1,26 +1,27 @@
 /**
- * Home FAQ. Only the questions actually answered visibly on the Home page.
+ * Home FAQ — exactly the four questions visible on the Home page, taken from
+ * docs/seo-content.md (answer first, no prices, no guarantees).
  * Used for FAQPage JSON-LD (SEO rule: schema only for on-page questions).
  */
 export const homeFaqs = [
   {
-    question: "What does Nexlane Digital actually do?",
+    question: "Are you a new agency?",
     answer:
-      "We build websites for local businesses, improve their SEO (including local SEO and AI search visibility), make small browser games, and teach digital marketing for free on YouTube and Instagram.",
+      "Yes. Nexlane Digital started in 2026 and we have no client projects to show yet. We say so openly, and we offer a free audit so you can judge our thinking before you pay anything.",
   },
   {
-    question: "You are new — why should we trust you?",
+    question: "How much does a website or marketing cost? / Kaithal me website banwane ka kharcha kitna hota hai?",
     answer:
-      "We are honest about being new. We show only real work, agree a written scope before starting, and start with a free audit so you can judge the quality before paying anything.",
+      "The price depends on the pages, features and goals, so we give a quote after a free chat. We write the scope down before any work starts, so there are no surprises.",
   },
   {
-    question: "How do you price your work?",
+    question: "Will you get me #1 on Google?",
     answer:
-      "Every project gets a custom quote after a free chat, once we agree on the scope. We do not have fixed packages yet — being early-stage, our pricing adapts to what a small business can plan for.",
+      "No honest agency can promise a ranking. We work on the things we can control (your Google profile, site speed, page content, local signals) and tell you plainly what we see.",
   },
   {
-    question: "How do I start?",
+    question: "What do I get from the free audit?",
     answer:
-      "Send us your name, business name and one link (website, Instagram or Google profile) via the free audit form. We reply with a short written review and practical suggestions — no obligation.",
+      "A short written review of your website or Google profile with 3 to 5 practical suggestions, free and with no obligation.",
   },
 ];

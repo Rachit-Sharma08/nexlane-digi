@@ -110,8 +110,8 @@ export default function HomePage() {
               Websites, <GradientHeading>SEO</GradientHeading> and growth for local businesses
             </h1>
             <p className="mt-5 max-w-xl text-lg leading-relaxed text-[var(--muted)]">
-              We help small businesses in Kaithal and across Haryana get noticed online — clear websites, honest SEO,
-              and free lessons so even your own team can learn.
+              Nexlane Digital is a young digital marketing agency in Kaithal, Haryana. We build websites, improve SEO
+              and run ads for local businesses, and we teach what we learn for free.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link href="/audit" className="btn btn-primary">

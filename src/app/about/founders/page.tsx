@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { buildMetadata, breadcrumbSchema } from '@/lib/seo';
+import { buildMetadata, breadcrumbSchema, personSchema } from '@/lib/seo';
 import { team, teamGroups } from '@/config/site';
 import { Container, Muted, Eyebrow, SectionTitle } from '@/components/ui';
 import Breadcrumbs from '@/components/Breadcrumbs';
@@ -84,6 +84,17 @@ export default function FoundersPage() {
         </div>
       </Container>
       <JsonLd data={breadcrumbSchema(breadcrumbItems)} />
+      {/* Person schema for the two founders (AGENTS §12.7) — url = their portfolio when they have one. */}
+      {founders.map((m) => (
+        <JsonLd
+          key={m.slug}
+          data={personSchema({
+            name: m.name,
+            jobTitle: m.title,
+            url: m.portfolioUrl ?? '/about/founders',
+          })}
+        />
+      ))}
     </>
   );
 }

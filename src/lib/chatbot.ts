@@ -28,13 +28,13 @@ const contactAnswer =
     : `Use the contact form at /contact — we usually reply within ${site.REPLY_TIME}.`;
 
 const pricingFaq =
-  homeFaqs.find((f) => f.question.includes("price"))?.answer ??
+  homeFaqs.find((f) => f.question.includes("cost"))?.answer ??
   "Every project gets a custom quote after a free chat, once we agree on the scope.";
 const startFaq =
   homeFaqs.find((f) => f.question.includes("How do I start"))?.answer ??
   "Send us your details through the contact form and we'll take it from there.";
 const trustFaq =
-  homeFaqs.find((f) => f.question.includes("trust"))?.answer ??
+  homeFaqs.find((f) => f.question.includes("new agency"))?.answer ??
   "We show only real work and start with a free audit so you can judge the quality before paying anything.";
 
 const kb: Entry[] = [
@@ -98,12 +98,12 @@ const kb: Entry[] = [
   {
     keys: ["seo vs ads", "ads vs seo", "google ads", "meta ads", "paid ads", "should i run ads"],
     answer:
-      "Ads bring traffic the day you pay and stop the day you stop. SEO builds a base you keep. For a small budget, a sensible order is: a clear fast website + Google Business Profile first, then small targeted ads while SEO grows. We set both up — see /services/seo.",
+      "Ads bring traffic the day you pay and stop the day you stop. SEO builds a base you keep. For a small budget, a sensible order is: a clear fast website + Google Business Profile first, then small targeted ads while SEO grows. We set both up — see /services/seo and /services/digital-marketing.",
   },
   {
     keys: ["digital marketing", "digital marketing kya", "online marketing", "marketing kya"],
     answer:
-      "Digital marketing = being visible where people already look: your website, Google search (SEO), local listings, ads, and social content. We do it for clients — and we teach it for free on YouTube and Instagram: /learn",
+      "Digital marketing = being visible where people already look: your website, Google search (SEO), local listings, ads, and social content. We do it for local businesses — Google Ads, Meta Ads, social media and YouTube/Instagram content: /services/digital-marketing — and we teach it for free: /learn",
   },
   {
     keys: ["instagram", "youtube", "social media", "followers", "reels", "content"],
