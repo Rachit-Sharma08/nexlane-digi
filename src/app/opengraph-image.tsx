@@ -1,6 +1,13 @@
+import { readFileSync } from "node:fs";
 import { ImageResponse } from "next/og";
 
-// Site-wide OG image (AGENTS §12.9): text + brand gradient, no logo file.
+/* eslint-disable @next/next/no-img-element -- <img> is required inside next/og ImageResponse */
+
+// Site-wide OG image (AGENTS §12.9): brand gradient + the logo mark.
+// Inlined as a data URL: next/og fetches images at build time, where no
+// server or absolute URL is available.
+const mark = `data:image/webp;base64,${readFileSync("public/nexlane-mark.webp").toString("base64")}`;
+
 export const alt = "Nexlane Digital — digital marketing agency in Kaithal, Haryana";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
@@ -32,6 +39,13 @@ export default function OpengraphImage() {
             height: 14,
             background: "linear-gradient(90deg, #0572F5, #1ED3F2, #7CF4EF)",
           }}
+        />
+        <img
+          src={mark}
+          width={260}
+          height={186}
+          alt=""
+          style={{ marginBottom: 28, borderRadius: 20 }}
         />
         <div style={{ fontSize: 96, fontWeight: 700, letterSpacing: -2 }}>Nexlane Digital</div>
         <div style={{ fontSize: 40, color: "#9FB3C8", marginTop: 20 }}>
