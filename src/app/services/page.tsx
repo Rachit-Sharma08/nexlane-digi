@@ -23,7 +23,8 @@ export default function ServicesPage() {
       <Section>
         <Eyebrow>Services</Eyebrow>
         <h1 className="mb-8 font-display text-2xl font-semibold sm:text-3xl">What we can help with</h1>
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {/* 4 services now → 2×2 from sm up (a 3-col grid leaves an orphan card). */}
+        <div className="grid gap-5 sm:grid-cols-2">
           {services.map((service) => (
             <DepthCard key={service.slug} className="flex flex-col justify-between">
               <div>

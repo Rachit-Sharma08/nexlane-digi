@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     });
   }
   return buildMetadata({
-    title: service.name,
+    title: service.metaTitle,
     description: service.description,
     path: `/services/${slug}`,
   });
@@ -97,6 +97,25 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
             <Muted>{service.localCopy}</Muted>
           </div>
         )}
+        {/* Descriptive internal links between related service pages (AGENTS §12.11). */}
+        <nav aria-label="Related services" className="mt-8">
+          <Muted>
+            Related services:{" "}
+            {services
+              .filter((s) => s.slug !== slug)
+              .map((s, i, others) => (
+                <span key={s.slug}>
+                  {i > 0 && (i === others.length - 1 ? " and " : ", ")}
+                  <Link
+                    href={`/services/${s.slug}`}
+                    className="underline hover:text-white"
+                  >
+                    {s.name.toLowerCase()}
+                  </Link>
+                </span>
+              ))}
+          </Muted>
+        </nav>
         <div className="mt-8 flex flex-wrap gap-3">
           <Link href="/audit" className="btn btn-primary">
             Free Audit

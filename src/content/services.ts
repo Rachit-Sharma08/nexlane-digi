@@ -23,10 +23,11 @@ export const services: Service[] = [
     slug: "web-development",
     name: "Web Development",
     shortName: "Web Development",
+    metaTitle: "Website Development in Kaithal, Haryana | Nexlane Digital",
     summary:
-      "Fast, mobile-first websites for local businesses — from a simple business site to custom tools, built and maintained by us.",
+      "We build fast, mobile-friendly websites for local businesses in Kaithal and across Haryana. You get a written scope before we start, and a site that is easy to find and easy to use.",
     description:
-      "Mobile-first websites for local businesses in Kaithal and Haryana: clear pages, fast loading, and easy for customers to use. Built by Nexlane Digital.",
+      "Fast, mobile-friendly websites for local businesses in Kaithal and across Haryana, built by Nexlane Digital with a written scope before work starts.",
     whatIsIncluded: [
       "Plan first: we map your pages and what each page should achieve",
       "Mobile-first design that loads fast on phones",
@@ -65,10 +66,11 @@ export const services: Service[] = [
     slug: "seo",
     name: "SEO",
     shortName: "SEO",
+    metaTitle: "SEO Services in Kaithal | Local SEO, AEO & GEO | Nexlane",
     summary:
-      "Practical SEO for local businesses: local SEO, on-page, technical SEO — plus AEO/GEO so AI search tools can also find you.",
+      "We help local businesses in Kaithal and across Haryana get found on Google and in AI search. That means local SEO, on-page and technical fixes, and content that AI assistants can quote.",
     description:
-      "Local SEO, on-page and technical SEO for small businesses, including AEO/GEO work so search and AI assistants surface your business. Nexlane Digital, Kaithal.",
+      "Local SEO, on-page and technical SEO, plus AEO and GEO so AI search can find you. SEO services in Kaithal, Haryana from Nexlane Digital. Free audit first.",
     whatIsIncluded: [
       "Local SEO: Google Business Profile setup and improvement guidance",
       "On-page SEO: page structure, titles, meta descriptions, internal links",
@@ -107,10 +109,11 @@ export const services: Service[] = [
     slug: "game-development",
     name: "Game Development",
     shortName: "Game Development",
+    metaTitle: "Browser Game Development | Nexlane Digital",
     summary:
-      "Small browser games — for engagement campaigns, learning apps or just fun brand moments. Playable in the browser, no install.",
+      "We build small browser games for brands, events and learning — playable in the browser with no install. Built by Nexlane Digital in Kaithal, Haryana.",
     description:
-      "Small browser games built by Nexlane Digital in Kaithal: simple, fun, brandable games for campaigns, classrooms and events. No app install required.",
+      "Small browser games for brands, events and learning, built by Nexlane Digital, a young web and digital agency from Kaithal, Haryana.",
     whatIsIncluded: [
       "One simple playable game concept agreed in writing first",
       "Runs in the browser — no app store needed",
@@ -143,6 +146,49 @@ export const services: Service[] = [
     ],
     localCopy:
       "Browser games are an easy way to get people in Kaithal engaging with your brand without installing anything — fine for WhatsApp sharing and fair on slow internet.",
+  },
+  {
+    slug: "digital-marketing",
+    name: "Digital Marketing",
+    shortName: "Digital Marketing",
+    metaTitle: "Digital Marketing in Kaithal | Google & Meta Ads | Nexlane",
+    summary:
+      "We run Google Ads, Meta Ads and social media for local businesses in Kaithal and across Haryana, and create YouTube and Instagram content. Every project starts with a free audit.",
+    description:
+      "Digital marketing for local businesses in Kaithal and Haryana: Google Ads, Meta Ads, social media and YouTube content. Start with a free audit.",
+    whatIsIncluded: [
+      // TODO(owner): confirm exactly which of these you offer as paid work before launch.
+      "Google Ads and Meta Ads campaigns for your business",
+      "Social media content planned around what your customers care about",
+      "YouTube and Instagram content, including video editing",
+      "A free audit first, so we agree what to work on before spending anything",
+      "A written scope: what we will run, where, and how we review it",
+    ],
+    whoItIsFor: [
+      "Local businesses that want customers from Google or Meta ads",
+      "Shops and clinics that post inconsistently and need steady content",
+      "Brands that want YouTube or Instagram content without hiring in-house",
+    ],
+    process: [
+      "Free chat about your goals and who you want to reach",
+      "Free audit of your current website, profile and social presence",
+      "Written scope: channels, content plan and what we will measure",
+      "Launch, then review what actually worked — and adjust",
+    ],
+    faqs: [
+      {
+        question: "How much does digital marketing cost?",
+        answer:
+          "The price depends on the pages, features and goals, so we give a quote after a free chat. We write the scope down before any work starts, so there are no surprises.",
+      },
+      {
+        question: "What do I get from the free audit?",
+        answer:
+          "A short written review of your website or Google profile with 3 to 5 practical suggestions, free and with no obligation.",
+      },
+    ],
+    localCopy:
+      "Around Kaithal, customers search in their own words — nearby shops, phone calls, and Hinglish typed in Roman script. We plan ads and content around what people here actually search for, work in person around Kaithal and remotely across Haryana, and start every project with a free audit.",
   },
 ];
 
