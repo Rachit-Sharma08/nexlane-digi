@@ -12,6 +12,8 @@ import { absoluteUrl, allowIndexing } from "@/lib/seo";
  * crawlers (GPTBot, ClaudeBot, CCBot…) are covered by the "*" rule and are
  * also allowed on purpose: this is public marketing copy, and opting out is
  * one line here if the owner ever wants it.
+ * 
+ * Admin panel is disallowed for all crawlers.
  */
 const AI_ANSWER_BOTS = [
   "OAI-SearchBot", // ChatGPT search index
@@ -30,8 +32,8 @@ export default function robots(): MetadataRoute.Robots {
   return allowIndexing
     ? {
         rules: [
-          { userAgent: AI_ANSWER_BOTS, allow: "/" },
-          { userAgent: "*", allow: "/" },
+          { userAgent: [...AI_ANSWER_BOTS], disallow: "/admin", allow: "/" },
+          { userAgent: "*", disallow: "/admin", allow: "/" },
         ],
         sitemap: absoluteUrl("/sitemap.xml"),
       }

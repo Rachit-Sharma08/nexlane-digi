@@ -1,0 +1,33 @@
+[
+  {
+    "slug": "sample-draft-post",
+    "title": "DRAFT — How a Kaithal shop can get found on Google Maps",
+    "description": "A draft sample post to show the blog structure. Replace with real posts before publishing.",
+    "category": "Local SEO",
+    "date": "2026-11-01",
+    "author": "Rachit Sharma",
+    "draft": true,
+    "content": [
+      {
+        "type": "p",
+        "text": "This is a sample draft post. It exists so the blog layout, categories, reading time and author fields can be reviewed before any real post is published."
+      },
+      {
+        "type": "h",
+        "text": "What this post will cover"
+      },
+      {
+        "type": "list",
+        "items": [
+          "Claiming the Google Business Profile",
+          "Categories and services on the profile",
+          "Photos: what customers actually want to see before walking in"
+        ]
+      },
+      {
+        "type": "quote",
+        "text": "Draft only — do not promote or link this post anywhere until it is replaced with a real article."
+      }
+    ]
+  }
+]
