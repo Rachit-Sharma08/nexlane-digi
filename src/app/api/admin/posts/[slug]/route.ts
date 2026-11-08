@@ -19,6 +19,42 @@ async function readPosts(): Promise<BlogPost[] | null> {
   }
 }
 
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ slug: string }> }
+) {
+  const sessionKey = await getSessionKeyFromEnv();
+  if (!sessionKey) {
+    return NextResponse.json(
+      { error: 'Admin not configured' },
+      { status: 503 }
+    );
+  }
+
+  const cookie = request.cookies.get('nexlane_admin')?.value;
+  if (!cookie || !(await verifySessionCookie(cookie, sessionKey))) {
+    return NextResponse.json(
+      { error: 'Unauthorized' },
+      { status: 401 }
+    );
+  }
+
+  const { slug } = await params;
+  const posts = await readPosts();
+  if (posts === null) {
+    return NextResponse.json({ error: 'Blog content unreadable' }, { status: 500 });
+  }
+  const post = posts.find(p => p.slug === slug);
+  if (!post) {
+    return NextResponse.json(
+      { error: 'Post not found' },
+      { status: 404 }
+    );
+  }
+
+  return NextResponse.json({ post });
+}
+
 async function writePosts(posts: BlogPost[]): Promise<void> {
   const fs = await import('fs/promises');
   const tmpPath = `${blogJsonPath}.tmp`; // same dir → atomic rename

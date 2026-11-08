@@ -36,6 +36,7 @@ TODO.md
 # local QA screenshots (never committed)
 screenshots/
 .playwright-mcp/
+test-results/
 
 # admin audit logs
 data/*.log
