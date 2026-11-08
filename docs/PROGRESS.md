@@ -1,6 +1,19 @@
 # Nexlane Digital — Progress
 
-Last updated: 2026-11-07 · Repo: `Rachit-Sharma08/nexlane-digital` (private) · Deploy: Vercel (pending)
+Last updated: 2026-11-08 · Repo: `Rachit-Sharma08/nexlane-digital` (private) · Deploy: Vercel (pending)
+
+## Backend allowed + quick-win batch (2026-11-08, direct to `main`)
+
+- **Rule change (AGENTS §1/§5/§8.4):** backend work allowed (`/admin`, API, auth, file storage); direct pushes to `main` in small commits, no new PRs until owner says otherwise; owner-approved email + 2 business numbers in `site.ts`/Contact/footer (still never in JSON-LD).
+- **Merge:** `origin/main` (PR #8 Stage B squash `d8daf04`) merged into local main (`0e9c288`) — kept local post-Lighthouse state (MotionConfig removal etc.), dropped remote-only `Parallax.tsx` + `motion` dep (nothing imported them).
+- **Contact info:** `contactEmail`, `phoneCountryCode`, `phones[]` in `src/config/site.ts`; shown on `/contact` + Footer. Verified live via Playwright.
+- **WhatsApp:** local `.env` now `NEXT_PUBLIC_WHATSAPP_NUMBER=918307151186` (owner confirm karein kaun sa number — swap is one line). Float + wa.me links verified visible. **Vercel env me abhi set nahi** (owner-only at deploy).
+- **Favicon = logo:** `src/app/icon.png` (logo mark, 15 KB, sharp se bana), hand-drawn `icon.svg` deleted. `/icon.png` → 200.
+- **OG image = logo:** `src/app/opengraph-image.tsx` me logo mark (PNG data URL — `next/og` webp silently drop karta hai aur build-time par absolute URL fetch nahi ho sakta; source asset `src/app/og-mark.png`). Verified: mark + rounded card renders.
+- **Chatbot:** outside click closes the panel (Escape + FAB toggle still work) — Playwright verified.
+- **Theme (slightly darker):** `--bg #000d1d → #000814`, glows dimmed, hardcoded `rgba(0,13,29,·)` surfaces → `rgba(0,8,20,·)`. Owner pasand na aaye to `git revert 49cbe2a`.
+- **Gates:** `tsc` 0, `lint` 0 (1 warn: `<img>` inside next/og, eslint-disabled with reason), `npm test` 4/4, `build` 0, `npm audit` = 3 low (pre-existing shadcn dev, unchanged).
+- **Screenshots:** `screenshots/home|contact-{1440,768,360}-quickwins.png`, `chatbot-open-quickwins.png`, `og-verify-*.png`. (Harness image-preview cache ne kuch reads galat dikhayi the — files on disk DOM-verified aur sizes alag hain; owner locally khole.)
 
 ## SEO and speed run plan (2026-11-07/08, branch `perf/mobile-90` → `feat/seo-onpage`)
 
@@ -36,7 +49,7 @@ One run, two parts, no waiting for "next" (owner instruction overrides §8 rule 
 
 - `site.whatsappNumber` = `process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? ""` (source me koi hardcoded number nahi).
 - Gating 6/6 jagah: `WhatsAppFloat`, `Navbar TopBar`, `Footer`, `/` (page.tsx), `/services/[slug]`, `/contact`, `/thank-you` — sab `site.whatsappNumber &&` ya `if (!site.whatsappNumber) return null`.
-- Local `.env`: `NEXT_PUBLIC_WHATSAPP_NUMBER=` (empty). Disk-proof: prerendered HTML me `wa.me` = **0**.
+- Local `.env`: `NEXT_PUBLIC_WHATSAPP_NUMBER=918307151186` (owner-approved 2026-11-08; confirm kaun sa number WhatsApp par hai). Vercel env me set karna baaki.
 - JSON-LD schema aur team cards me koi phone number nahi.
 - ⚠️ Purana number `918307151186` git history (commit `2a90d82`) me abhi bhi hai — current source me nahi. Private repo hai, history rewrite tab karein jab repo public hoga.
 - `.env.example` me sirf fake `910000000000`.
@@ -44,9 +57,9 @@ One run, two parts, no waiting for "next" (owner instruction overrides §8 rule 
 ## TODO list (tumhe bharna hai)
 
 1. `SITE_URL` — apna domain kharidne ke baad real URL
-2. `contactEmail` — abhi khaali (`site.ts`)
+2. ~~`contactEmail`~~ ✅ Done 2026-11-08 (`nexlanedigitalservice@gmail.com` in `site.ts`)
 3. `instagramUrl`, `youtubeUrl` — abhi khaali
-4. `NEXT_PUBLIC_WHATSAPP_NUMBER` — business number confirm karke Vercel env me dalna (khali = WhatsApp UI hidden)
+4. `NEXT_PUBLIC_WHATSAPP_NUMBER` — local `.env` me set (`918307151186`); **Vercel env me dalna baaki** (khali = WhatsApp UI hidden)
 5. `REPLY_TIME` ("24–48 hours") confirm
 6. Logo PNG `nexlane-logo-clean.png` — kabhi attach hi nahi hua, sab placeholder SVG
 7. OG image file (`/brand/og-placeholder.png`) — Stage 5 me
