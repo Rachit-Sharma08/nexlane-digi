@@ -16,7 +16,7 @@ import { buildMetadata, faqSchema } from "@/lib/seo";
 export const metadata: Metadata = buildMetadata({
   title: "Nexlane Digital | Digital Marketing Agency in Kaithal",
   description:
-    "Nexlane Digital is a young digital marketing agency in Kaithal, Haryana. Websites, SEO and ads for local businesses, plus free lessons. Get a free audit.",
+    "Nexlane Digital is a young digital marketing agency in Kaithal, Haryana. Websites, SEO and ads for businesses in Haryana, India and abroad, plus free lessons.",
   path: "/",
 });
 
@@ -107,11 +107,11 @@ export default function HomePage() {
               Nexlane Digital · Kaithal, Haryana
             </p>
             <h1 className="font-display text-4xl font-bold leading-[1.08] sm:text-5xl">
-              Websites, <GradientHeading>SEO</GradientHeading> and growth for local businesses
+              Websites, <GradientHeading>SEO</GradientHeading> and growth for businesses
             </h1>
             <p className="mt-5 max-w-xl text-lg leading-relaxed text-[var(--muted)]">
               Nexlane Digital is a young digital marketing agency in Kaithal, Haryana. We build websites, improve SEO
-              and run ads for local businesses, and we teach what we learn for free.
+              and run ads for businesses of every size, and we teach what we learn for free.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link href="/audit" className="btn btn-primary">
@@ -253,7 +253,7 @@ export default function HomePage() {
           <SectionHeader
             eyebrow="Audience"
             title="Who we help"
-            intro="Small, local businesses — the kind that live on a phone, not a corporate website."
+            intro="Businesses of every size — the kind that live on a phone, not a corporate website."
           />
           <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {audiences.map((a) => (

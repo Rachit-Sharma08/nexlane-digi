@@ -67,7 +67,7 @@ export default function FoundersPage() {
         <section id="why-nexlane">
           <SectionTitle>Why we started Nexlane</SectionTitle>
           <Muted>
-            Rachit and Krish started Nexlane in 2026 to build real things for local businesses while learning fast —
+            Rachit and Krish started Nexlane in 2026 to build real things for businesses while learning fast —
             web development, AI tools and honest SEO under one roof.
           </Muted>
         </section>

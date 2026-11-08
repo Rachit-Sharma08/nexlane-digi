@@ -71,6 +71,9 @@ export function organizationSchema() {
     slogan: site.tagline,
     areaServed: [
       { "@type": "City", name: "Kaithal" },
+      { "@type": "City", name: "Karnal" },
+      { "@type": "City", name: "Kurukshetra" },
+      { "@type": "City", name: "Rohtak" },
       { "@type": "AdministrativeArea", name: "Haryana" },
       { "@type": "Country", name: "India" },
     ],
@@ -144,6 +147,9 @@ export function serviceSchema(opts: { name: string; description: string; path: s
       url: site.SITE_URL,
       areaServed: [
         { "@type": "City", name: "Kaithal" },
+        { "@type": "City", name: "Karnal" },
+        { "@type": "City", name: "Kurukshetra" },
+        { "@type": "City", name: "Rohtak" },
         { "@type": "AdministrativeArea", name: "Haryana" },
       ],
     },

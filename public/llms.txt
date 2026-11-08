@@ -4,7 +4,7 @@
 
 We build websites, do SEO (including AEO and GEO, so AI assistants can understand and quote your content), run Google Ads and Meta Ads, make small browser games, and teach what we learn for free.
 
-We work in person around Kaithal and remotely across Haryana. Written scope before any work starts; quote after a free chat; no guarantees of rankings — nobody can honestly promise those.
+We work in person around Kaithal, remotely across Haryana's bigger cities (Karnal, Kurukshetra, Rohtak, Ambala, Panipat, Hisar) and for clients anywhere, including abroad. Written scope before any work starts; quote after a free chat; no guarantees of rankings — nobody can honestly promise those.
 
 ## Pages
 
@@ -20,7 +20,7 @@ We work in person around Kaithal and remotely across Haryana. Written scope befo
 - [Learn](/learn): Free digital marketing lessons — no charge, no catch.
 - [YouTube Lessons](/learn/youtube): Free video lessons on digital marketing and AI tools.
 - [Blog](/learn/blog): Plain-language articles on SEO, local search and AI tools.
-- [Free Resources](/learn/resources): Checklists and AI tool lists for small businesses.
+- [Free Resources](/learn/resources): Checklists and AI tool lists for businesses.
 - [Our Work](/our-work): Honest empty state — we will list projects here as we earn them.
 - [Free Audit](/audit): A free written review of your website or Google profile.
 - [Contact](/contact): Tell us about your business and we will reply.

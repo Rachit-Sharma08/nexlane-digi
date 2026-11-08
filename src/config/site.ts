@@ -16,9 +16,9 @@ export const site = {
   alternateName: "Nexlane",
   // TODO: replace with the real domain once bought.
   SITE_URL: process.env.SITE_URL ?? "https://nexlanedigital.vercel.app",
-  tagline: "Websites, SEO and growth for local businesses",
+  tagline: "Websites, SEO and growth for businesses in Haryana and abroad",
   description:
-    "Nexlane Digital is a digital marketing and web agency from Kaithal, Haryana — websites, SEO and free learning for small local businesses.",
+    "Nexlane Digital is a digital marketing and web agency from Kaithal, Haryana — websites, SEO and free learning for businesses across Haryana, India and abroad.",
 
   // Placeholders — TODO: confirm each before go-live.
   location: "Kaithal, Haryana, India",

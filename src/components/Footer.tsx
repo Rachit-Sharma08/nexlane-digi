@@ -13,7 +13,7 @@ export default function Footer() {
             <span className="font-display text-lg font-bold tracking-[0.18em]">NEXLANE DIGITAL</span>
           </div>
           <p className="mt-3 max-w-sm text-sm leading-relaxed text-[var(--muted)]">
-            A young digital agency from {site.location}, helping small local businesses grow online — and teaching what we learn, free.
+            A young digital agency from {site.location}, helping businesses in Haryana, across India and abroad grow online — and teaching what we learn, free.
           </p>
           <div className="mt-3 space-y-1 text-sm text-[var(--muted)]">
             {site.contactEmail && (

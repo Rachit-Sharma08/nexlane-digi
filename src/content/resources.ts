@@ -16,7 +16,7 @@ export const toolLists: ResourceList[] = [
   {
     title: "Free AI tools list",
     intro:
-      "A short, honest list of free AI tools we actually use and recommend to students and local businesses. All have usable free tiers at the time of writing — that can change, so always check the tool's own limits before relying on it.",
+      "A short, honest list of free AI tools we actually use and recommend to students and businesses. All have usable free tiers at the time of writing — that can change, so always check the tool's own limits before relying on it.",
     groups: [
       {
         name: "Text and writing",

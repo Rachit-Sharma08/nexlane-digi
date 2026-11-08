@@ -50,7 +50,7 @@ export default function OurWorkPage() {
         <SectionTitle>Be one of our first clients</SectionTitle>
         <DepthCard>
           <p className="mb-4 text-[var(--muted)]">
-            We&apos;re taking on our first few local businesses now — send us one link and we&apos;ll show you
+            We&apos;re taking on our first few clients now — from Kaithal and Haryana&apos;s bigger cities to anywhere remote — send us one link and we&apos;ll show you
             what we&apos;d improve, for free.
           </p>
           <Link href="/audit" className="btn btn-primary">

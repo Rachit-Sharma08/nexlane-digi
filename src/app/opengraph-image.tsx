@@ -50,7 +50,7 @@ export default function OpengraphImage() {
         />
         <div style={{ fontSize: 96, fontWeight: 700, letterSpacing: -2 }}>Nexlane Digital</div>
         <div style={{ fontSize: 40, color: "#9FB3C8", marginTop: 20 }}>
-          Websites, SEO and growth for local businesses
+          Websites, SEO and growth for businesses in Haryana and abroad
         </div>
         <div
           style={{

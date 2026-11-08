@@ -103,7 +103,7 @@ const kb: Entry[] = [
   {
     keys: ["digital marketing", "digital marketing kya", "online marketing", "marketing kya"],
     answer:
-      "Digital marketing = being visible where people already look: your website, Google search (SEO), local listings, ads, and social content. We do it for local businesses — Google Ads, Meta Ads, social media and YouTube/Instagram content: /services/digital-marketing — and we teach it for free: /learn",
+      "Digital marketing = being visible where people already look: your website, Google search (SEO), local listings, ads, and social content. We do it for businesses of any size — Google Ads, Meta Ads, social media and YouTube/Instagram content: /services/digital-marketing — and we teach it for free: /learn",
   },
   {
     keys: ["instagram", "youtube", "social media", "followers", "reels", "content"],

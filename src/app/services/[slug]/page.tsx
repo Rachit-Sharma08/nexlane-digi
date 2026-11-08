@@ -93,7 +93,7 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
         </div>
         {service.localCopy && (
           <div className="mt-8">
-            <h2 className="font-display text-lg font-semibold">For businesses in and around Kaithal</h2>
+            <h2 className="font-display text-lg font-semibold">For businesses in Kaithal, Haryana and beyond</h2>
             <Muted>{service.localCopy}</Muted>
           </div>
         )}

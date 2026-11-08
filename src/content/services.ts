@@ -15,7 +15,7 @@ export type Service = {
   whoItIsFor: string[];
   process: string[];
   faqs: { question: string; answer: string }[];
-  localCopy: string; // short local-SEO paragraph (Kaithal & nearby)
+  localCopy: string; // short location paragraph (Kaithal, Haryana cities, remote/abroad)
 };
 
 export const services: Service[] = [
@@ -25,9 +25,9 @@ export const services: Service[] = [
     shortName: "Web Development",
     metaTitle: "Website Development in Kaithal, Haryana | Nexlane Digital",
     summary:
-      "We build fast, mobile-friendly websites for local businesses in Kaithal and across Haryana. You get a written scope before we start, and a site that is easy to find and easy to use.",
+      "We build fast, mobile-friendly websites for businesses in Kaithal, Haryana's bigger cities like Karnal and Rohtak, and for clients anywhere we can work remotely. You get a written scope before we start, and a site that is easy to find and easy to use.",
     description:
-      "Fast, mobile-friendly websites for local businesses in Kaithal and across Haryana, built by Nexlane Digital with a written scope before work starts.",
+      "Fast, mobile-friendly websites for businesses in Kaithal, Haryana and beyond, built by Nexlane Digital with a written scope before work starts.",
     whatIsIncluded: [
       "Plan first: we map your pages and what each page should achieve",
       "Mobile-first design that loads fast on phones",
@@ -60,7 +60,7 @@ export const services: Service[] = [
       },
     ],
     localCopy:
-      "We work with businesses in Kaithal, nearby districts and across Haryana. If you are a few streets away or a few districts away, the way we work is the same: talk first, plan in writing, then build.",
+      "We work with businesses in Kaithal, bigger Haryana cities like Karnal, Kurukshetra and Rohtak, and remotely for clients anywhere in India or abroad. Wherever you are, the way we work is the same: talk first, plan in writing, then build.",
   },
   {
     slug: "seo",
@@ -68,7 +68,7 @@ export const services: Service[] = [
     shortName: "SEO",
     metaTitle: "SEO Services in Kaithal | Local SEO, AEO & GEO | Nexlane",
     summary:
-      "We help local businesses in Kaithal and across Haryana get found on Google and in AI search. That means local SEO, on-page and technical fixes, and content that AI assistants can quote.",
+      "We help businesses in Kaithal and across Haryana — Karnal, Kurukshetra, Rohtak and beyond — get found on Google and in AI search. That means local SEO, on-page and technical fixes, and content that AI assistants can quote.",
     description:
       "Local SEO, on-page and technical SEO, plus AEO and GEO so AI search can find you. SEO services in Kaithal, Haryana from Nexlane Digital. Free audit first.",
     whatIsIncluded: [
@@ -103,7 +103,7 @@ export const services: Service[] = [
       },
     ],
     localCopy:
-      "Local search in Kaithal behaves differently from national search. We optimise for what people here actually type — nearby areas, phone calls and — in Hinglish — searches in Roman script included.",
+      "Local search in Kaithal behaves differently from national search. We optimise for what people here actually type — nearby areas, phone calls and — in Hinglish — searches in Roman script included. The same applies in bigger cities like Karnal and Rohtak, where the competition and the searches differ.",
   },
   {
     slug: "game-development",
@@ -145,7 +145,7 @@ export const services: Service[] = [
       },
     ],
     localCopy:
-      "Browser games are an easy way to get people in Kaithal engaging with your brand without installing anything — fine for WhatsApp sharing and fair on slow internet.",
+      "Browser games are an easy way to get people anywhere engaging with your brand without installing anything — fine for WhatsApp sharing and fair on slow internet, whether the audience is in Kaithal or abroad.",
   },
   {
     slug: "digital-marketing",
@@ -153,9 +153,9 @@ export const services: Service[] = [
     shortName: "Digital Marketing",
     metaTitle: "Digital Marketing in Kaithal | Google & Meta Ads | Nexlane",
     summary:
-      "We run Google Ads, Meta Ads and social media for local businesses in Kaithal and across Haryana, and create YouTube and Instagram content. Every project starts with a free audit.",
+      "We run Google Ads, Meta Ads and social media for businesses in Kaithal, Haryana's bigger cities and beyond, and create YouTube and Instagram content. Every project starts with a free audit.",
     description:
-      "Digital marketing for local businesses in Kaithal and Haryana: Google Ads, Meta Ads, social media and YouTube content. Start with a free audit.",
+      "Digital marketing for businesses in Kaithal and Haryana: Google Ads, Meta Ads, social media and YouTube content. Start with a free audit.",
     whatIsIncluded: [
       // TODO(owner): confirm exactly which of these you offer as paid work before launch.
       "Google Ads and Meta Ads campaigns for your business",
@@ -165,7 +165,7 @@ export const services: Service[] = [
       "A written scope: what we will run, where, and how we review it",
     ],
     whoItIsFor: [
-      "Local businesses that want customers from Google or Meta ads",
+      "Businesses that want customers from Google or Meta ads",
       "Shops and clinics that post inconsistently and need steady content",
       "Brands that want YouTube or Instagram content without hiring in-house",
     ],
@@ -188,7 +188,7 @@ export const services: Service[] = [
       },
     ],
     localCopy:
-      "Around Kaithal, customers search in their own words — nearby shops, phone calls, and Hinglish typed in Roman script. We plan ads and content around what people here actually search for, work in person around Kaithal and remotely across Haryana, and start every project with a free audit.",
+      "Around Kaithal, customers search in their own words — nearby shops, phone calls, and Hinglish typed in Roman script. We plan ads and content around what people actually search for, work in person around Kaithal, remotely across Haryana's bigger cities like Karnal, Kurukshetra and Rohtak, and for clients abroad — and we start every project with a free audit.",
   },
 ];
 
