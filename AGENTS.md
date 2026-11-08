@@ -160,3 +160,13 @@ Goals: (1) rank for the brand names "Nexlane" and "Nexlane Digital"; (2) rank lo
 11. **Local and AEO content.** Each service page has a section "For businesses in and around Kaithal" (real, written for people, mentions Kaithal and Haryana once or twice naturally) and a visible FAQ, answer first, 1 to 3 sentences, from `docs/seo-content.md`. Internal links between related pages with descriptive anchor text (for example SEO page to Free Audit, Digital Marketing to SEO). No prices, no guarantees, no invented statistics.
     - **Owner update 2026-11-08:** targeting is NOT Kaithal-only. Main target = bigger Haryana cities (Karnal, Kurukshetra, Rohtak, Ambala, Panipat, Hisar…) and customers from anywhere including foreign clients (remote work). Weave these in naturally where the audience is described; keep Kaithal as the home base; never claim clients we do not have; no keyword stuffing.
 12. **Owner-only tasks (agent only documents them in `docs/PROGRESS.md`).** Buy the domain and set `SITE_URL`; Google Search Console and Bing Webmaster Tools (submit the sitemap); Google Business Profile as a service-area business without a shown address (largest local ranking factor, needs verification); use the same name "Nexlane Digital" and the site URL in the Instagram and YouTube bios; flip `NEXT_PUBLIC_ALLOW_INDEXING`; validate keywords in Keyword Planner.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+## This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->
