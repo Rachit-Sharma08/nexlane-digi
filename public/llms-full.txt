@@ -1,0 +1,156 @@
+# Nexlane Digital — full site content
+
+> Nexlane Digital is a digital marketing and web agency from Kaithal, Haryana — websites, SEO and free learning for businesses across Haryana, India and abroad.
+
+Generated 2026-11-08 from this site's own content files (scripts/gen-llms-full.ts). Honesty note: Nexlane Digital started in 2026 and has no client projects to show yet — we offer a free audit instead of pretending to have case studies. We never guarantee rankings; nobody can honestly promise those.
+
+## Who we are
+
+We are a young digital marketing and web agency based in Kaithal, Haryana, India. We build websites, do SEO (including AEO and GEO, so AI assistants can understand and quote your content), run Google Ads and Meta Ads, make small browser games, and teach what we learn for free.
+
+## Services
+
+### Web Development — /services/web-development
+
+We build fast, mobile-friendly websites for businesses in Kaithal, Haryana's bigger cities like Karnal and Rohtak, and for clients anywhere we can work remotely. You get a written scope before we start, and a site that is easy to find and easy to use.
+
+**What is included:**
+- Plan first: we map your pages and what each page should achieve
+- Mobile-first design that loads fast on phones
+- Clear content structure (services, contact, location)
+- Basic on-page SEO setup (titles, descriptions, sitemap)
+- Analytics setup so you can see visitors
+- How-to walkthrough when it goes live, so you are not stuck
+
+**Who it is for:**
+- Shops and stores without a website
+- Coaching and schools that need a simple information site
+- Gyms, clinics, hotels/PGs that want to look credible in search
+- Local professionals (advocates, CAs, agents) who need a single trustable page
+
+**How we work:**
+1. Free chat about goals and content
+2. Written scope so both sides know exactly what will be built
+3. Build and review together
+4. Launch and support after go-live
+
+We work with businesses in Kaithal, bigger Haryana cities like Karnal, Kurukshetra and Rohtak, and remotely for clients anywhere in India or abroad. Wherever you are, the way we work is the same: talk first, plan in writing, then build.
+
+**FAQ:**
+- **Can you use my existing domain or website?** Often yes. Tell us what you already have during the free chat and we will say plainly what is possible and what is not.
+- **How much does it cost?** Every project is different, so we quote after a free chat once we know the scope.
+
+### SEO — /services/seo
+
+We help businesses in Kaithal and across Haryana — Karnal, Kurukshetra, Rohtak and beyond — get found on Google and in AI search. That means local SEO, on-page and technical fixes, and content that AI assistants can quote.
+
+**What is included:**
+- Local SEO: Google Business Profile setup and improvement guidance
+- On-page SEO: page structure, titles, meta descriptions, internal links
+- Technical SEO basics: speed, mobile friendliness, crawlability
+- AEO/GEO: content structured so AI search assistants can cite you
+- A plain-language plan: what we will do and in which order
+- A short written review after every stage — no jargon-heavy reports
+
+**Who it is for:**
+- Local shops that should appear for nearby searches
+- Service businesses that depend on calls and walk-ins
+- Anyone already advertising who wants free traffic to reduce ad cost
+
+**How we work:**
+1. Free chat: what customers currently search for
+2. Audit of your website and Google profile
+3. Written plan with priorities
+4. Changes + monthly-ish reviews (agreed together, not forced)
+
+Local search in Kaithal behaves differently from national search. We optimise for what people here actually type — nearby areas, phone calls and — in Hinglish — searches in Roman script included. The same applies in bigger cities like Karnal and Rohtak, where the competition and the searches differ.
+
+**FAQ:**
+- **Will you get me #1 on Google?** No one can honestly promise a rank. We aim to make your business easier to find, then measure what actually improves.
+- **What is AEO/GEO?** Making your content easy for AI assistants (like ChatGPT or Google AI Overviews) to understand and cite — the same habit as good SEO, plus clear structure and facts.
+
+### Game Development — /services/game-development
+
+We build small browser games for brands, events and learning — playable in the browser with no install. Built by Nexlane Digital in Kaithal, Haryana.
+
+**What is included:**
+- One simple playable game concept agreed in writing first
+- Runs in the browser — no app store needed
+- Your branding (colours, logo, text) baked in
+- Works on phones
+- Hosting guidance and a walkthrough
+
+**Who it is for:**
+- Businesses running contests or festival campaigns
+- Schools/coaching wanting simple learning games
+- Anyone who wants a memorable interactive brand moment
+
+**How we work:**
+1. Free chat about the idea and who it is for
+2. Agreed scope: one game, features listed
+3. Build + your testing round
+4. Launch + one round of tweaks
+
+Browser games are an easy way to get people anywhere engaging with your brand without installing anything — fine for WhatsApp sharing and fair on slow internet, whether the audience is in Kaithal or abroad.
+
+**FAQ:**
+- **Can you build something like Candy Crush?** Honest answer: no — that takes big teams and years. We build small, focused games in the browser: quizzes, race or maze style games, and branded mini-games.
+- **Who owns the game?** Ownership and handover are agreed in the written scope before we start, so there are no surprises later.
+
+### Digital Marketing — /services/digital-marketing
+
+We run Google Ads, Meta Ads and social media for businesses in Kaithal, Haryana's bigger cities and beyond, and create YouTube and Instagram content. Every project starts with a free audit.
+
+**What is included:**
+- Google Ads and Meta Ads campaigns for your business
+- Social media content planned around what your customers care about
+- YouTube and Instagram content, including video editing
+- A free audit first, so we agree what to work on before spending anything
+- A written scope: what we will run, where, and how we review it
+
+**Who it is for:**
+- Businesses that want customers from Google or Meta ads
+- Shops and clinics that post inconsistently and need steady content
+- Brands that want YouTube or Instagram content without hiring in-house
+
+**How we work:**
+1. Free chat about your goals and who you want to reach
+2. Free audit of your current website, profile and social presence
+3. Written scope: channels, content plan and what we will measure
+4. Launch, then review what actually worked — and adjust
+
+Around Kaithal, customers search in their own words — nearby shops, phone calls, and Hinglish typed in Roman script. We plan ads and content around what people actually search for, work in person around Kaithal, remotely across Haryana's bigger cities like Karnal, Kurukshetra and Rohtak, and for clients abroad — and we start every project with a free audit.
+
+**FAQ:**
+- **How much does digital marketing cost?** The price depends on the pages, features and goals, so we give a quote after a free chat. We write the scope down before any work starts, so there are no surprises.
+- **What do I get from the free audit?** A short written review of your website or Google profile with 3 to 5 practical suggestions, free and with no obligation.
+
+## Common questions (home page)
+- **Are you a new agency?** Yes. Nexlane Digital started in 2026 and we have no client projects to show yet. We say so openly, and we offer a free audit so you can judge our thinking before you pay anything.
+- **How much does a website or marketing cost? / Kaithal me website banwane ka kharcha kitna hota hai?** The price depends on the pages, features and goals, so we give a quote after a free chat. We write the scope down before any work starts, so there are no surprises.
+- **Will you get me #1 on Google?** No honest agency can promise a ranking. We work on the things we can control (your Google profile, site speed, page content, local signals) and tell you plainly what we see.
+- **What do I get from the free audit?** A short written review of your website or Google profile with 3 to 5 practical suggestions, free and with no obligation.
+
+## Contact
+Email: nexlanedigitalservice@gmail.com. Or use the form at /contact — phone and WhatsApp numbers are listed there.
+
+## Pages
+
+- [Home](/): Who we are — a digital marketing agency in Kaithal, Haryana.
+- [About](/about): Our story from Kaithal, started in 2026.
+- [Founders](/about/founders): Rachit Sharma (SEO and growth) and Krish Khati (web development and AI).
+- [Team](/about/team): The team that builds websites, edits video and runs our content.
+- [Services](/services): Everything we do — digital marketing, SEO, web development, games.
+- [Digital Marketing](/services/digital-marketing): Google Ads, Meta Ads, social media and YouTube/Instagram content.
+- [SEO](/services/seo): Local SEO, on-page and technical SEO, plus AEO/GEO.
+- [Web Development](/services/web-development): Fast, mobile-friendly websites with a written scope.
+- [Game Development](/services/game-development): Small browser games for brands, events and learning.
+- [Learn](/learn): Free digital marketing lessons — no charge, no catch.
+- [YouTube Lessons](/learn/youtube): Free video lessons on digital marketing and AI tools.
+- [Blog](/learn/blog): Plain-language articles on SEO, local search and AI tools.
+- [Free Resources](/learn/resources): Checklists and AI tool lists for businesses.
+- [Our Work](/our-work): Honest empty state — we will list projects here as we earn them.
+- [Free Audit](/audit): A free written review of your website or Google profile.
+- [Contact](/contact): Tell us about your business and we will reply.
+- [Privacy](/privacy): How this site handles data (draft, pending professional review).
+- [Terms](/terms): Terms for using this site and our services.
