@@ -1,6 +1,8 @@
 import Breadcrumbs from '@/components/Breadcrumbs';
 import JsonLd from '@/components/JsonLd';
-import { GlassCard, Section, Eyebrow } from '@/components/ui';
+import { Section, Eyebrow } from '@/components/ui';
+import DepthCard from '@/components/DepthCard';
+import NextUp from '@/components/NextUp';
 import { buildMetadata, breadcrumbSchema } from '@/lib/seo';
 import { site } from '@/config/site';
 
@@ -26,9 +28,9 @@ export default function YouTubePage() {
       <h1 className="font-display text-4xl font-bold mb-8">YouTube lessons</h1>
       <p className="text-[var(--muted)] mb-8">Free video lessons on digital marketing and free AI tools</p>
       {lessons.length === 0 ? (
-        <GlassCard>
+        <DepthCard>
           <p className="text-[var(--muted)]">First lessons are on the way. Subscribe when the channel link is live.</p>
-        </GlassCard>
+        </DepthCard>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {lessons.map((lesson) => (
@@ -55,6 +57,7 @@ export default function YouTubePage() {
           Subscribe on YouTube
         </a>
       )}
+      <NextUp title="Read the blog" href="/learn/blog" cta="Open blog" eyebrow="Keep going" />
       <JsonLd data={breadcrumbSchema(breadcrumbItems)} />
     </Section>
   );

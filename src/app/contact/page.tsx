@@ -1,5 +1,7 @@
 import JsonLd from '@/components/JsonLd';
-import { Section, SectionTitle, GlassCard, Eyebrow } from '@/components/ui';
+import { Section, SectionTitle, Eyebrow } from '@/components/ui';
+import DepthCard from '@/components/DepthCard';
+import NextUp from '@/components/NextUp';
 import { buildMetadata, breadcrumbSchema } from '@/lib/seo';
 import { site } from '@/config/site';
 
@@ -27,7 +29,7 @@ export default function ContactPage() {
       </p>
 
       <SectionTitle>Reach us directly</SectionTitle>
-      <GlassCard>
+      <DepthCard>
         <ul className="space-y-2 text-[var(--muted)]">
           {contact ? (
             <li>
@@ -69,10 +71,10 @@ export default function ContactPage() {
             </li>
           ) : null}
         </ul>
-      </GlassCard>
+      </DepthCard>
 
       <SectionTitle>Send a message</SectionTitle>
-      <GlassCard>
+      <DepthCard>
         <form className="space-y-4" action="#" method="post" aria-describedby="contact-form-note">
           <div>
             <label htmlFor="contact-name" className="block text-sm font-medium mb-1">
@@ -120,9 +122,10 @@ export default function ContactPage() {
             The form backend is being wired up. Until then, use the email or social links above.
           </p>
         </form>
-      </GlassCard>
+      </DepthCard>
 
       <JsonLd data={breadcrumbSchema(breadcrumbItems)} />
+      <NextUp title="Get a free audit of your site" href="/audit" cta="Get a Free Audit" eyebrow="Keep going" />
     </Section>
   );
 }
