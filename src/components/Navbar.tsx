@@ -22,7 +22,7 @@ function TopBar() {
 
   if (links.length === 0) return null;
   return (
-    <div className="border-b border-[var(--card-border)] bg-[rgba(0,8,20,0.85)]">
+    <div className="border-b border-[var(--card-border)] bg-[#000814] pt-[env(safe-area-inset-top)]">
       <div className="mx-auto flex max-w-6xl items-center justify-end gap-5 px-4 py-1.5 sm:px-6">
         {links.map((l) => (
           <a key={l.label} href={l.href} aria-label={l.label} className="flex items-center gap-1.5 text-xs text-[var(--muted)] hover:text-white" rel="noopener noreferrer" target="_blank">
@@ -205,7 +205,7 @@ function Dropdown({ parent, mobile }: { parent: DropdownParent; mobile?: boolean
           ref={menuRef}
           id={menuId}
           onKeyDown={handleMenuKeyDown}
-          className="glass absolute left-0 top-full z-50 mt-2 w-56 p-2 shadow-xl"
+          className="absolute left-0 top-full z-[60] mt-2 w-56 rounded-xl border border-[var(--card-border)] bg-[#04182f] p-2 shadow-2xl shadow-black/60 backdrop-blur-md"
         >
           {parent.items.map((i) => {
             const itemActive = pathname === i.href;
@@ -256,12 +256,12 @@ export default function Navbar() {
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
           <Link href="/" className="flex items-center gap-2" aria-label={`${site.name} home`}>
             <Image
-              src="/nexlane-mark.webp"
-              alt=""
-              width={400}
-              height={285}
+              src="/brand/nexlane-mark.png"
+              alt="Nexlane Digital mark"
+              width={380}
+              height={257}
               priority
-              className="logo-blend h-10 w-auto object-contain mix-blend-screen"
+              className="h-10 w-auto object-contain"
             />
             <span className="font-display text-lg font-bold tracking-[0.18em] text-white">NEXLANE</span>
           </Link>

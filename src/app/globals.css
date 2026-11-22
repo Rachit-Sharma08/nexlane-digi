@@ -91,6 +91,7 @@ html[data-quality="low"] ::view-transition-new(route-content) {
   --color-muted: var(--muted);
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-sora), ui-sans-serif, system-ui, sans-serif;
+  --font-hero: var(--font-anton), "Arial Narrow", ui-sans-serif, sans-serif;
   /* shadcn theme mappings */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -289,9 +290,92 @@ html[data-quality="low"] .depth-card.motion-card:hover {
 }
 .hero-media { min-width: 0; animation: media-arrive 920ms 120ms cubic-bezier(0.16, 1, 0.3, 1) both; }
 .hero-media-glow { position: absolute; inset: 10%; border-radius: 50%; background: var(--bg-glow-2); opacity: 0.48; filter: blur(70px); }
-.hero-orbit { position: absolute; z-index: 20; width: 0.7rem; height: 0.7rem; border: 1px solid rgba(124, 244, 239, 0.72); border-radius: 50%; background: var(--accent); box-shadow: 0 0 20px rgba(30, 211, 242, 0.8); }
-.hero-orbit-one { top: 7%; right: 6%; animation: orbit-drift 5s ease-in-out infinite; }
-.hero-orbit-two { bottom: 15%; left: 1%; width: 0.45rem; height: 0.45rem; animation: orbit-drift 6s 1s ease-in-out infinite reverse; }
+
+/* Hero object (AGENTS §13): our own transparent N mark, never a third-party
+   mascot. High tier renders it as a textured stack in WebGL (HeroCanvas); mid
+   and low tiers use this CSS 3D / static version. */
+.hero-backdrop {
+  position: absolute;
+  inset: -12% -20% auto;
+  height: 125%;
+  background:
+    radial-gradient(42% 40% at 16% 20%, rgba(1, 72, 121, 0.55), transparent 70%),
+    radial-gradient(36% 34% at 84% 14%, rgba(30, 211, 242, 0.14), transparent 72%);
+  pointer-events: none;
+}
+.hero-eyebrow {
+  margin-bottom: 0.85rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.hero-title {
+  font-family: var(--font-hero);
+  font-weight: 400;
+  font-size: clamp(2.75rem, 8.4vw, 6.25rem);
+  line-height: 0.95;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+.hero-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1.25rem;
+  max-width: 34rem;
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--card-border);
+}
+.hero-links a {
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.hero-links a:hover { color: var(--accent); }
+.hero-mark-scene {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  perspective: 900px;
+}
+.hero-mark-tilt {
+  transform: rotateX(var(--hero-rx, 0deg)) rotateY(var(--hero-ry, 0deg));
+  transform-style: preserve-3d;
+  transition: transform 320ms var(--ease-out-expo);
+  will-change: transform;
+}
+.hero-mark-img {
+  width: clamp(10.5rem, 62%, 20rem);
+  height: auto;
+  filter: drop-shadow(0 26px 42px rgba(5, 114, 245, 0.5)) drop-shadow(0 0 24px rgba(30, 211, 242, 0.35));
+}
+.hero-glow-arc {
+  position: absolute;
+  left: 50%;
+  bottom: 9%;
+  z-index: 1;
+  width: 74%;
+  height: 22%;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(30, 211, 242, 0.4), transparent 72%);
+  filter: blur(14px);
+  pointer-events: none;
+}
+.hero-glow-arc::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border-bottom: 2px solid rgba(124, 244, 239, 0.75);
+  box-shadow: 0 10px 34px rgba(30, 211, 242, 0.45);
+}
 
 /* Hero stage: CSS depth base, and the whole visual for low/mid tiers (§11.2). */
 .hero-stage {
@@ -313,34 +397,6 @@ html[data-quality="low"] .depth-card.motion-card:hover {
   height: 55%;
   background: radial-gradient(closest-side, rgba(30, 211, 242, 0.26), transparent 75%);
   filter: blur(22px);
-}
-.hero-stage-grid {
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(125, 196, 255, 0.07) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(125, 196, 255, 0.07) 1px, transparent 1px);
-  background-size: 42px 42px;
-  mask-image: radial-gradient(75% 70% at 50% 40%, #000 25%, transparent 80%);
-}
-.hero-stage-mark {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  display: grid;
-  place-items: center;
-}
-.hero-css-lanes {
-  position: absolute;
-  left: -30%;
-  right: -30%;
-  bottom: -6%;
-  height: 68%;
-  background: repeating-linear-gradient(90deg, transparent 0 42px, rgba(30, 211, 242, 0.5) 42px 44px);
-  transform: perspective(480px) rotateX(72deg);
-  transform-origin: 50% 100%;
-  opacity: 0.5;
-  mask-image: linear-gradient(to top, #000 8%, transparent 88%);
 }
 
 /* Scroll-linked blur fade. Pure CSS scroll timeline; browsers without it just show the content. */
@@ -404,7 +460,7 @@ html[data-quality="low"] .depth-card.motion-card:hover {
 .back-to-top {
   position: fixed;
   right: 1.25rem;
-  bottom: 5.75rem;
+  bottom: 10rem;
   z-index: 49;
   display: grid;
   width: 2.75rem;
@@ -423,6 +479,29 @@ html[data-quality="low"] .depth-card.motion-card:hover {
 }
 .back-to-top.is-visible { opacity: 1; pointer-events: auto; transform: translateY(0) scale(1); }
 .back-to-top:hover { border-color: var(--accent); transform: translateY(-2px); }
+
+/* Floating buttons share the bottom-right column: chat at the bottom, then
+   WhatsApp, then back-to-top, each with breathing room. The chat panel opens
+   over the WhatsApp slot, so that button fades while the panel is open. */
+.whatsapp-float {
+  transition: opacity 200ms ease, transform 240ms var(--ease-out-expo),
+    border-color 180ms ease, background-color 180ms ease;
+}
+html[data-chat-open="true"] .whatsapp-float {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(8px) scale(0.95);
+}
+/* The hero carries its own WhatsApp button, so the fixed stack waits below it. */
+html[data-hero-visible="true"] .whatsapp-float,
+html[data-hero-visible="true"] .chat-fab,
+html[data-hero-visible="true"] .back-to-top {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(10px);
+}
 @keyframes section-arrive {
   from { opacity: 0; transform: translateY(36px); }
   to { opacity: 1; transform: translateY(0); }
@@ -444,8 +523,8 @@ html[data-quality="low"] .depth-card.motion-card:hover {
   justify-content: center;
   gap: 0.5rem;
   font-weight: 600;
-  border-radius: 0.6rem;
-  padding: 0.7rem 1.25rem;
+  border-radius: 999px;
+  padding: 0.7rem 1.35rem;
   transition: transform 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
   cursor: pointer;
 }
@@ -459,15 +538,18 @@ select:focus-visible {
   outline-offset: 2px;
 }
 .btn-primary {
-  background: linear-gradient(90deg, var(--brand), var(--accent));
-  color: #001018;
+  /* White text needs a darker blue: the cyan end of the brand gradient is
+     ~1.8:1 against white (AGENTS §13 keeps the cyan gradient for the glow
+     and the "SEO" word instead). Stops measured at 5.3:1 or better. */
+  background: linear-gradient(100deg, #03459a, #0466dd);
+  color: #ffffff;
+  box-shadow: 0 8px 24px rgba(5, 114, 245, 0.22);
 }
 .btn-primary:hover {
-  background: linear-gradient(90deg, var(--brand-2), var(--accent-2));
+  background: linear-gradient(100deg, #0455c8, #0572f5);
   transform: translateY(-1px);
 }
 .btn:active { transform: translateY(1px) scale(0.985); }
-.btn-primary { box-shadow: 0 8px 24px rgba(5, 114, 245, 0.16); }
 .btn-ghost {
   border: 1px solid var(--card-border);
   color: var(--text);
@@ -510,7 +592,7 @@ details[open] > p { animation: answer-arrive 220ms cubic-bezier(0.16, 1, 0.3, 1)
   border: 1px solid rgba(30, 211, 242, 0.5);
   box-shadow: 0 10px 30px rgba(1, 12, 26, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.18);
   transition: transform 240ms var(--ease-out-expo), box-shadow 240ms ease,
-    border-color 240ms ease;
+    border-color 240ms ease, opacity 200ms ease;
 }
 .chat-fab:hover {
   transform: translateY(-2px) scale(1.05);
@@ -733,6 +815,7 @@ h3,
     transition-duration: 0.01ms !important;
   }
   .scroll-reveal, .reveal-blur, .stagger > *, .parallax-drift, .hero-arrive, .hero-media, .mobile-menu-enter, .hero-orbit { animation: none; }
+  .hero-mark-tilt { transform: none; transition: none; }
   .chat-panel, .chat-fab::after, .chat-dots i, .chat-fab { animation: none; }
   .robot, .robot-head, .robot-eye, .robot-antenna i { animation: none !important; }
   .chat-fab:hover { transform: none; }
@@ -744,7 +827,7 @@ h3,
 }
 
 @media (max-width: 640px) {
-  .back-to-top { right: 1rem; bottom: 5.25rem; }
+  .back-to-top { right: 1rem; bottom: 9.5rem; }
   .glass { backdrop-filter: blur(6px); }
 }
 

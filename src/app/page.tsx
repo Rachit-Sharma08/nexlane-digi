@@ -99,14 +99,13 @@ export default function HomePage() {
 
   return (
     <>
-      {/* 1. HERO — the only WebGL moment on the site (§11.2) */}
-      <section className="relative overflow-hidden">
-        <div className="mx-auto grid w-full max-w-6xl gap-12 px-4 pb-16 pt-14 sm:px-6 sm:pt-20 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+      {/* 1. HERO — the only WebGL moment on the site (§11.2, §13) */}
+      <section id="hero" className="hero-section relative overflow-hidden">
+        <span className="hero-backdrop" aria-hidden="true" />
+        <div className="mx-auto grid w-full max-w-6xl gap-10 px-4 pb-28 pt-14 sm:px-6 sm:pt-20 lg:grid-cols-[1.15fr_0.85fr] lg:items-center lg:pb-32">
           <div>
-            <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-[var(--accent)]">
-              Nexlane Digital · Kaithal, Haryana
-            </p>
-            <h1 className="font-display text-4xl font-bold leading-[1.08] sm:text-5xl">
+            <p className="hero-eyebrow">Nexlane Digital · Kaithal, Haryana</p>
+            <h1 className="hero-title">
               Websites, <GradientHeading>SEO</GradientHeading> and growth for businesses
             </h1>
             <p className="mt-5 max-w-xl text-lg leading-relaxed text-[var(--muted)]">
@@ -126,8 +125,15 @@ export default function HomePage() {
             <p className="mt-4 text-xs text-[var(--muted)]">
               Free, no obligation · We usually reply within {site.REPLY_TIME}.
             </p>
+            <nav aria-label="Popular services" className="hero-links">
+              {services.slice(0, 4).map((service) => (
+                <Link key={service.slug} href={`/services/${service.slug}`}>
+                  {service.name}
+                </Link>
+              ))}
+            </nav>
           </div>
-          <div className="mx-auto w-full max-w-[30rem] lg:max-w-none">
+          <div className="hero-media mx-auto w-full max-w-[30rem] lg:max-w-none">
             <HeroVisual />
           </div>
         </div>

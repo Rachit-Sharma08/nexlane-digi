@@ -1,29 +1,60 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useQuality } from "@/lib/quality";
 
 type LoaderProps = { fallback: React.ReactNode };
 type LoaderComponent = React.ComponentType<LoaderProps>;
 
-function StaticStage() {
+/**
+ * Our own N mark with CSS depth (AGENTS §13). Mid tier tilts toward the
+ * pointer; low tier and reduced motion stay static.
+ */
+function StaticMark() {
+  const quality = useQuality();
+  const scene = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const node = scene.current;
+    if (!node || quality !== "mid") return;
+    let frame = 0;
+    const onMove = (event: PointerEvent) => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        const rect = node.getBoundingClientRect();
+        const x = (event.clientX - rect.left) / rect.width - 0.5;
+        const y = (event.clientY - rect.top) / rect.height - 0.5;
+        node.style.setProperty("--hero-ry", `${x * 16}deg`);
+        node.style.setProperty("--hero-rx", `${-y * 12}deg`);
+      });
+    };
+    const reset = () => {
+      node.style.setProperty("--hero-ry", "0deg");
+      node.style.setProperty("--hero-rx", "0deg");
+    };
+    node.addEventListener("pointermove", onMove);
+    node.addEventListener("pointerleave", reset);
+    return () => {
+      cancelAnimationFrame(frame);
+      node.removeEventListener("pointermove", onMove);
+      node.removeEventListener("pointerleave", reset);
+    };
+  }, [quality]);
+
   return (
-    <>
-      <span className="hero-css-lanes" aria-hidden="true" />
-      <span className="hero-stage-mark">
+    <div ref={scene} className="hero-mark-scene">
+      <div className="hero-mark-tilt">
         <Image
-          src="/nexlane-mark.webp"
+          src="/brand/nexlane-mark.png"
           alt=""
-          width={400}
-          height={285}
+          width={380}
+          height={257}
           priority
-          className="logo-blend h-24 w-auto object-contain mix-blend-screen sm:h-28"
+          className="hero-mark-img"
         />
-      </span>
-      <span className="hero-orbit hero-orbit-one" aria-hidden="true" />
-      <span className="hero-orbit hero-orbit-two" aria-hidden="true" />
-    </>
+      </div>
+    </div>
   );
 }
 
@@ -60,11 +91,11 @@ export default function HeroVisual() {
   return (
     <div className="hero-stage hero-arrive" aria-hidden="true">
       <span className="hero-stage-glow" />
-      <span className="hero-stage-grid" />
+      <span className="hero-glow-arc" />
       {ready && quality === "high" && Loader ? (
-        <Loader fallback={<StaticStage />} />
+        <Loader fallback={<StaticMark />} />
       ) : (
-        <StaticStage />
+        <StaticMark />
       )}
     </div>
   );
