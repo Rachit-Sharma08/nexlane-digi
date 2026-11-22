@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { verifySessionCookie, getSessionKeyFromEnv } from './lib/admin-auth';
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const sessionKey = await getSessionKeyFromEnv();
   if (!sessionKey) {
     // Admin not configured, deny access (except login page)
