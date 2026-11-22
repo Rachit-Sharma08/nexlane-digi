@@ -12,9 +12,8 @@ export function ArrowMotif({ className = "" }: { className?: string }) {
     >
       <defs>
         <linearGradient id="nx-arrow" x1="0" y1="120" x2="120" y2="0">
-          <stop offset="0%" stopColor="var(--brand)" />
-          <stop offset="55%" stopColor="var(--accent)" />
-          <stop offset="100%" stopColor="var(--accent-2)" />
+          <stop offset="0%" stopColor="var(--accent)" />
+          <stop offset="100%" stopColor="var(--accent-dark)" />
         </linearGradient>
       </defs>
       <path

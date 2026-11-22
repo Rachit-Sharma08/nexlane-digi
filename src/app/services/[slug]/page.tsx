@@ -86,7 +86,7 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
               <DepthCard key={item} glare className="flex items-start gap-3 p-5">
                 <span
                   aria-hidden="true"
-                  className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[var(--brand)] to-[var(--accent)] text-white"
+                  className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[var(--accent)] to-[var(--accent-dark)] text-[var(--bg)]"
                 >
                   <Check className="h-4 w-4" strokeWidth={3} />
                 </span>
@@ -118,7 +118,7 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
               <li key={index} className="relative flex gap-4 sm:gap-5">
                 <span
                   aria-hidden="true"
-                  className="relative z-10 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[var(--brand)] to-[var(--accent)] text-sm font-bold text-white shadow-[0_0_18px_rgba(30,211,242,0.35)]"
+                  className="relative z-10 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[var(--accent)] to-[var(--accent-dark)] text-[var(--bg)] text-sm font-bold shadow-[0_0_18px_rgba(200,255,46,0.35)]"
                 >
                   {index + 1}
                 </span>

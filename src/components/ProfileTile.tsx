@@ -23,7 +23,7 @@ export default function ProfileTile({ member }: { member: TeamMember }) {
       id={member.slug}
       className="group relative scroll-mt-28 transition-transform duration-300 hover:-translate-y-1"
     >
-      <div className="relative aspect-square overflow-hidden rounded-3xl border border-[var(--card-border)] bg-gradient-to-br from-[#0a3560] via-[#06213f] to-[#03101f] shadow-[var(--shadow-card)]">
+      <div className="relative aspect-square overflow-hidden rounded-3xl border border-[var(--card-border)] bg-gradient-to-br from-[var(--bg-alt)] via-[var(--bg)] to-[var(--bg)] shadow-[var(--shadow-card)]">
         {member.photo ? (
           <Image
             src={member.photo}
@@ -36,7 +36,7 @@ export default function ProfileTile({ member }: { member: TeamMember }) {
           <>
             <span
               aria-hidden="true"
-              className="absolute -left-10 -top-10 h-48 w-48 rounded-full bg-[var(--brand-2)] opacity-20 blur-3xl"
+              className="absolute -left-10 -top-10 h-48 w-48 rounded-full bg-[var(--accent)] opacity-20 blur-3xl"
             />
             <span
               aria-hidden="true"
@@ -59,7 +59,7 @@ export default function ProfileTile({ member }: { member: TeamMember }) {
             aria-label={`Open ${member.name}'s portfolio in a new tab`}
             className="absolute inset-0 z-10 rounded-3xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
           >
-            <span className="portfolio-cue absolute right-4 top-4 rounded-full border border-[var(--accent)]/40 bg-[rgba(0,8,20,0.86)] px-3 py-1.5 text-xs font-semibold text-[var(--accent-2)] backdrop-blur">
+            <span className="portfolio-cue absolute right-4 top-4 rounded-full border border-[var(--accent)]/40 bg-[var(--bg)]/90 px-3 py-1.5 text-xs font-semibold text-[var(--accent)] backdrop-blur">
               Open portfolio <span aria-hidden="true">↗</span>
             </span>
           </a>
@@ -75,7 +75,7 @@ export default function ProfileTile({ member }: { member: TeamMember }) {
           {member.skills.map((skill) => (
             <li
               key={skill}
-              className="rounded-full border border-[var(--card-border)] bg-[rgba(12,34,63,0.35)] px-2.5 py-0.5 text-xs text-[var(--muted)]"
+              className="rounded-full border border-[var(--card-border)] bg-[var(--bg-alt)] px-2.5 py-0.5 text-xs text-[var(--muted)]"
             >
               {skill}
             </li>

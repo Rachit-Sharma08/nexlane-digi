@@ -34,7 +34,7 @@ export default function ContactPage() {
           {contact ? (
             <li>
               Email:{' '}
-              <a href={`mailto:${contact}`} className="text-[var(--accent-2)] underline">
+              <a href={`mailto:${contact}`} className="text-[var(--accent)] underline">
                 {contact}
               </a>
             </li>
@@ -47,7 +47,7 @@ export default function ContactPage() {
               {site.phones.map((p, i) => (
                 <span key={p}>
                   {i > 0 ? ' · ' : ''}
-                  <a href={`tel:${site.phoneCountryCode}${p}`} className="text-[var(--accent-2)] underline">
+                  <a href={`tel:${site.phoneCountryCode}${p}`} className="text-[var(--accent)] underline">
                     {site.phoneCountryCode} {p}
                   </a>
                 </span>
@@ -59,7 +59,7 @@ export default function ContactPage() {
               WhatsApp:{' '}
               <a
                 href={`https://wa.me/${whatsapp}`}
-                className="text-[var(--accent-2)] underline"
+                className="text-[var(--accent)] underline"
                 rel="noopener noreferrer"
                 target="_blank"
               >
@@ -70,7 +70,7 @@ export default function ContactPage() {
           {site.instagramUrl ? (
             <li>
               Instagram:{' '}
-              <a href={site.instagramUrl} className="text-[var(--accent-2)] underline" rel="noopener noreferrer" target="_blank">
+              <a href={site.instagramUrl} className="text-[var(--accent)] underline" rel="noopener noreferrer" target="_blank">
                 {site.instagramUrl}
               </a>
             </li>
@@ -78,7 +78,7 @@ export default function ContactPage() {
           {site.youtubeUrl ? (
             <li>
               YouTube:{' '}
-              <a href={site.youtubeUrl} className="text-[var(--accent-2)] underline" rel="noopener noreferrer" target="_blank">
+              <a href={site.youtubeUrl} className="text-[var(--accent)] underline" rel="noopener noreferrer" target="_blank">
                 {site.youtubeUrl}
               </a>
             </li>

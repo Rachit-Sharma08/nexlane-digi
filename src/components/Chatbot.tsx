@@ -125,13 +125,13 @@ export default function Chatbot() {
           <div className="flex items-center gap-3 px-4 pt-4 pb-3">
             <span
               aria-hidden="true"
-              className="grid h-9 w-9 shrink-0 place-items-center rounded-xl border border-[var(--card-border)] bg-[rgba(9,38,72,0.75)]"
+              className="grid h-9 w-9 shrink-0 place-items-center rounded-xl border border-[var(--card-border)] bg-[var(--bg-alt)]"
             >
               <RobotHead className="text-[18px]" />
             </span>
             <div className="min-w-0">
               <p className="font-display text-sm font-semibold text-white">Nexlane Digital</p>
-              <p className="mt-0.5 inline-flex w-fit rounded-full border border-[var(--accent)]/30 bg-[rgba(30,211,242,0.08)] px-2 py-0.5 text-[10px] font-semibold tracking-wide text-[var(--accent)]">
+              <p className="mt-0.5 inline-flex w-fit rounded-full border border-[var(--accent)]/30 bg-[var(--accent)]/10 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-[var(--accent)]">
                 Preview · AI answers coming soon
               </p>
             </div>
@@ -139,7 +139,7 @@ export default function Chatbot() {
               type="button"
               onClick={() => setOpen(false)}
               aria-label="Close chat"
-              className={`ml-auto rounded-full p-2 text-[var(--muted)] transition-colors hover:bg-[rgba(30,211,242,0.1)] hover:text-white ${focusRing}`}
+              className={`ml-auto rounded-full p-2 text-[var(--muted)] transition-colors hover:bg-[var(--accent)]/10 hover:text-[var(--fg)] ${focusRing}`}
             >
               <X className="h-4 w-4" aria-hidden="true" />
             </button>
@@ -159,8 +159,8 @@ export default function Chatbot() {
                 key={i}
                 className={`chat-bubble max-w-[85%] break-words whitespace-pre-wrap px-3.5 py-2 text-sm leading-relaxed text-white ${
                   m.role === "user"
-                    ? "ml-auto rounded-2xl rounded-tr-md bg-[linear-gradient(135deg,#0461d6,#0572f5)] shadow-[0_6px_18px_rgba(4,80,190,0.35)]"
-                    : "rounded-2xl rounded-tl-md border border-[var(--card-border)] bg-[rgba(9,38,72,0.65)]"
+                    ? "ml-auto rounded-2xl rounded-tr-md bg-gradient-to-br from-[var(--accent)] to-[var(--accent-dark)] shadow-[0_6px_18px_rgba(200,255,46,0.35)]"
+                    : "rounded-2xl rounded-tl-md border border-[var(--card-border)] bg-[var(--bg-alt)]"
                 }`}
               >
                 {m.text}
@@ -168,7 +168,7 @@ export default function Chatbot() {
             ))}
             {typing && (
               <div
-                className="chat-bubble w-fit rounded-2xl rounded-tl-md border border-[var(--card-border)] bg-[rgba(9,38,72,0.65)] px-4 py-3"
+                className="chat-bubble w-fit rounded-2xl rounded-tl-md border border-[var(--card-border)] bg-[var(--bg-alt)] px-4 py-3"
                 aria-label="Nexlane is typing"
               >
                 <span className="chat-dots" aria-hidden="true">
@@ -186,7 +186,7 @@ export default function Chatbot() {
                 key={q}
                 type="button"
                 onClick={() => send(q)}
-                className={`whitespace-nowrap rounded-full border border-[var(--card-border)] bg-[rgba(9,38,72,0.5)] px-3 py-1.5 text-xs text-[var(--muted)] transition-colors hover:border-[var(--accent)]/50 hover:bg-[rgba(30,211,242,0.08)] hover:text-white ${focusRing}`}
+                className={`whitespace-nowrap rounded-full border border-[var(--card-border)] bg-[var(--bg-alt)] px-3 py-1.5 text-xs text-[var(--muted)] transition-colors hover:border-[var(--accent)]/50 hover:bg-[var(--accent)]/10 hover:text-[var(--fg)] ${focusRing}`}
               >
                 {q}
               </button>
@@ -206,7 +206,7 @@ export default function Chatbot() {
               onChange={(e) => setDraft(e.target.value)}
               placeholder="Ask a question…"
               aria-label="Your message"
-              className="min-w-0 flex-1 rounded-full border border-[var(--card-border)] bg-[rgba(9,38,72,0.5)] px-4 py-2.5 text-sm text-white outline-none transition-all placeholder:text-[var(--muted)] focus:border-[var(--accent)] focus:bg-[rgba(9,38,72,0.75)] focus:ring-2 focus:ring-[var(--accent)]/25"
+              className="min-w-0 flex-1 rounded-full border border-[var(--card-border)] bg-[var(--bg-alt)] px-4 py-2.5 text-sm text-white outline-none transition-all placeholder:text-[var(--muted)] focus:border-[var(--accent)] focus:bg-[var(--bg)] focus:ring-2 focus:ring-[var(--accent)]/25"
             />
             <button
               type="submit"

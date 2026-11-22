@@ -1,8 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { useQuality } from "@/lib/quality";
+import { NexlaneMarkLarge } from "@/components/ui/NexlaneMark";
 
 type LoaderProps = { fallback: React.ReactNode };
 type LoaderComponent = React.ComponentType<LoaderProps>;
@@ -45,14 +45,7 @@ function StaticMark() {
   return (
     <div ref={scene} className="hero-mark-scene">
       <div className="hero-mark-tilt">
-        <Image
-          src="/brand/nexlane-mark.png"
-          alt=""
-          width={380}
-          height={257}
-          priority
-          className="hero-mark-img"
-        />
+        <NexlaneMarkLarge className="hero-mark-svg" aria-hidden="true" />
       </div>
     </div>
   );

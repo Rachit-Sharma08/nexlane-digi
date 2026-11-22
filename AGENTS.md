@@ -19,11 +19,11 @@ Nexlane Digital is a new, student-founded digital marketing and web agency from 
 
 ## 3. Brand tokens
 
-Dark navy site, blue to cyan gradient (sampled from the logo).
+Dark navy site, black background with lime accent.
 
-- `--bg #000D1D`, glows `#003D66` / `#015798`
-- `--brand #0572F5`, `--brand-2 #10A9F2`, `--accent #1ED3F2`, `--accent-2 #7CF4EF`, text `#FFFFFF`, muted `#9FB3C8`
-- Gradient: `#0572F5 → #1ED3F2 → #7CF4EF`. Text contrast at least 4.5:1.
+- `--bg #0A0B0A`, glows `#8FCC00`
+- `--brand #F5F3EF`, `--brand-2`: omitted (no secondary brand), `--accent #C8FF2E`, `--accent-dark #8FCC00`, text `#F5F3EF`, muted `#9A9E97`
+- Gradient: `#C8FF2E → #8FCC00`. Text contrast at least 4.5:1.
 - Mobile first (360px minimum). Respect `prefers-reduced-motion`.
 
 ## 4. Site structure (decided by the owner)

@@ -195,7 +195,7 @@ export default function AdminDashboard() {
                           className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                             post.draft
                               ? "bg-[rgba(245,158,11,0.15)] text-[rgb(245,158,11)] border border-[rgb(245,158,11)]"
-                              : "bg-[rgba(30,211,242,0.15)] text-[var(--accent)] border border-[var(--accent)]"
+                              : "bg-[var(--accent)]/15 text-[var(--accent)] border border-[var(--accent)]"
                           }`}
                         >
                           {post.draft ? "Draft" : "Published"}

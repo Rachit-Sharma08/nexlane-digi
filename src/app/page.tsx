@@ -4,7 +4,7 @@ import { site } from "@/config/site";
 import { services } from "@/content/services";
 import { notDraft } from "@/content/blog";
 import { homeFaqs } from "@/content/faq";
-import { ArrowMotif, Container, GradientHeading, SectionHeader } from "@/components/ui";
+import { ArrowMotif, Container, SectionHeader } from "@/components/ui";
 import DepthCard from "@/components/DepthCard";
 import SectionNav from "@/components/SectionNav";
 import HeroVisual from "@/components/home/HeroVisual";
@@ -91,7 +91,7 @@ const sections = [
   { id: "work", label: "Our work" },
 ];
 
-const cardLink = "inline-flex items-center gap-1 text-sm font-semibold text-[var(--accent-2)] hover:text-white";
+const cardLink = "inline-flex items-center gap-1 text-sm font-semibold text-[var(--accent)] hover:text-[var(--fg)]";
 
 export default function HomePage() {
   const faqs = homeFaqs;
@@ -106,7 +106,7 @@ export default function HomePage() {
           <div>
             <p className="hero-eyebrow">Nexlane Digital · Kaithal, Haryana</p>
             <h1 className="hero-title">
-              Websites, <GradientHeading>SEO</GradientHeading> and growth for businesses
+              Websites, <span className="text-lime">SEO</span> and growth for businesses
             </h1>
             <p className="mt-5 max-w-xl text-lg leading-relaxed text-[var(--muted)]">
               Nexlane Digital is a young digital marketing agency in Kaithal, Haryana. We build websites, improve SEO
@@ -245,7 +245,7 @@ export default function HomePage() {
               {tools.map((tool) => (
                 <span
                   key={tool}
-                  className="whitespace-nowrap rounded-full border border-[var(--card-border)] bg-[rgba(9,38,72,0.5)] px-4 py-1.5 text-sm text-[var(--muted)]"
+                  className="whitespace-nowrap rounded-full border border-[var(--card-border)] bg-[var(--bg-alt)] px-4 py-1.5 text-sm text-[var(--muted)]"
                 >
                   {tool}
                 </span>
@@ -281,7 +281,7 @@ export default function HomePage() {
           <div className="stagger mt-8 grid gap-4 sm:grid-cols-2">
             {whyUs.map((w, i) => (
               <DepthCard key={w.title} glare className="p-6">
-                <span className="font-display text-sm font-bold text-gradient">{String(i + 1).padStart(2, "0")}</span>
+                <span className="font-display text-sm font-bold text-lime">{String(i + 1).padStart(2, "0")}</span>
                 <h3 className="mt-2 font-display text-lg font-semibold">{w.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-[var(--muted)]">{w.blurb}</p>
               </DepthCard>
@@ -299,15 +299,15 @@ export default function HomePage() {
           <ol className="relative mt-10 grid list-none gap-8 lg:grid-cols-5 lg:gap-4">
             <span
               aria-hidden="true"
-              className="absolute bottom-2 left-4 top-2 w-px bg-gradient-to-b from-[var(--brand)] via-[var(--accent)] to-transparent lg:hidden"
+              className="absolute bottom-2 left-4 top-2 w-px bg-gradient-to-b from-[var(--accent)] via-[var(--accent-dark)] to-transparent lg:hidden"
             />
             <span
               aria-hidden="true"
-              className="absolute left-0 right-0 top-4 hidden h-px bg-gradient-to-r from-[var(--brand)] via-[var(--accent)] to-transparent lg:block"
+              className="absolute left-0 right-0 top-4 hidden h-px bg-gradient-to-r from-[var(--accent)] via-[var(--accent-dark)] to-transparent lg:block"
             />
             {process.map((s) => (
               <li key={s.step} className="reveal-blur relative pl-12 lg:pl-0 lg:pt-12">
-                <span className="absolute left-0 top-0 grid h-8 w-8 place-items-center rounded-full border border-[var(--accent)]/50 bg-[#04203a] text-xs font-bold text-[var(--accent-2)]">
+                <span className="absolute left-0 top-0 grid h-8 w-8 place-items-center rounded-full border border-[var(--accent)]/50 bg-[var(--bg-alt)] text-xs font-bold text-[var(--accent)]">
                   {s.step}
                 </span>
                 <h3 className="font-display font-semibold">{s.title}</h3>
@@ -381,13 +381,13 @@ export default function HomePage() {
           <div className="glass relative overflow-hidden px-6 py-12 text-center">
             <span
               aria-hidden="true"
-              className="pointer-events-none absolute inset-x-0 -top-24 mx-auto h-48 w-48 rounded-full bg-[var(--brand-2)] opacity-25 blur-3xl"
+              className="pointer-events-none absolute inset-x-0 -top-24 mx-auto h-48 w-48 rounded-full bg-[var(--accent)] opacity-20 blur-3xl"
             />
             <div className="relative flex flex-col items-center gap-4">
               <ArrowMotif className="parallax-drift h-12 w-12" />
               <h2 className="max-w-2xl font-display text-2xl font-bold sm:text-3xl">
                 Not sure where your business is losing customers online?{" "}
-                <GradientHeading>We&apos;ll look for free.</GradientHeading>
+                <span className="text-lime">We&apos;ll look for free.</span>
               </h2>
               <p className="max-w-xl text-sm leading-relaxed text-[var(--muted)]">
                 Send us one link — your Instagram, Google profile or website — and you get a short written review with 3

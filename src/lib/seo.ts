@@ -65,7 +65,7 @@ export function organizationSchema() {
     name: site.name,
     alternateName: site.alternateName,
     url: site.SITE_URL,
-    logo: absoluteUrl("/brand/nexlane-mark.png"),
+    logo: absoluteUrl("/brand/nexlane-mark.svg"),
     description: site.description,
     foundingDate: "2026",
     slogan: site.tagline,

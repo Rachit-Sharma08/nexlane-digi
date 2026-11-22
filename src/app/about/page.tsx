@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { buildMetadata, breadcrumbSchema } from '@/lib/seo';
-import { Section, SectionTitle, GradientHeading, Muted, Eyebrow, Container } from '@/components/ui';
+import { Section, SectionTitle, Muted, Eyebrow, Container } from '@/components/ui';
 import DepthCard from '@/components/DepthCard';
 import NextUp from '@/components/NextUp';
 import JsonLd from '@/components/JsonLd';
@@ -38,7 +38,7 @@ export default function AboutPage() {
             <Muted>
               Rachit and Krish lead SEO, growth, web development and AI — the two people you&apos;ll talk to first.
             </Muted>
-            <Link href="/about/founders" className="mt-4 inline-block text-sm font-semibold text-[var(--accent-2)] hover:text-white">
+            <Link href="/about/founders" className="mt-4 inline-block text-sm font-semibold text-[var(--accent)] hover:text-[var(--fg)]">
               Founders →
             </Link>
           </DepthCard>
@@ -47,7 +47,7 @@ export default function AboutPage() {
             <Muted>
               Neelam and Jyoti build websites, handle social and video, and keep the work moving.
             </Muted>
-            <Link href="/about/team" className="mt-4 inline-block text-sm font-semibold text-[var(--accent-2)] hover:text-white">
+            <Link href="/about/team" className="mt-4 inline-block text-sm font-semibold text-[var(--accent)] hover:text-[var(--fg)]">
               Team →
             </Link>
           </DepthCard>
@@ -75,7 +75,7 @@ export default function AboutPage() {
 
         <DepthCard className="p-6 mt-8">
           <div className="mb-4">
-            <GradientHeading>Get a Free Audit</GradientHeading>
+            <span className="font-display text-xl font-bold text-lime">Get a Free Audit</span>
           </div>
           <p className="mb-4">We&apos;ll review your website and give you honest recommendations</p>
           <Link href="/audit" className="btn btn-primary">

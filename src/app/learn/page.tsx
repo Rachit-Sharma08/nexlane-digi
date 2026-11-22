@@ -28,7 +28,7 @@ export default function LearnPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <DepthCard>
           <h2 className="font-display text-xl font-semibold mb-2">
-            <Link href="/learn/youtube" className="hover:text-[var(--accent-2)]">
+            <Link href="/learn/youtube" className="hover:text-[var(--accent)]">
               YouTube lessons
             </Link>
           </h2>
@@ -36,7 +36,7 @@ export default function LearnPage() {
         </DepthCard>
         <DepthCard>
           <h2 className="font-display text-xl font-semibold mb-2">
-            <Link href="/learn/blog" className="hover:text-[var(--accent-2)]">
+            <Link href="/learn/blog" className="hover:text-[var(--accent)]">
               Blog
             </Link>
           </h2>
@@ -44,7 +44,7 @@ export default function LearnPage() {
         </DepthCard>
         <DepthCard>
           <h2 className="font-display text-xl font-semibold mb-2">
-            <Link href="/learn/resources" className="hover:text-[var(--accent-2)]">
+            <Link href="/learn/resources" className="hover:text-[var(--accent)]">
               Free resources
             </Link>
           </h2>

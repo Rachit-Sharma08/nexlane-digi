@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { nav, site } from "@/config/site";
+import { NexlaneMark } from "@/components/ui/NexlaneMark";
 
 /** Thin top strip with WhatsApp / social / email icons (only what is set). */
 function TopBar() {
@@ -22,7 +22,7 @@ function TopBar() {
 
   if (links.length === 0) return null;
   return (
-    <div className="border-b border-[var(--card-border)] bg-[#000814] pt-[env(safe-area-inset-top)]">
+    <div className="border-b border-[var(--card-border)] bg-[var(--bg)] pt-[env(safe-area-inset-top)]">
       <div className="mx-auto flex max-w-6xl items-center justify-end gap-5 px-4 py-1.5 sm:px-6">
         {links.map((l) => (
           <a key={l.label} href={l.href} aria-label={l.label} className="flex items-center gap-1.5 text-xs text-[var(--muted)] hover:text-white" rel="noopener noreferrer" target="_blank">
@@ -46,7 +46,7 @@ function ActiveIndicator() {
   return (
     <span
       aria-hidden="true"
-      className="nav-indicator absolute inset-x-2 -bottom-[7px] h-0.5 rounded-full bg-gradient-to-r from-[var(--brand-2)] to-[var(--accent)]"
+      className="nav-indicator absolute inset-x-2 -bottom-[7px] h-0.5 rounded-full bg-gradient-to-r from-[var(--accent)] to-[var(--accent-dark)]"
     />
   );
 }
@@ -155,7 +155,7 @@ function Dropdown({ parent, mobile }: { parent: DropdownParent; mobile?: boolean
   if (mobile) {
     return (
       <div className="ml-3 border-l border-[var(--card-border)] pl-3">
-        <span className={`text-xs font-semibold uppercase tracking-widest ${active ? "text-white" : "text-[var(--accent)]"}`}>
+        <span className={`text-xs font-semibold uppercase tracking-widest ${active ? "text-[var(--fg)]" : "text-[var(--accent)]"}`}>
           {parent.label}
         </span>
         <ul className="mt-1 space-y-1">
@@ -168,8 +168,8 @@ function Dropdown({ parent, mobile }: { parent: DropdownParent; mobile?: boolean
                   aria-current={itemActive ? "page" : undefined}
                   className={`block rounded px-2 py-3 text-sm ${
                     itemActive
-                      ? "border-l-2 border-[var(--accent)] bg-[rgba(30,211,242,0.08)] pl-2 text-white"
-                      : "text-[var(--muted)] hover:text-white"
+                      ? "border-l-2 border-[var(--accent)] bg-[rgba(200,255,46,0.08)] pl-2 text-[var(--fg)]"
+                      : "text-[var(--muted)] hover:text-[var(--fg)]"
                   }`}
                 >
                   {i.label}
@@ -205,7 +205,7 @@ function Dropdown({ parent, mobile }: { parent: DropdownParent; mobile?: boolean
           ref={menuRef}
           id={menuId}
           onKeyDown={handleMenuKeyDown}
-          className="absolute left-0 top-full z-[60] mt-2 w-56 rounded-xl border border-[var(--card-border)] bg-[#04182f] p-2 shadow-2xl shadow-black/60 backdrop-blur-md"
+          className="absolute left-0 top-full z-[60] mt-2 w-56 rounded-xl border border-[var(--card-border)] bg-[var(--bg-alt)] p-2 shadow-2xl shadow-black/60 backdrop-blur-md"
         >
           {parent.items.map((i) => {
             const itemActive = pathname === i.href;
@@ -214,8 +214,8 @@ function Dropdown({ parent, mobile }: { parent: DropdownParent; mobile?: boolean
                 <Link
                   href={i.href}
                   aria-current={itemActive ? "page" : undefined}
-                  className={`block rounded px-3 py-2 text-sm hover:bg-[rgba(12,34,63,0.5)] hover:text-white ${
-                    itemActive ? "bg-[rgba(30,211,242,0.08)] text-white" : "text-[var(--muted)]"
+                  className={`block rounded px-3 py-2 text-sm hover:bg-[rgba(28,30,29,0.5)] hover:text-[var(--fg)] ${
+                    itemActive ? "bg-[rgba(200,255,46,0.08)] text-[var(--fg)]" : "text-[var(--muted)]"
                   }`}
                   onClick={() => setOpen(false)}
                 >
@@ -252,18 +252,11 @@ export default function Navbar() {
   return (
     <header ref={headerRef} className="sticky top-0 z-50">
       <TopBar />
-      <nav aria-label="Main navigation" className="border-b border-[var(--card-border)] bg-[rgba(0,8,20,0.78)] backdrop-blur-md">
+      <nav aria-label="Main navigation" className="border-b border-[var(--card-border)] bg-[rgba(10,11,10,0.78)] backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
           <Link href="/" className="flex items-center gap-2" aria-label={`${site.name} home`}>
-            <Image
-              src="/brand/nexlane-mark.png"
-              alt="Nexlane Digital mark"
-              width={380}
-              height={257}
-              priority
-              className="h-10 w-auto object-contain"
-            />
-            <span className="font-display text-lg font-bold tracking-[0.18em] text-white">NEXLANE</span>
+            <NexlaneMark width={40} height={40} className="h-10 w-auto" />
+            <span className="font-display text-lg font-bold tracking-[0.18em] text-[var(--fg)]">NEXLANE</span>
           </Link>
 
           {/* Desktop */}
@@ -297,7 +290,7 @@ export default function Navbar() {
 
         {/* Mobile menu */}
         {menuOpen && (
-          <div className="mobile-menu-enter border-t border-[var(--card-border)] bg-[rgba(0,8,20,0.97)] px-4 py-4 lg:hidden">
+          <div className="mobile-menu-enter border-t border-[var(--card-border)] bg-[var(--bg)] px-4 py-4 lg:hidden">
             <div className="space-y-3">
               {nav.main.map((i) => {
                 const active = isRouteActive(pathname, i.href);
@@ -309,8 +302,8 @@ export default function Navbar() {
                     aria-current={active ? "page" : undefined}
                     className={`block rounded px-2 py-3 text-sm ${
                       active
-                        ? "border-l-2 border-[var(--accent)] bg-[rgba(30,211,242,0.08)] pl-2 text-white"
-                        : "text-[var(--muted)] hover:text-white"
+                        ? "border-l-2 border-[var(--accent)] bg-[rgba(200,255,46,0.08)] pl-2 text-[var(--fg)]"
+                        : "text-[var(--muted)] hover:text-[var(--fg)]"
                     }`}
                   >
                     {i.label}
@@ -330,8 +323,8 @@ export default function Navbar() {
                     aria-current={active ? "page" : undefined}
                     className={`block rounded px-2 py-3 text-sm ${
                       active
-                        ? "border-l-2 border-[var(--accent)] bg-[rgba(30,211,242,0.08)] pl-2 text-white"
-                        : "text-[var(--muted)] hover:text-white"
+                        ? "border-l-2 border-[var(--accent)] bg-[rgba(200,255,46,0.08)] pl-2 text-[var(--fg)]"
+                        : "text-[var(--muted)] hover:text-[var(--fg)]"
                     }`}
                   >
                     {i.label}

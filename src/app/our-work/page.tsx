@@ -31,7 +31,7 @@ export default function OurWorkPage() {
               Websites, games and AI tools Rachit and Krish build in their own time.
             </Muted>
             <p className="mt-2 text-xs text-[var(--muted)]">Personal projects, not Nexlane client work</p>
-            <Link href="/about/founders" className="mt-4 inline-block text-sm font-semibold text-[var(--accent-2)] hover:text-white">
+            <Link href="/about/founders" className="mt-4 inline-block text-sm font-semibold text-[var(--accent)] hover:text-[var(--fg)]">
               Founders →
             </Link>
           </DepthCard>
@@ -41,7 +41,7 @@ export default function OurWorkPage() {
               Websites and small tools Neelam builds in her own time.
             </Muted>
             <p className="mt-2 text-xs text-[var(--muted)]">Personal projects, not Nexlane client work</p>
-            <Link href="/about/team" className="mt-4 inline-block text-sm font-semibold text-[var(--accent-2)] hover:text-white">
+            <Link href="/about/team" className="mt-4 inline-block text-sm font-semibold text-[var(--accent)] hover:text-[var(--fg)]">
               Team →
             </Link>
           </DepthCard>
