@@ -2,6 +2,50 @@
 
 Last updated: 2026-11-22 · Repo: `Rachit-Sharma08/nexlane-digital` (private) · Deploy: Vercel (pending)
 
+## Rebrand: lime accent palette + inline SVG mark (2026-11-22, branch `feat/rebrand-lime` from `feat/hero-v3`)
+
+**Scope:** Replace cyan/blue palette with lime (`#C8FF2E` / `#8FCC00`) everywhere; replace PNG logo with inline SVG `NexlaneMark.tsx`; update all components, design tokens, HeroCanvas, opengraph-image, Chatbot robot, WhatsApp float; verify typecheck/lint/build; zero old hex references remain; update AGENTS.md sections 3 and 13; Playwright screenshots at 1440/360.
+
+**Changes:**
+- `src/app/globals.css`: complete rewrite — new palette (`--bg #0A0B0A`, `--bg-alt #141615`, `--fg #F5F3EF`, `--muted #9A9E97`, `--accent #C8FF2E`, `--accent-dark #8FCC00`, `--card-border rgba(200,255,46,0.14)`, `--card-bg rgba(20,22,21,0.6)`), shadcn mappings, lime solid `.text-lime` + gradient `.text-gradient`, all glows/shadows/borders updated to lime.
+- `src/components/ui/NexlaneMark.tsx`: new inline SVG component (frost-white N thick stroke + lime gradient arrow tip); accepts `width`, `height`, `className`, `aria-hidden`; exports `NexlaneMark`, `NexlaneMarkSVG`, `NexlaneMarkLarge`.
+- `src/components/Navbar.tsx`: replaced PNG with `NexlaneMark`; TopBar bg `--bg/80`, active indicator gradient `--accent → --accent-dark`, dropdown backgrounds `--bg/96`, mobile menu `--bg/98`, all hover/active/focus states use `--accent`/`--fg`/`--muted`.
+- `src/components/Footer.tsx`: replaced PNG with `NexlaneMark`; bg `--bg`, link hover `--accent`, social icons `--muted → --accent`.
+- `src/components/home/HeroVisual.tsx`: removed `next/image` PNG, uses `NexlaneMarkLarge` SVG directly.
+- `src/components/home/HeroCanvas.tsx`: rewritten to use procedural SVG-based geometry (N letter + arrow stack, 7 layers); lime colors; no PNG texture loading; `dpr` capped at 1.5; pause offscreen/hidden tab; static CSS fallback in `HeroVisual`.
+- `src/app/opengraph-image.tsx`: rewritten — dark navy gradient background, lime accent bar, inline SVG mark as JSX (no `dangerouslySetInnerHTML`), Anton font for wordmark.
+- `src/components/Chatbot.tsx`: robot CSS colors all lime-based (antenna, ears, eyes, glow, panel border, chips, input focus, send button); panel entrance `chat-arrive` from bottom-right.
+- `src/components/WhatsAppFloat.tsx`: background `bg-[var(--accent)]` (was cyan).
+- `src/components/ProfileTile.tsx`: card gradient `--bg-alt → --bg → --bg`; glow `--accent`; initials tile glow `--accent`; portfolio cue `--accent` text; skill chips `--bg-alt` bg.
+- `src/components/ArrowMotif.tsx`: gradient `--accent → --accent-dark`.
+- `src/components/SectionNav.tsx`: active pill `bg-[var(--accent)]/15 text-[var(--accent)]`.
+- `src/app/page.tsx`: removed `GradientHeading` import; hero H1 SEO word uses `text-lime`; CTA gradient word uses `text-lime`; process connector gradient `--accent → --accent-dark`; why-us numbers `text-lime`; final CTA gradient word `text-lime`; marquee tools `bg-[var(--bg-alt)]`; card links `text-[var(--accent)]`.
+- `src/app/about/page.tsx`: removed `GradientHeading`; link colors `--accent`; CTA `text-lime`.
+- `src/app/services/page.tsx` + `[slug]/page.tsx`: link colors `--accent`; check circles gradient `--accent → --accent-dark`; process step badges gradient `--accent → --accent-dark` with lime shadow.
+- `src/app/learn/page.tsx`: link hover `--accent`.
+- `src/app/our-work/page.tsx`: link colors `--accent`.
+- `src/app/contact/page.tsx`: all contact links `--accent`.
+- `src/app/admin/page.tsx` + `post-editor.tsx`: success badge `--accent` colors.
+- `src/app/layout.tsx`: themeColor `#0A0B0A`; skip-link focus `bg-[var(--accent)] text-[var(--bg)]`.
+- `AGENTS.md`: section 3 already correct; section 13 updated to lime palette, inline SVG mark location, lime glow arc.
+- `design.md`: palette, visual direction, logo wording updated; rebrand entry added to change log.
+- `docs/PROGRESS.md`: this entry added.
+
+**Gates (all passed):**
+- `npx tsc --noEmit` → 0 errors
+- `npm run lint` → 0 errors, 0 warnings
+- `npm run build` → success, **32 routes** (Home, Admin, Services ×4, Learn ×4, About ×3, etc. — matches build output)
+- Grep for old hexes (`#000D1D`, `#003D66`, `#015798`, `#0572F5`, `#10A9F2`, `#1ED3F2`, `#7CF4EF`, `#9FB3C8`, `#04203A`, `#092648`, `rgba(4,`, `rgba(9,38,`, `rgba(30,211,242`) → **zero matches** in `src/` **and `design.md`**
+- Old blue/cyan palette eliminated; lime-only accents verified
+
+**Screenshots (complete):**
+- `screenshots/home-1440.png`
+- `screenshots/home-360.png`
+- `screenshots/founders-1440.png`
+- `screenshots/founders-360.png`
+
+**Status:** All gates pass, screenshots saved. Ready to commit to `feat/rebrand-lime` and open PR (not yet opened).
+
 ## Prompt 1 of 3 — logo, hero and overlap fixes (2026-11-22)
 
 - **Base and PR check:** `gh pr list --state all --limit 50` shows PRs #8–#11 merged. SEO PR #14 is closed, not merged; its remote head commit `5a7d3b4` is nevertheless an ancestor of `main`, so the code is present in the selected base. `feat/hero-v3` starts from `main` at `2136eff`; Prompt 1 work complete: logo assets added, Anton headline + `next/font/google`, cyan-only palette (no lime/green), hero N mark scene (high tier WebGL + CSS 3D mid/low tiers), overlap fixes (WhatsApp stack, NextUp overflow, dropdown z-index, contact submit text), Next dev overlay inspected (no actionable issue; only a THREE.Clock library deprecation warning), 1440/768/360 Playwright screenshots taken and visually reviewed and saved as `screenshots/home-{1440,768,360}.png`. `git diff --check` passes.
