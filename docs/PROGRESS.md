@@ -1,6 +1,10 @@
 # Nexlane Digital — Progress
 
-Last updated: 2026-11-08 · Repo: `Rachit-Sharma08/nexlane-digital` (private) · Deploy: Vercel (pending)
+Last updated: 2026-11-22 · Repo: `Rachit-Sharma08/nexlane-digital` (private) · Deploy: Vercel (pending)
+
+## Prompt 1 of 3 — logo, hero and overlap fixes (2026-11-22)
+
+- **Base and PR check:** `gh pr list --state all --limit 50` shows PRs #8–#11 merged. SEO PR #14 is closed, not merged; its remote head commit `5a7d3b4` is nevertheless an ancestor of `main`, so the code is present in the selected base. `feat/hero-v3` starts from `main` at `2136eff`; Prompt 1 work complete: logo assets added, Anton headline + `next/font/google`, cyan-only palette (no lime/green), hero N mark scene (high tier WebGL + CSS 3D mid/low tiers), overlap fixes (WhatsApp stack, NextUp overflow, dropdown z-index, contact submit text), Next dev overlay inspected (no actionable issue; only a THREE.Clock library deprecation warning), 1440/768/360 Playwright screenshots taken and visually reviewed and saved as `screenshots/home-{1440,768,360}.png`. `git diff --check` passes.
 
 ## Backend allowed + quick-win batch (2026-11-08, direct to `main`)
 

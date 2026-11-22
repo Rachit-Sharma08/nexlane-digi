@@ -170,3 +170,13 @@ This version has breaking changes — APIs, conventions, and file structure may 
 This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
 <!-- END:nextjs-agent-rules -->
+
+## 13. Design direction v3: Nexlane mark + cyan accent (owner decision, 2026-11-22)
+This section applies to Prompt 1 of the logo, hero and overlap redesign. It extends sections 6 and 11; honesty, accessibility, reduced motion, performance and SEO rules still apply.
+
+1. **Logo assets:** transparent `public/brand/nexlane-mark.png` (380x257) and `public/brand/nexlane-lockup.png` (620x437). Use the mark in the header with real HTML text `NEXLANE`; do not use the old opaque logo or `mix-blend-mode`. Use `next/image` with width, height and `priority`; provide useful alt text for the mark and preserve appropriate alt text elsewhere.
+2. **Hero headline:** use Anton via `next/font/google` for a very large, uppercase, tightly set H1 (about `line-height: 0.95`). The hero H1 must not overflow at 360px. Keep the existing copy and honest tone, a small tracked eyebrow, pill CTAs and small service links.
+3. **Palette:** dark navy and white surfaces with cyan as the single accent. Do not add lime/green as a design accent or a third decorative color. The SEO word in the hero uses the brand gradient `#0572F5` to `#1ED3F2` to `#7CF4EF`; gradients may also appear in the primary CTA and glow. Keep CTA text readable (white on a sufficiently dark gradient).
+4. **Hero object:** use Nexlane's own N mark only; no third-party mascot, stock image or AI image. On high tier only, reuse the WebGL scene with the mark as a textured plane, 6–8 thin tinted copies for depth, slow float, pointer/gyro parallax and a cyan glow arc. Dispose textures, geometry and materials on unmount. The H1 and CTA must render before the canvas.
+5. **Mid/low/reduced motion:** do not use WebGL. Show the same PNG with CSS depth/tilt on mid-tier pointer input, and static on low tier or `prefers-reduced-motion`; retain a cyan glow arc and drop-shadow. Honor the existing quality-tier rules.
+6. **Overlap fixes:** keep the floating WhatsApp and chatbot controls from covering hero copy or each other; add safe hero bottom padding. Keep the About NextUp CTA within the viewport and clear of floating controls. Offset the top WhatsApp/social strip so it is not clipped behind the sticky header. The About dropdown needs a solid blurred surface above SectionNav. Contact form submit text must be white and readable on its gradient.

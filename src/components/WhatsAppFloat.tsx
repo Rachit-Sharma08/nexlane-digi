@@ -11,7 +11,7 @@ export default function WhatsAppFloat() {
     <a
       href={`https://wa.me/${site.whatsappNumber}?text=${text}`}
       aria-label="Chat with us on WhatsApp"
-      className="fixed bottom-36 right-5 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg shadow-black/40 transition-transform hover:scale-105"
+      className="whatsapp-float fixed bottom-[5.75rem] right-5 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-[var(--accent)] text-white shadow-lg shadow-black/40 transition-transform hover:scale-105"
       rel="noopener noreferrer"
       target="_blank"
     >

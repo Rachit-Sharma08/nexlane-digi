@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import { ArrowUp } from "lucide-react";
 
 export default function ScrollControls() {
   const progressRef = useRef<HTMLDivElement>(null);
   const [showTop, setShowTop] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     let frame = 0;
@@ -26,6 +28,24 @@ export default function ScrollControls() {
       window.removeEventListener("resize", update);
     };
   }, []);
+
+  // Floating buttons step aside while the home hero is on screen: the hero has
+  // its own WhatsApp CTA and no content should sit under a fixed button.
+  useEffect(() => {
+    const hero = document.getElementById("hero");
+    if (!hero) {
+      delete document.documentElement.dataset.heroVisible;
+      return;
+    }
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        document.documentElement.dataset.heroVisible = String(entry.isIntersecting);
+      },
+      { threshold: 0.05 },
+    );
+    observer.observe(hero);
+    return () => observer.disconnect();
+  }, [pathname]);
 
   return (
     <>

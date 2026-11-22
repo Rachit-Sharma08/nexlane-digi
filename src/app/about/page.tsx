@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { buildMetadata, breadcrumbSchema } from '@/lib/seo';
-import { Section, SectionTitle, GradientHeading, Muted, Eyebrow } from '@/components/ui';
+import { Section, SectionTitle, GradientHeading, Muted, Eyebrow, Container } from '@/components/ui';
 import DepthCard from '@/components/DepthCard';
 import NextUp from '@/components/NextUp';
 import JsonLd from '@/components/JsonLd';
@@ -84,7 +84,9 @@ export default function AboutPage() {
         </DepthCard>
       </Section>
       <JsonLd data={breadcrumbSchema([{name:"Home",path:"/"},{name:"About",path:"/about"}])} />
-      <NextUp title="Meet the people behind Nexlane" href="/about/founders" cta="Meet the founders" eyebrow="Keep going" />
+      <Container>
+        <NextUp title="Meet the people behind Nexlane" href="/about/founders" cta="Meet the founders" eyebrow="Keep going" />
+      </Container>
     </>
   );
 }

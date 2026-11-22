@@ -51,6 +51,11 @@ export default function Chatbot() {
   const panelRef = useRef<HTMLDivElement>(null);
   const fabRef = useRef<HTMLButtonElement>(null);
 
+  // The WhatsApp float sits in the slot the chat panel opens over.
+  useEffect(() => {
+    document.documentElement.dataset.chatOpen = String(open);
+  }, [open]);
+
   // Close when clicking outside the panel (owner request 2026-11-08).
   useEffect(() => {
     if (!open) return;
