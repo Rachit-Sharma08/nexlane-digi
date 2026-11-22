@@ -8,14 +8,18 @@ import { useEffect, useRef } from "react";
  * frost-white N text, lime arrow tip,
  * no background box. Used as a replace
  * for public/brand/nexlane-mark.png.
+ *
+ * Accepts width, height, and className props
+ * for backward compatibility with Footer, Navbar, HeroVisual.
  */
 
-// Named export used by Footer, Navbar, HeroVisual
+/* Pass-through props for callers: width, height, className */
 export function NexlaneMarkSVG({
   width = 120,
   height = 120,
-}) {
-  const svgRef = useRef(null);
+  className,
+}: { width?: number; height?: number; className?: string }) {
+  const svgRef = useRef<SVGSVGElement>(null);
 
   useEffect(() => {
     // Ensure the SVG preserves its aspect ratio and viewBox
@@ -30,7 +34,7 @@ export function NexlaneMarkSVG({
   return (
     <svg
       ref={svgRef}
-      className="block"
+      className={className || "block"}
       viewBox="0 0 380 257"
       width={width}
       height={height}
@@ -43,9 +47,8 @@ export function NexlaneMarkSVG({
         y={"50%"}
         dominantBaseline="middle"
         textAnchor="middle"
-        font-family: Arial
-        font-weight="400"
-        font-size="180"
+        style={{ fontFamily: "Arial Narrow" }}
+        fontWeight="400"
         fill="#F5F3EF"
         transform="translate(-50% -20%)"
       >
@@ -57,14 +60,14 @@ export function NexlaneMarkSVG({
         points="190,25 150,210 230,210"
         fill="#C8FF2E"
         stroke="#F5F3EF"
-        stroke-width="2"
+        strokeWidth="2"
       />
     </svg>
   );
 }
 
-// Re-export as NexlaneMark for backward compatibility with imports
+/* Re-export as NexlaneMark for backward compatibility with imports */
 export const NexlaneMark = NexlaneMarkSVG;
 
-// Large version alias used by HeroVisual
-export const NexlaneMarkLarge = NexlaneMarkSVG;
+/* Large version alias used by HeroVisual */
+export const NexlaneMarkLarge = NexlaneMarkSVG; 
