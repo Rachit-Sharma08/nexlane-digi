@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 
 export function LoginForm() {
   const router = useRouter();
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -13,8 +14,8 @@ export function LoginForm() {
     e.preventDefault();
     setError("");
 
-    if (!password.trim()) {
-      setError("Password is required");
+    if (!email.trim() || !password.trim()) {
+      setError("Email and password are required");
       return;
     }
 
@@ -24,18 +25,20 @@ export function LoginForm() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "same-origin",
-        body: JSON.stringify({ password }),
+        body: JSON.stringify({ email, password }),
       });
 
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.error || "Login failed");
+        // Generic error message - don't reveal if email exists or not
+        setError(data.error || "Invalid credentials");
         return;
       }
 
       // Successful login - redirect to dashboard
-      router.push("/admin");
+      const adminRoute = data.adminRoute || "/admin";
+      router.push(adminRoute);
       router.refresh();
     } catch {
       setError("Network error. Please try again.");
@@ -47,6 +50,24 @@ export function LoginForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-4" noValidate>
       <div>
+        <label htmlFor="email" className="block text-sm font-medium mb-1">
+          Email
+        </label>
+        <input
+          id="email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full bg-[var(--card-bg)] border border-[var(--card-border)] rounded-lg px-4 py-3 text-[var(--text)] placeholder-[var(--muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
+          placeholder="Enter your email"
+          autoComplete="email"
+          disabled={loading}
+          required
+          aria-describedby={error ? "login-error" : undefined}
+        />
+      </div>
+
+      <div>
         <label htmlFor="password" className="block text-sm font-medium mb-1">
           Password
         </label>
@@ -56,7 +77,7 @@ export function LoginForm() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           className="w-full bg-[var(--card-bg)] border border-[var(--card-border)] rounded-lg px-4 py-3 text-[var(--text)] placeholder-[var(--muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
-          placeholder="Enter admin password"
+          placeholder="Enter your password"
           autoComplete="current-password"
           disabled={loading}
           required

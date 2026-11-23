@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { PostEditor } from "@/app/admin/post-editor";
-import type { BlogPost } from "@/app/admin/post-editor";
+import { PostEditor } from "@/app/admin-internal/post-editor";
+import type { BlogPost } from "@/app/admin-internal/post-editor";
 
 type EditPostClientProps = {
   slug: string;

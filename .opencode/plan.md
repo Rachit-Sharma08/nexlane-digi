@@ -1,32 +1,49 @@
-# Nexlane Digital Website — Plan
+# Phase 2A Implementation Plan
 
-## Goal
-Official Next.js (App Router) + TS + Tailwind site for Nexlane Digital (Kaithal, Haryana), private repo
-Rachit-Sharma08/nexlane-digital, deploy target Vercel. Honest-trust strategy: no fake data at all.
+## Overview
+Replace single shared-password admin login with two named, allowlisted admin accounts using Supabase Auth, add login-attempt limiting, and move admin panel off predictable route.
 
-## Repo security (done / limits)
-- Branch protection + rulesets + secret scanning = 403 on free plan private repo (needs GitHub Pro or public repo).
-- Fallback applied: CI workflow (lint+build) runs on PR & push; CODEOWNERS; SECURITY.md; .gitignore blocks .env*;
-  PR-only discipline for team. TODO: jab team aa jaye ya repo public ho, protection rules laga lena.
+## Tasks
 
-## Stages
-1. (main session) Foundation: scaffold (package/ts/next/eslint/postcss), tokens in globals.css,
-   src/config/site.ts (single edit point), libs (seo.ts, formsecurity.ts), layout + Navbar + Footer +
-   TopBar + WhatsAppFloat + ui.tsx, content data files. Build + lint green. Push via PR to main.
-2. (agents, parallel) Home; About + Portfolio; Services (overview + 3 detail pages).
-3. (agent) Learn section: YouTube lessons page, Blog (typed data files + 1 draft post), Free Resources.
-4. (agent) Free Audit + Contact pages + /api/audit + /api/contact (zod, honeypot, min fill time, rate limit,
-   origin check, Turnstile optional env, Resend optional env) + /thank-you + /terms + /privacy + 404.
-5. (main session) SEO: sitemap.ts, robots.ts, llms.txt, OG image (placeholder till logo PNG arrives),
-   FAQPage only where FAQ visible; npm audit; final build+lint; Lighthouse (local, report real numbers);
-   deploy steps; TODO checklist for user.
+### 1. Database & Supabase Setup
+- [ ] Add @supabase/supabase-js and @supabase/ssr dependencies
+- [ ] Create Supabase server client (server-side only, service role)
+- [ ] Create database schema for login attempts table
+- [ ] Document Supabase project setup in PROGRESS.md (owner creates project)
 
-## Done criteria
-- npm run build + npm run lint pass.
-- No invented testimonials/stats/prices/promises.
-- Each form: server validation + honeypot + min fill + rate limit + origin check (+ Turnstile if enabled).
-- All TODOs listed for user at end.
+### 2. Admin Auth Library
+- [ ] Create new admin auth library using Supabase Auth
+- [ ] Implement login attempt tracking with lockout logic
+- [ ] Implement account disable/enable functionality
+- [ ] Implement password change functionality
 
-## Owner map
-- Main session: stages 1, 5, repo security.
-- web-builder/general agents: stages 2-4 (one file-strip each, no shared-file edits).
+### 3. Login UI Updates
+- [ ] Update login form to use email + password
+- [ ] Keep Forest & Sage visual style
+- [ ] Add generic error messages (no email enumeration)
+
+### 4. API Routes
+- [ ] Update /api/admin/login route
+- [ ] Update /api/admin/logout route
+- [ ] Create /api/admin/accounts route for account management
+- [ ] Create /api/admin/login-attempts route for viewing attempts
+
+### 5. Route Renaming
+- [ ] Add ADMIN_ROUTE_SLUG env var
+- [ ] Update proxy.ts to use dynamic admin route
+- [ ] Update all admin page paths to use the env var
+- [ ] Ensure old /admin paths 404 in production
+
+### 6. Admin Panel Updates
+- [ ] Add account management UI (view attempts, clear lockout, disable/enable account)
+- [ ] Add password change UI
+
+### 7. Tests
+- [ ] Add tests for auth, lockout, route logic
+- [ ] Run existing tests to ensure no regressions
+
+### 8. Verification & Documentation
+- [ ] Run npx tsc --noEmit, npm run lint, npm run build, npm test, npm audit
+- [ ] Take screenshots at 1440/768/360
+- [ ] Update AGENTS.md with Admin auth section
+- [ ] Update docs/PROGRESS.md with Phase 2A details

@@ -494,3 +494,110 @@ Spec: AGENTS §12 + `docs/seo-content.md`. No new npm dependencies.
 - No-JavaScript, unsupported-IntersectionObserver and reduced-motion states render the full rail, four nodes, connectors and final text color immediately. Both text colors pass WCAG AA on the ink panel: surface text 11.46:1; canvas text 13.20:1.
 - Verification: `npx tsc --noEmit`, `npm run lint`, `npm run build` and `npm audit` pass; audit reports 0 vulnerabilities. Final screenshots are saved in ignored `screenshots/facts-{1440,768,360,reduced}.png`; `screenshots/home-360.png` shows the full mobile hero. A true 360px mobile-emulated browser check confirms the panel, title and buttons fit without horizontal overflow; the 768px and 1440px layouts also fit. Reduced-motion emulation confirms the rail is static, the marker animation is `none`, and all text is fully readable. The 360px panel screenshot is centered in the viewport so all four rows can be reviewed.
 - Branch check: `main` and `origin/main` are both at `8c42532`; `feat/forest-sage` is an ancestor of remote main, so its merge is already complete. `feat/hero-facts-animation` is checked out from that same commit. Other branches were left untouched.
+
+---
+
+## Phase 2A: Admin Authentication Upgrade (2026-11-23, branch `feat/admin-auth-upgrade`)
+
+**Goal:** Replace single shared-password admin login with two named, allowlisted admin accounts using Supabase Auth, add login-attempt limiting with lockout, and move admin panel off predictable `/admin` route.
+
+### Work Completed
+
+| Task | Status | Details |
+|---|---|---|
+| **Supabase deps** | ✅ | Added `@supabase/supabase-js@2.45.0` and `@supabase/ssr@0.5.0` |
+| **Server client** | ✅ | `src/lib/supabase/server.ts` — admin (service role) + user clients |
+| **Database schema** | ✅ | `supabase/migrations/001_admin_auth.sql` — `admin_login_attempts`, `admin_accounts` tables, RLS, RPC functions |
+| **Auth utilities** | ✅ | `src/lib/admin-auth-utils.ts` — pure utils (testable, no external deps) |
+| **Supabase auth logic** | ✅ | `src/lib/admin-auth-supabase.ts` — signInAdmin, signOutAdmin, lockout, route helpers |
+| **Proxy/middleware** | ✅ | `src/proxy.ts` updated for dynamic `ADMIN_ROUTE_SLUG`, protects `/admin-internal/*` + `/api/admin/*` |
+| **Login API** | ✅ | `src/app/api/admin/login/route.ts` — Supabase Auth with allowlist check, generic errors |
+| **Logout API** | ✅ | `src/app/api/admin/logout/route.ts` — Supabase signOut + old cookie cleanup |
+| **Accounts API** | ✅ | `src/app/api/admin/accounts/route.ts` — GET/PATCH (view/disable/enable accounts) |
+| **Login attempts API** | ✅ | `src/app/api/admin/login-attempts/route.ts` — GET/POST (view/clear lockout) |
+| **Password API** | ✅ | `src/app/api/admin/password/route.ts` — PATCH (change password, requires current) |
+| **Admin panel UI** | ✅ | `src/app/admin-internal/page.tsx` — 3 tabs: Posts, Accounts, Security (attempts + password change) |
+| **Login form UI** | ✅ | `src/app/admin-internal/login/` — email+password, Forest & Sage style, generic error |
+| **Next.js rewrites** | ✅ | `next.config.ts` — dynamic slug rewrite to `/admin-internal`, dev fallback `/panel-x7f` |
+| **Tests** | ✅ | `tests/admin-auth-supabase.test.ts` — 10 tests for utils (all pass) |
+| **Build gates** | ✅ | `tsc` 0, `lint` 0, `build` 33 routes, `test` 15/15 pass, `npm audit` 0 vuln |
+
+### Architecture Decisions
+
+- **Supabase Auth** for the two admin accounts (Rachit, Krish) — emails from `ADMIN_EMAIL_1`, `ADMIN_EMAIL_2` env vars
+- **Service-role server client** for all admin operations — never exposed to client bundle
+- **PL/pgSQL RPC functions** with `SECURITY DEFINER` for atomic lockout tracking:
+  - `record_admin_login_attempt(p_email, p_success, p_ip, p_user_agent)`
+  - `check_admin_lockout(p_email)` — returns boolean
+  - `clear_admin_lockout(p_email)`
+  - `set_admin_account_active(p_email, p_active)`
+- **RLS enabled** on both admin tables, policies restrict to `service_role` only
+- **Dynamic admin route** via `ADMIN_ROUTE_SLUG` env var:
+  - Production: MUST be set (random unguessable string, e.g. `panel-x7f9k2`)
+  - Development: defaults to `/panel-x7f` if unset
+  - Old `/admin/*` paths rewrite to `/admin-internal/*` but proxy enforces auth
+- **Generic errors** — "Invalid credentials" for both wrong password and non-allowlisted email (no email enumeration)
+- **Lockout** — 5 failed attempts per email per 15-minute rolling window
+- **Account management** — admin can disable the other admin's account (not their own), disable signs out active sessions
+- **Password change** — self-service via Supabase Auth `updateUser`, requires current password verification
+
+### Files Created/Modified
+
+**New files:**
+- `src/lib/supabase/server.ts`
+- `src/lib/admin-auth-utils.ts`
+- `src/lib/admin-auth-supabase.ts`
+- `supabase/migrations/001_admin_auth.sql`
+- `src/app/api/admin/accounts/route.ts`
+- `src/app/api/admin/login-attempts/route.ts`
+- `src/app/api/admin/password/route.ts`
+- `src/app/admin-internal/` (entire admin panel: page.tsx, login/, posts/)
+- `tests/admin-auth-supabase.test.ts`
+
+**Modified files:**
+- `.env.example` — added Supabase vars, ADMIN_EMAIL_1/2, ADMIN_ROUTE_SLUG
+- `next.config.ts` — dynamic rewrites for admin slug
+- `src/proxy.ts` — dynamic route protection
+- `src/app/api/admin/login/route.ts` — Supabase Auth integration
+- `src/app/api/admin/logout/route.ts` — Supabase signOut
+- `package.json` / `package-lock.json` — new deps
+
+### Verification Results
+
+| Gate | Result |
+|---|---|
+| `npx tsc --noEmit` | 0 errors |
+| `npm run lint` | 0 errors, 0 warnings |
+| `npm run build` | success, 33 routes (incl. `/motion-preview`) |
+| `npm test` | 15/15 pass (10 new + 5 existing) |
+| `npm audit` | 0 vulnerabilities |
+| Production CSP | no `unsafe-eval` (dev-only conditional) |
+
+### Owner Setup Steps (for launch)
+
+1. **Create Supabase project** for Nexlane Digital (new project, not shared)
+2. **Run migration** `supabase/migrations/001_admin_auth.sql` in Supabase SQL Editor
+3. **Create two auth users** in Supabase Auth → Users with emails matching `ADMIN_EMAIL_1` and `ADMIN_EMAIL_2`, set strong passwords
+4. **Verify admin_accounts table** — both emails should exist with `is_active = true`
+5. **Set Vercel env vars:**
+   - `NEXT_PUBLIC_SUPABASE_URL` (from Supabase dashboard)
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY` (from Supabase dashboard)
+   - `SUPABASE_SERVICE_ROLE_KEY` (from Supabase dashboard, **server-only**)
+   - `ADMIN_EMAIL_1` (exact email from step 3)
+   - `ADMIN_EMAIL_2` (exact email from step 3)
+   - `ADMIN_ROUTE_SLUG` (random unguessable string, e.g. `panel-x7f9k2`)
+6. **Deploy** — old `/admin` paths now 404, new dynamic route works
+
+### Security Notes
+
+- Service role key **never** exposed to client; all admin operations server-side only
+- Generic error "Invalid credentials" for both wrong password and non-allowlisted email
+- Lockout at 5 failed attempts per email per 15-minute window (rolling)
+- Admin can disable the other admin's account (not their own)
+- Account disable signs out the user's active sessions
+- Password change requires current password verification
+
+### Next Steps
+
+- Phase 2B: Contact/Audit form API routes, Resend email integration, Turnstile widget, Vercel WAF rule
+- Owner creates Supabase project and sets env vars per steps above

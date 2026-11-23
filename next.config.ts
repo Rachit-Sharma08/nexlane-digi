@@ -37,6 +37,18 @@ const securityHeaders = [
   },
 ];
 
+// Get admin route slug from env (with dev/build fallback)
+function getAdminSlug(): string {
+  const slug = process.env.ADMIN_ROUTE_SLUG;
+  if (!slug) {
+    // Allow build to proceed with a placeholder; runtime will enforce via proxy/middleware
+    // In production, the owner MUST set this in Vercel env vars
+    return 'panel-x7f'; // Build/dev fallback (without leading slash for rewrites)
+  }
+  // Remove leading slash for rewrite source
+  return slug.startsWith('/') ? slug.slice(1) : slug;
+}
+
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
@@ -46,6 +58,23 @@ const nextConfig: NextConfig = {
     return [
       // Renamed in the IA restructure — permanent, keeps old links alive.
       { source: "/portfolio", destination: "/our-work", permanent: true },
+    ];
+  },
+  async rewrites() {
+    const adminSlug = getAdminSlug();
+    return [
+      // Rewrite dynamic admin slug to internal admin-internal path
+      {
+        source: `/${adminSlug}/:path*`,
+        destination: '/admin-internal/:path*',
+      },
+      {
+        source: `/${adminSlug}`,
+        destination: '/admin-internal',
+      },
+      // Old /admin paths return 404 in production (handled by middleware/proxy)
+      // In dev, we also rewrite to admin-internal for backwards compat during transition
+      // but the proxy will handle authentication
     ];
   },
   async headers() {
