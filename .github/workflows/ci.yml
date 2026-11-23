@@ -23,3 +23,4 @@ jobs:
         env:
           # build-time placeholders so build never needs real secrets
           SITE_URL: http://localhost:3000
+          ADMIN_ROUTE_SLUG: verify-panel
