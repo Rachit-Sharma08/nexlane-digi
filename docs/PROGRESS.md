@@ -510,3 +510,9 @@ Spec: AGENTS §12 + `docs/seo-content.md`. No new npm dependencies.
 - **Follow-up after owner screenshot:** the Home final CTA still rendered the old `ArrowMotif` (a thin N/arrow) instead of the shared mark. Replaced that displayed asset with `BrandMark` at 48px and kept its parallax class. Verified the CTA path matches the Navbar’s canonical SVG path at 1440/768/360; no horizontal overflow or browser page errors. Screenshots: `screenshots/brand-cta-{1440,768,360}.png`.
 - **Dev overlay:** the round N badge floating near the top-left in the owner’s screenshot is the Next.js development indicator (`nextjs-portal`), not a site logo; it is absent from production. Left the ArrowMotif component/export in place for the owner’s later dead-code cleanup pass as requested.
 - **Follow-up gates:** `npx tsc --noEmit`, `npm run lint`, and `npm audit` pass (0 vulnerabilities). The previous production build remains the last full build; this focused follow-up was checked in-browser at all three widths.
+
+## Dead-code cleanup follow-up (`feat/seo-foundation`, 2026-11-23)
+
+- Removed the now-unused `ArrowMotif` component and its unused re-export from `src/components/ui.tsx`; a repository-wide usage search found no remaining live callers after the Home CTA switched to `BrandMark`.
+- Kept `.parallax-drift`: the Home CTA still uses it on the canonical mark. No other assets, dependencies, or unrelated exports were removed.
+- Validation: `npx tsc --noEmit` and `npm run lint` pass. `npm run build` was not run because the owner's Next.js dev server is using the same `.next` directory; this cleanup changes no rendered UI. No dependency changes were made, so the previous `npm audit` result remains applicable.

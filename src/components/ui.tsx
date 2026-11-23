@@ -1,5 +1,3 @@
-import { ArrowMotif } from "./ArrowMotif";
-
 /** Simple reusable building blocks (container, section, card, gradient heading). */
 
 export function Container({
@@ -90,5 +88,3 @@ export function SectionHeader({
 export function Muted({ children }: { children: React.ReactNode }) {
   return <p className="text-[var(--muted)] leading-relaxed">{children}</p>;
 }
-
-export { ArrowMotif };
