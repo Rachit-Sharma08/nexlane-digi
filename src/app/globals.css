@@ -580,6 +580,29 @@ html[data-quality="low"] .hub-rail::after { display: none; }
   to { opacity: 1; transform: none; filter: blur(0); }
 }
 
+/* Process folio relay: decorative card that travels once along the connector
+   line and docks behind each numbered node (nodes render above it, so the step
+   numbers stay readable). Absolute + transform only -> no layout shift. */
+.process-folio {
+  width: 38px;
+  height: 30px;
+  will-change: transform;
+  transition: transform 420ms cubic-bezier(0.16, 1, 0.3, 1), opacity 120ms ease;
+  filter: drop-shadow(0 4px 10px rgba(31, 58, 36, 0.18));
+}
+/* Reduced motion: folio is parked at the final node with no travel. */
+@media (prefers-reduced-motion: reduce) {
+  .process-folio { transition: none !important; }
+}
+.process-folio .pf-check {
+  stroke-dasharray: 14;
+  stroke-dashoffset: 14;
+  animation: pf-check-draw 260ms ease forwards;
+}
+@keyframes pf-check-draw {
+  to { stroke-dashoffset: 0; }
+}
+
 /* Staggered grid reveal: each child enters on its own offset slice of the
    same view() timeline, so cards cascade as the section scrolls in. */
 .stagger > * {
@@ -980,6 +1003,7 @@ h3,
     transition-duration: 0.01ms !important;
   }
   .scroll-reveal, .reveal-blur, .stagger > *, .parallax-drift, .hero-arrive, .mobile-menu-enter { animation: none; }
+  .process-folio .pf-check { animation: none; stroke-dashoffset: 0; }
   .chat-panel, .chat-fab::after, .chat-dots i, .chat-fab { animation: none; }
   .robot, .robot-head, .robot-eye, .robot-antenna i { animation: none !important; }
   .chat-fab:hover { transform: none; }

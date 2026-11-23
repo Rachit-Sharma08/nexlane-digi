@@ -9,6 +9,7 @@ import DepthCard from "@/components/DepthCard";
 import SectionNav from "@/components/SectionNav";
 import ServiceHub from "@/components/home/ServiceHub";
 import FactsPanel from "@/components/home/FactsPanel";
+import ProcessTimeline from "@/components/home/ProcessTimeline";
 import NextUp from "@/components/NextUp";
 import { Marquee } from "@/components/ui/marquee";
 import JsonLd from "@/components/JsonLd";
@@ -296,25 +297,7 @@ export default function HomePage() {
             title="How we work"
             intro="Five steps, no mystery. You always know what happens next and what it costs."
           />
-          <ol className="relative mt-10 grid list-none gap-8 lg:grid-cols-5 lg:gap-4">
-            <span
-              aria-hidden="true"
-              className="absolute bottom-2 left-4 top-2 w-px bg-gradient-to-b from-[var(--brand)] via-[var(--accent)] to-transparent lg:hidden"
-            />
-            <span
-              aria-hidden="true"
-              className="absolute left-0 right-0 top-4 hidden h-px bg-gradient-to-r from-[var(--brand)] via-[var(--accent)] to-transparent lg:block"
-            />
-            {process.map((s) => (
-              <li key={s.step} className="reveal-blur relative pl-12 lg:pl-0 lg:pt-12">
-                <span className="absolute left-0 top-0 grid h-8 w-8 place-items-center rounded-full border border-[var(--accent-2)]/50 bg-[var(--surface-1)] text-xs font-bold text-[var(--accent-2)]">
-                  {s.step}
-                </span>
-                <h3 className="font-display font-semibold text-[var(--text)]">{s.title}</h3>
-                <p className="mt-1 text-sm leading-relaxed text-[var(--muted)]">{s.blurb}</p>
-              </li>
-            ))}
-          </ol>
+          <ProcessTimeline items={process} />
         </section>
 
         {/* 7. OUR WORK — honest empty state, no fake items */}
