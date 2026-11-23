@@ -1,12 +1,17 @@
 import asyncio
 import json
+import os
 import sys
 import time
 from pathlib import Path
 from playwright.async_api import async_playwright
 
-BASE_URL = "http://localhost:3000"
-ADMIN_PASSWORD = "smoke-test-pw-2026"
+BASE_URL = os.getenv("NEXLANE_BASE_URL", "http://localhost:3000").rstrip("/")
+ADMIN_ROUTE_SLUG = os.getenv("ADMIN_ROUTE_SLUG", "panel-x7f").strip("/")
+ADMIN_EMAIL = os.getenv("ADMIN_EMAIL_1", "")
+ADMIN_PASSWORD = os.getenv("ADMIN_TEST_PASSWORD", "")
+ADMIN_URL = f"{BASE_URL}/{ADMIN_ROUTE_SLUG}"
+ADMIN_LOGIN_URL = f"{ADMIN_URL}/login"
 
 async def test_admin_flow():
     async with async_playwright() as p:
@@ -60,25 +65,25 @@ async def test_admin_flow():
             except UnicodeEncodeError:
                 print(content[:12000].encode('ascii', 'replace').decode('ascii'))
         
-        # Test 1: /admin unauthenticated -> lands on /admin/login
-        print("\n=== Test 1: Unauthenticated /admin redirects to login ===")
-        await page.goto(f"{BASE_URL}/admin")
-        await page.wait_for_url("**/admin/login**")
-        record("Unauthenticated redirect", page.url.endswith("/admin/login"), f"URL: {page.url}")
+        print("\n=== Test 1: Unauthenticated panel redirects to login ===")
+        await page.goto(ADMIN_URL)
+        await page.wait_for_url(f"**/{ADMIN_ROUTE_SLUG}/login**")
+        record("Unauthenticated redirect", page.url.endswith(f"/{ADMIN_ROUTE_SLUG}/login"), f"URL: {page.url}")
         
         # Test 2: Wrong password -> error message visible
         print("\n=== Test 2: Wrong password shows error ===")
         await page.fill('input[type="password"]', "wrong-password")
         await page.click('button[type="submit"]')
         await page.wait_for_timeout(500)
-        error_visible = await page.locator('text="Wrong password"').is_visible()
-        record("Wrong password error", error_visible, "Error message displayed")
+        error_visible = await page.locator('text="Invalid credentials"').is_visible()
+        record("Wrong password error", error_visible, "Generic credentials error displayed")
         
         # Test 3: Right password -> dashboard shows sample-draft-post with Draft badge
         print("\n=== Test 3: Correct password shows dashboard with sample post ===")
+        await page.fill('input[type="email"]', ADMIN_EMAIL)
         await page.fill('input[type="password"]', ADMIN_PASSWORD)
         await page.click('button[type="submit"]')
-        await page.wait_for_url("**/admin", timeout=15000)
+        await page.wait_for_url(f"**/{ADMIN_ROUTE_SLUG}", timeout=15000)
         await page.wait_for_timeout(1500)
         
         # Check for sample-draft-post row - target the title link specifically
@@ -90,7 +95,7 @@ async def test_admin_flow():
         # Test 4: Create new post
         print("\n=== Test 4: Create new post ===")
         await page.click('a:has-text("New post")')
-        await page.wait_for_url("**/admin/posts/new")
+        await page.wait_for_url(f"**/{ADMIN_ROUTE_SLUG}/posts/new")
         await page.wait_for_timeout(500)
         
         # Fill the form
@@ -106,23 +111,23 @@ async def test_admin_flow():
         # Add a paragraph block (already there by default)
         await page.fill('textarea[placeholder="Paragraph text..."].resize-none', "This is a test paragraph created by the smoke test.")
         
-        # Save - the page will auto-redirect to /admin on success
+        # Save - the page returns to the configured admin route.
         print("Clicking Create post...")
         await page.click('button:has-text("Create post")')
-        await page.wait_for_url("**/admin", timeout=15000)
+        await page.wait_for_url(f"**/{ADMIN_ROUTE_SLUG}", timeout=15000)
         await page.wait_for_timeout(1000)
         
         # Debug after create - should be on dashboard now
         await debug_page("dashboard after create")
         
         # Verify new post appears in list - target the title link specifically (has class font-medium)
-        new_post_link = page.locator(f'a.font-medium[href="/admin/posts/{test_slug}"]')
+        new_post_link = page.locator(f'a.font-medium[href="/{ADMIN_ROUTE_SLUG}/posts/{test_slug}"]')
         record("New post in dashboard", await new_post_link.is_visible(), f"Post '{test_title}' listed with slug {test_slug}")
         
         # Test 5: Edit the post - click the Edit button (btn-ghost) not the title link
         print("\n=== Test 5: Edit post ===")
-        await page.click(f'a.btn-ghost[href="/admin/posts/{test_slug}"]')
-        await page.wait_for_url(f"**/admin/posts/{test_slug}")
+        await page.click(f'a.btn-ghost[href="/{ADMIN_ROUTE_SLUG}/posts/{test_slug}"]')
+        await page.wait_for_url(f"**/{ADMIN_ROUTE_SLUG}/posts/{test_slug}")
         # Debug: see what's on the edit page
         await debug_page("edit page loaded")
         # Wait a bit more for client-side hydration and data fetch
@@ -145,11 +150,11 @@ async def test_admin_flow():
         
         # Go back to dashboard
         await page.click('button:has-text("Back to posts")')
-        await page.wait_for_url("**/admin", timeout=15000)
+        await page.wait_for_url(f"**/{ADMIN_ROUTE_SLUG}", timeout=15000)
         await page.wait_for_timeout(500)
         
         # Verify updated title in dashboard - target the title link specifically
-        updated_link = page.locator(f'a.font-medium[href="/admin/posts/{test_slug}"]')
+        updated_link = page.locator(f'a.font-medium[href="/{ADMIN_ROUTE_SLUG}/posts/{test_slug}"]')
         record("Updated post in dashboard", await updated_link.is_visible(), "Updated title listed")
         
         # Verify the link text is the updated title
@@ -159,7 +164,7 @@ async def test_admin_flow():
         # Test 6: Delete the post
         print("\n=== Test 6: Delete post ===")
         # Find the delete button for our post - use the row with the slug link (title link)
-        delete_btn = page.locator(f'tr:has(a.font-medium[href="/admin/posts/{test_slug}"]) button:has-text("Delete")')
+        delete_btn = page.locator(f'tr:has(a.font-medium[href="/{ADMIN_ROUTE_SLUG}/posts/{test_slug}"]) button:has-text("Delete")')
         # Confirm dialog - must be set up BEFORE clicking
         page.once("dialog", lambda dialog: dialog.accept())
         await delete_btn.click()
@@ -169,21 +174,20 @@ async def test_admin_flow():
         await debug_page("after delete click")
         
         # Verify post is gone - target the title link specifically
-        deleted_link = page.locator(f'a.font-medium[href="/admin/posts/{test_slug}"]')
+        deleted_link = page.locator(f'a.font-medium[href="/{ADMIN_ROUTE_SLUG}/posts/{test_slug}"]')
         is_gone = not await deleted_link.is_visible()
         record("Post deleted from dashboard", is_gone, "Post no longer listed" if is_gone else "Post still visible")
         
         # Test 7: Log out
         print("\n=== Test 7: Log out ===")
         await page.click('button:has-text("Log out")')
-        await page.wait_for_url("**/admin/login")
-        record("Log out redirect", page.url.endswith("/admin/login"), f"URL: {page.url}")
+        await page.wait_for_url(f"**/{ADMIN_ROUTE_SLUG}/login")
+        record("Log out redirect", page.url.endswith(f"/{ADMIN_ROUTE_SLUG}/login"), f"URL: {page.url}")
         
-        # Test 8: /admin again -> login (middleware)
-        print("\n=== Test 8: Middleware redirect after logout ===")
-        await page.goto(f"{BASE_URL}/admin")
-        await page.wait_for_url("**/admin/login**")
-        record("Middleware redirect", page.url.endswith("/admin/login"), f"URL: {page.url}")
+        print("\n=== Test 8: Panel access stays protected after logout ===")
+        await page.goto(ADMIN_URL)
+        await page.wait_for_url(f"**/{ADMIN_ROUTE_SLUG}/login**")
+        record("Middleware redirect", page.url.endswith(f"/{ADMIN_ROUTE_SLUG}/login"), f"URL: {page.url}")
         
         await browser.close()
         
@@ -209,5 +213,8 @@ async def test_admin_flow():
         return all(r["passed"] for r in results)
 
 if __name__ == "__main__":
+    if not ADMIN_EMAIL or not ADMIN_PASSWORD:
+        print("Skipping live admin checks: set ADMIN_EMAIL_1 and ADMIN_TEST_PASSWORD in the test process.")
+        sys.exit(0)
     result = asyncio.run(test_admin_flow())
     sys.exit(0 if result else 1)
