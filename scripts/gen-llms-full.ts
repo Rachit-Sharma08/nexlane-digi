@@ -45,12 +45,7 @@ for (const s of services) {
 out.push("", "## Common questions (home page)");
 for (const f of homeFaqs) out.push(`- **${f.question}** ${f.answer}`);
 
-out.push("", "## Contact");
-out.push(
-  site.contactEmail
-    ? `Email: ${site.contactEmail}. Or use the form at /contact — phone and WhatsApp numbers are listed there.`
-    : "Use the form at /contact."
-);
+out.push("", "## Contact", "", "Use the form at /contact.");
 
 if (pages) out.push("", "## Pages", "", pages);
 
