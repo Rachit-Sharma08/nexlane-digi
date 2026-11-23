@@ -678,9 +678,7 @@ html[data-quality="low"] .hub-rail::after { display: none; }
   transition: opacity 200ms ease, transform 240ms var(--ease-out-expo),
     border-color 180ms ease, background-color 180ms ease;
 }
-/* Keep fixed buttons out of the home hero, which already has its own CTAs. */
-html[data-hero-visible="true"] .whatsapp-float,
-html[data-hero-visible="true"] .chat-fab,
+/* Back-to-top stays hidden at the top; contact shortcuts are always available. */
 html[data-hero-visible="true"] .back-to-top {
   opacity: 0;
   visibility: hidden;
