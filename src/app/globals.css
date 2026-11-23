@@ -673,20 +673,12 @@ html[data-quality="low"] .hub-rail::after { display: none; }
 .back-to-top.is-visible { opacity: 1; pointer-events: auto; transform: translateY(0) scale(1); }
 .back-to-top:hover { border-color: var(--accent); transform: translateY(-2px); }
 
-/* Floating buttons share the bottom-right column: chat at the bottom, then
-   WhatsApp, then back-to-top, each with breathing room. The chat panel opens
-   over the WhatsApp slot, so that button fades while the panel is open. */
+/* Keep the two contact choices visible at opposite corners of the viewport. */
 .whatsapp-float {
   transition: opacity 200ms ease, transform 240ms var(--ease-out-expo),
     border-color 180ms ease, background-color 180ms ease;
 }
-html[data-chat-open="true"] .whatsapp-float {
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transform: translateY(8px) scale(0.95);
-}
-/* The hero carries its own WhatsApp button, so the fixed stack waits below it. */
+/* Keep fixed buttons out of the home hero, which already has its own CTAs. */
 html[data-hero-visible="true"] .whatsapp-float,
 html[data-hero-visible="true"] .chat-fab,
 html[data-hero-visible="true"] .back-to-top {

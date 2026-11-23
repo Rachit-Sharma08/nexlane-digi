@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
+import { MessageCircle } from "lucide-react";
 import { nav, site } from "@/config/site";
 import BrandMark from "./BrandMark";
 
@@ -30,6 +31,15 @@ function TopBar() {
             {l.label}
           </a>
         ))}
+        <button
+          type="button"
+          aria-label="Open chat with Nexlane Digital"
+          onClick={() => window.dispatchEvent(new Event("nexlane:open-chat"))}
+          className="inline-flex min-h-11 items-center gap-1.5 text-xs text-[var(--muted)] hover:text-[var(--text)]"
+        >
+          <MessageCircle className="h-3.5 w-3.5" aria-hidden="true" />
+          Chat
+        </button>
       </div>
     </div>
   );

@@ -36,8 +36,10 @@ function RobotHead({ className = "" }: { className?: string }) {
  * Phase 1: local answers from src/lib/chatbot.ts, clearly labelled as a
  * preview until the Grok API lands in Phase 2.
  */
-export default function Chatbot() {
-  const [open, setOpen] = useState(false);
+export default function Chatbot({ openRequest = 0 }: { openRequest?: number }) {
+  const [manualOpen, setManualOpen] = useState(false);
+  const [dismissedRequest, setDismissedRequest] = useState(0);
+  const open = manualOpen || openRequest > dismissedRequest;
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       role: "bot",
@@ -62,21 +64,25 @@ export default function Chatbot() {
     const onDown = (e: MouseEvent) => {
       const t = e.target as Node;
       if (panelRef.current?.contains(t) || fabRef.current?.contains(t)) return;
-      setOpen(false);
+      setManualOpen(false);
+      setDismissedRequest(openRequest);
     };
     document.addEventListener("mousedown", onDown);
     return () => document.removeEventListener("mousedown", onDown);
-  }, [open]);
+  }, [open, openRequest]);
 
   useEffect(() => {
     if (!open) return;
     inputRef.current?.focus();
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
+      if (e.key === "Escape") {
+        setManualOpen(false);
+        setDismissedRequest(openRequest);
+      }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [open]);
+  }, [open, openRequest]);
 
   useEffect(() => {
     const list = listRef.current;
@@ -107,7 +113,14 @@ export default function Chatbot() {
         ref={fabRef}
         data-open={open}
         data-typing={typing}
-        onClick={() => setOpen((o) => !o)}
+        onClick={() => {
+          if (open) {
+            setManualOpen(false);
+            setDismissedRequest(openRequest);
+          } else {
+            setManualOpen(true);
+          }
+        }}
         aria-expanded={open}
         aria-label={open ? "Close chat" : "Open chat with Nexlane Digital"}
         className={`chat-fab fixed bottom-5 right-5 z-50 grid h-16 w-16 place-items-center rounded-full ${focusRing}`}
@@ -137,7 +150,10 @@ export default function Chatbot() {
             </div>
             <button
               type="button"
-              onClick={() => setOpen(false)}
+              onClick={() => {
+                setManualOpen(false);
+                setDismissedRequest(openRequest);
+              }}
               aria-label="Close chat"
               className={`ml-auto rounded-full p-2 text-[var(--muted)] transition-colors hover:bg-[rgba(31,58,36,0.1)] hover:text-[var(--text)] ${focusRing}`}
             >
