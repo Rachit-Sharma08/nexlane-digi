@@ -98,7 +98,7 @@ export default function ContactPage() {
               name="name"
               type="text"
               autoComplete="name"
-              className="w-full rounded-lg border border-[var(--card-border)] bg-[rgba(0,8,20,0.6)] px-3 py-2 text-white"
+              className="w-full rounded-lg border border-[var(--card-border)] bg-[var(--surface-1)] px-3 py-2 text-[var(--text)]"
             />
           </div>
           <div>
@@ -110,7 +110,7 @@ export default function ContactPage() {
               name="email"
               type="email"
               autoComplete="email"
-              className="w-full rounded-lg border border-[var(--card-border)] bg-[rgba(0,8,20,0.6)] px-3 py-2 text-white"
+              className="w-full rounded-lg border border-[var(--card-border)] bg-[var(--surface-1)] px-3 py-2 text-[var(--text)]"
             />
           </div>
           <div>
@@ -121,7 +121,7 @@ export default function ContactPage() {
               id="contact-message"
               name="message"
               rows={5}
-              className="w-full rounded-lg border border-[var(--card-border)] bg-[rgba(0,8,20,0.6)] px-3 py-2 text-white"
+              className="w-full rounded-lg border border-[var(--card-border)] bg-[var(--surface-1)] px-3 py-2 text-[var(--text)]"
             />
           </div>
           <div className="hidden" aria-hidden="true">

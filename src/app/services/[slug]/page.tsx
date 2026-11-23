@@ -62,7 +62,7 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
         <Eyebrow>Services · {service.name}</Eyebrow>
         <h1 className="font-display text-4xl font-bold sm:text-5xl">{service.name}</h1>
         {/* Answer-first lead: the block AI search quotes (AGENTS §12.11). */}
-        <p className="mt-5 max-w-2xl text-lg leading-relaxed text-white/90">{service.summary}</p>
+        <p className="mt-5 max-w-2xl text-lg leading-relaxed text-[var(--text)]">{service.summary}</p>
         <div className="mt-8 flex flex-wrap gap-3">
           <Link href="/audit" className="btn btn-primary">
             Get a Free Audit
@@ -86,7 +86,7 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
               <DepthCard key={item} glare className="flex items-start gap-3 p-5">
                 <span
                   aria-hidden="true"
-                  className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[var(--brand)] to-[var(--accent)] text-white"
+                  className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[var(--brand)] to-[var(--accent)] text-[var(--bg)]"
                 >
                   <Check className="h-4 w-4" strokeWidth={3} />
                 </span>
@@ -118,7 +118,7 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
               <li key={index} className="relative flex gap-4 sm:gap-5">
                 <span
                   aria-hidden="true"
-                  className="relative z-10 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[var(--brand)] to-[var(--accent)] text-sm font-bold text-white shadow-[0_0_18px_rgba(30,211,242,0.35)]"
+                  className="relative z-10 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[var(--brand)] to-[var(--accent)] text-sm font-bold text-[var(--bg)] shadow-[0_0_18px_rgba(31,58,36,0.35)]"
                 >
                   {index + 1}
                 </span>
@@ -136,14 +136,14 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
 
         <section id="faq" className="scroll-reveal pt-14" aria-label="FAQ">
           <SectionHeader eyebrow="Questions" title="FAQ" />
-          <div className="divide-y divide-[var(--card-border)] rounded-2xl border border-[var(--card-border)] bg-[rgba(6,27,54,0.35)]">
+          <div className="divide-y divide-[var(--card-border)] rounded-2xl border border-[var(--card-border)] bg-[var(--surface-1)]">
             {service.faqs.map((faq, index) => (
               <details key={index} className="group px-5 py-4">
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-medium text-white marker:hidden">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-medium text-[var(--text)] marker:hidden">
                   {faq.question}
                   <ChevronDown
                     aria-hidden="true"
-                    className="h-4 w-4 shrink-0 text-[var(--accent)] transition-transform duration-300 group-open:rotate-180"
+                    className="h-4 w-4 shrink-0 text-[var(--accent-2)] transition-transform duration-300 group-open:rotate-180"
                   />
                 </summary>
                 <p className="mt-2 pr-8 text-sm leading-relaxed text-[var(--muted)]">{faq.answer}</p>
@@ -172,7 +172,7 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
                         {i > 0 && (i === others.length - 1 ? " and " : ", ")}
                         <Link
                           href={`/services/${s.slug}`}
-                          className="underline hover:text-white"
+                          className="underline hover:text-[var(--text)]"
                         >
                           {s.name.toLowerCase()}
                         </Link>

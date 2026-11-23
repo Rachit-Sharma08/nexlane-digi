@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Sora } from "next/font/google";
+import { Anton, Inter, Sora } from "next/font/google";
 import { site } from "@/config/site";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -14,6 +14,8 @@ import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
 const sora = Sora({ subsets: ["latin"], variable: "--font-sora", display: "swap" });
+// Hero headline only (AGENTS §13). Anton ships a single 400 weight.
+const anton = Anton({ weight: "400", subsets: ["latin"], variable: "--font-anton", display: "swap" });
 
 const layoutMeta = buildMetadata({
   title: site.tagline,
@@ -35,7 +37,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#000D1D",
+  themeColor: "#E5E8CE",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -45,12 +47,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html
       lang="en-IN"
       data-quality="low"
-      className={`${inter.variable} ${sora.variable}`}
+      data-scroll-behavior="smooth"
+      className={`${inter.variable} ${sora.variable} ${anton.variable}`}
     >
       <body>
         <a
           href="#main"
-          className="sr-only focus:not-sr-only focus:absolute focus:left-2 focus:top-2 focus:z-[60] focus:rounded focus:bg-[var(--brand)] focus:px-3 focus:py-2 focus:text-white"
+          className="sr-only focus:not-sr-only focus:absolute focus:left-2 focus:top-2 focus:z-[60] focus:rounded focus:bg-[var(--brand)] focus:px-3 focus:py-2 focus:text-[var(--bg)]"
         >
           Skip to content
         </a>

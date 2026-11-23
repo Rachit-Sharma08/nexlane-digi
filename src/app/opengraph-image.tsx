@@ -24,13 +24,13 @@ export default function OpengraphImage() {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          background: "linear-gradient(135deg, #000D1D 0%, #003D66 55%, #015798 100%)",
-          color: "#FFFFFF",
+          background: "linear-gradient(135deg, #E5E8CE 0%, #D6DAB4 55%, #CDD3AC 100%)",
+          color: "#16220F",
           fontFamily: "sans-serif",
           position: "relative",
         }}
       >
-        {/* brand gradient bar (#0572F5 → #1ED3F2 → #7CF4EF) */}
+        {/* brand gradient bar (forest → sage) */}
         <div
           style={{
             position: "absolute",
@@ -38,7 +38,7 @@ export default function OpengraphImage() {
             left: 0,
             right: 0,
             height: 14,
-            background: "linear-gradient(90deg, #0572F5, #1ED3F2, #7CF4EF)",
+            background: "linear-gradient(90deg, #1F3A24, #2F4A28, #3F5E36)",
           }}
         />
         <img
@@ -49,7 +49,7 @@ export default function OpengraphImage() {
           style={{ marginBottom: 28, borderRadius: 20 }}
         />
         <div style={{ fontSize: 96, fontWeight: 700, letterSpacing: -2 }}>Nexlane Digital</div>
-        <div style={{ fontSize: 40, color: "#9FB3C8", marginTop: 20 }}>
+        <div style={{ fontSize: 40, color: "#46543A", marginTop: 20 }}>
           Websites, SEO and growth for businesses in Haryana and abroad
         </div>
         <div
@@ -57,8 +57,8 @@ export default function OpengraphImage() {
             marginTop: 48,
             fontSize: 30,
             fontWeight: 600,
-            color: "#7CF4EF",
-            border: "2px solid #1ED3F2",
+            color: "#16220F",
+            border: "2px solid #1F3A24",
             borderRadius: 999,
             padding: "10px 36px",
           }}

@@ -31,7 +31,7 @@ export default function ServicesPage() {
                 <h2 className="font-display text-lg font-semibold">{service.shortName}</h2>
                 <p className="mt-2 text-sm text-[var(--muted)] leading-relaxed">{service.summary}</p>
               </div>
-              <Link href={`/services/${service.slug}`} className="mt-4 text-sm font-semibold text-[var(--accent-2)] hover:text-white">
+              <Link href={`/services/${service.slug}`} className="mt-4 text-sm font-semibold text-[var(--brand)] hover:text-[var(--brand-2)]">
                 Learn more →
               </Link>
             </DepthCard>

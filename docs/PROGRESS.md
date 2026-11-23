@@ -1,6 +1,10 @@
 # Nexlane Digital — Progress
 
-Last updated: 2026-11-08 · Repo: `Rachit-Sharma08/nexlane-digital` (private) · Deploy: Vercel (pending)
+Last updated: 2026-11-22 · Repo: `Rachit-Sharma08/nexlane-digital` (private) · Deploy: Vercel (pending)
+
+## Prompt 1 of 3 — logo, hero and overlap fixes (2026-11-22)
+
+- **Base and PR check:** `gh pr list --state all --limit 50` shows PRs #8–#11 merged. SEO PR #14 is closed, not merged; its remote head commit `5a7d3b4` is nevertheless an ancestor of `main`, so the code is present in the selected base. `feat/hero-v3` starts from `main` at `2136eff`; Prompt 1 work complete: logo assets added, Anton headline + `next/font/google`, cyan-only palette (no lime/green), hero N mark scene (high tier WebGL + CSS 3D mid/low tiers), overlap fixes (WhatsApp stack, NextUp overflow, dropdown z-index, contact submit text), Next dev overlay inspected (no actionable issue; only a THREE.Clock library deprecation warning), 1440/768/360 Playwright screenshots taken and visually reviewed and saved as `screenshots/home-{1440,768,360}.png`. `git diff --check` passes.
 
 ## Backend allowed + quick-win batch (2026-11-08, direct to `main`)
 
@@ -310,7 +314,70 @@ Removed during Stage E for speed: the `motion` library (the navbar underline is 
 
 ---
 
-## Part 1 — mobile performance push (branch `perf/mobile-90`, base `feat/qa`)
+## Forest & Sage redesign (branch `feat/forest-sage`, 2026-11-22)
+
+Owner rejected the black/lime palette (Prompt 1) and approved the light Forest & Sage theme. This branch replaces the dark navy palette and WebGL hero with a pure CSS/SVG editorial hero.
+
+### Work completed (verified)
+
+- **Branch:** changes are uncommitted on new local branch `feat/forest-sage`, created from `feat/hero-v3` at `9f46a78`; it has no remote tracking branch yet; it will be published through a PR after verification. The old `feat/rebrand-lime` branch does not exist. `feat/design-system`, `feat/home-redesign`, `feat/pages-polish`, `feat/qa`, `feat/seo-onpage`, and `perf/mobile-90` are already ancestors of this branch; no merge is needed. Left `chore/motion-baseline` and `feat/chatbot-scroll` untouched as unrelated. Did not merge `feat/ia-restructure`: its diff removes existing admin/API/backend work and needs selective review first.
+- **Palette tokens (AGENTS §3):** artifact base colors are `--bg #E5E8CE`, `--surface #D6DAB4`, `--brand #1F3A24`, `--text #16220F`; `--accent` uses forest and muted/border shades are derived. No blue or lime palette remains in source.
+- **Logo:** inline SVG `src/components/BrandMark.tsx` (forest circle + pale N), matching the approved artifact. Navbar and Footer keep `NEXLANE` as HTML text. No PNG in header.
+- **Dependencies removed:** `three`, `@react-three/fiber`, `@types/three` deleted from `package.json` (zero remaining imports verified).
+- **Hero (Home):** two-column editorial layout — left: copy (eyebrow, large H1, short paragraph, pill CTAs, small service links); right: `ServiceHub` (center N mark + four animated scene frames: Web, SEO, Digital Marketing, Game Dev).
+- **ServiceHub & scenes:** `src/components/home/ServiceHub.tsx` + `src/components/motion/scenes.tsx` (WebScene, SeoScene, CampaignScene, GameScene). CSS keyframe loops in `globals.css` (`.scene-stage` classes). Base state = complete static end frame; animations layer on top.
+- **Motion preview route:** `/motion-preview` — internal QA only, `noindex`, not in nav/sitemap/robots. Each tile owns isolated pause/replay; reduced motion shows static end state with note.
+- **Pages updated with new palette:** Navbar, Footer, Home, Contact, Audit, Services/[slug], About hub, Founders, Team, Our Work, Admin, Admin/Login, OpengraphImage.
+- **Build gates:** `npx tsc --noEmit`, `npm run lint`, and `npm run build` pass (33 routes, including `/motion-preview`). `git diff --check` is clean; horizontal-overflow check passed across 14 routes at 1440/768/360px.
+- **Quality tiers:** server renders `low` (static), upgrades client-side after hydration. `low` = reduced motion / saveData / deviceMemory≤2 / cores≤2 / <768px; `mid` = CSS 3D tilt/parallax on fine pointers; `high` not used (no WebGL hero).
+- **Overlap fixes:** WhatsApp/chatbot no longer cover hero copy; About NextUp CTA in viewport; top strip offset from sticky header; Contact form submit text readable on gradient.
+
+### Components used (free only)
+- `shadcn/ui` primitives (Button, Card, etc.)
+- Custom: `BrandMark`, `ServiceHub`, `DepthCard`, `SectionNav`, `NextUp`, `ProfileTile`, `Chatbot`, `WhatsAppFloat`, `ScrollControls`, `Section`, `Eyebrow`, `Container`, `GlassCard`, `GradientHeading`, `Muted`, `ArrowMotif`, `AppProviders`, `QualityProvider`
+- Magic UI: none installed yet (no job for them in this branch)
+- unlumen UI: none installed yet (no job for them in this branch)
+
+### Verified
+| Gate | Result |
+|---|---|
+| `npx tsc --noEmit` | 0 errors |
+| `npm run lint` | 0 errors, 0 warnings |
+| `npm run build` | success, 33 routes (incl. `/motion-preview`) |
+| Production CSP (`npm start` + `curl -I`) | no `unsafe-eval` |
+| Browser console (Home, 1440px) | 0 errors, 0 warnings |
+
+### Screenshots
+- 42 full-page reduced-motion Playwright screenshots at 1440/768/360 are saved for Home, About, Founders, Team, Services hub + all four services, Learn, Our Work, Contact, Audit, and the separate Motion Preview in `screenshots/` (gitignored). Scroll-reveal content was made visible only during capture.
+- Contrast ratios: ink/canvas 13.20:1, muted/canvas 6.47:1, forest/canvas 9.93:1, canvas on forest CTA 9.93:1, muted/sage surface 5.62:1.
+- Old palette hex grep is zero in source text under `src/` and `public/` (PNG binaries excluded).
+
+### Branch decisions (table)
+
+| Branch | Status vs `feat/forest-sage` | Action |
+|---|---|---|
+| `feat/design-system`, `feat/home-redesign`, `feat/pages-polish`, `feat/qa`, `feat/seo-onpage`, `perf/mobile-90` | Ancestors (already merged) | None |
+| `chore/motion-baseline` | Not an ancestor | No merge — motion baseline already superseded by this branch's CSS/SVG system |
+| `feat/chatbot-scroll` | Not an ancestor | No merge — unrelated chatbot scroll fix, not part of the redesign |
+| `feat/ia-restructure` | Not an ancestor | No merge — its diff removes existing admin/API/backend work; needs selective cherry-pick review first (Navbar/Breadcrumbs/nav-a11y diff to compare, no clean small fix identified) |
+| `feat/rebrand-lime` | Does not exist | Never merge (owner rejected lime) |
+| `origin/feat/hero-v3` + PR #15 | Remote still on old name, PR OPEN → `main` | Left untouched. Local branch was renamed `feat/hero-v3` → `feat/forest-sage` during this pass (same commit `9f46a78`, 37 files uncommitted). Push later with `git push origin HEAD:feat/hero-v3` (keeps PR #15) or push as a new branch — owner decides. |
+
+### Verification addendum (functional, this pass)
+
+- **Gates re-run after final edits:** `npx tsc --noEmit` 0 errors · `npm run lint` 0 problems · `npm run build` green, 33 routes (`/motion-preview` static).
+- **Pause/replay (`/motion-preview`, browser-tested):** Pause adds `.scene-stage.is-paused` and child keyframes report `animation-play-state: paused`; Replay remounts the tile (mark removed) and animation restarts (`sng-rise`, running); Play resumes. Toggle labels Pause↔Play correct.
+- **Overlap:** N core vs 4 scene frames — 0 intersections, scenes never overlap each other at 1440/768/360. `scrollWidth == clientWidth` at all three widths (no horizontal overflow, checked on Home + `/motion-preview`).
+- **Quality tiers:** server/first render `data-quality="low"` → upgrades to `high` after hydration at 1440px (8 cores, fine pointer). At `low`/reduced-motion: `.scene-stage` children report `animation-name: none`, all 4 scenes `opacity: 1` (static end frame visible), `.scroll-reveal` opacity 1. At `high`: `sng-rise`/`sng-scan`/`sng-spin` running.
+- **Contrast ratios (exact):** ink `#16220F`/canvas `#E5E8CE` 13.20:1 · forest `#1F3A24`/canvas 9.93:1 · forest/surface `#D6DAB4` 8.61:1 · canvas-on-forest CTA 9.93:1 · muted `#46543A`/canvas 6.47:1 · muted/surface 5.62:1 · card border `rgba(31,58,36,0.45)` vs canvas ≈2.37:1 (non-text UI boundary, ≥3:1 not claimed).
+- **Old-palette grep:** 18 old blue/lime/navy hexes + `cyan|lime-|sky-4|blue-4` word classes → **zero hits** under `src/` and `docs/`/`AGENTS.md`. Nothing left to explain.
+- **Screenshots this pass:** `screenshots/home-{1440,768,360}.png`, `screenshots/home-{1440,360}-reduced.png`, `screenshots/motion-preview-{1440,768,360}.png` (all gitignored; full-page, scroll-reveal forced visible for capture only).
+- **Not verified:** production CSP browser pass was done in an earlier sub-pass (`npm start` + `curl -I`), not re-run after the final token edits; Playwright image reads were unreliable (stale bytes), so visual QA this pass was done via DOM/geometry checks instead of eyeballing every capture.
+
+### Next steps
+1. Owner can review the fresh full-page captures under `screenshots/`.
+2. No branch merges remain needed for the design chain; unrelated branches are untouched. `feat/ia-restructure` needs selective commit review before any merge because its branch removes existing backend/admin functionality.
+3. Decide how to push: local `feat/forest-sage` vs remote `feat/hero-v3` (PR #15) — see branch table above.
 
 Goal: Lighthouse mobile performance median >= 0.90 (5 runs each, production build) on `/`, `/about`, `/services/seo`. Raw JSON runs in `screenshots/perf/` (gitignored). Scores are never rounded up.
 
