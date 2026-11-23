@@ -1,8 +1,12 @@
 /**
- * Inline Forest & Sage mark from the approved homepage artifact.
- * SVG only, palette tokens only.
- * Decorative by default (the surrounding link carries the label).
+ * Forest & Sage mark: a bold, custom N with an inset lane cut through its
+ * diagonal. The cut is negative space inside one filled silhouette, not a
+ * separate slash or detached glyph. The favicon uses the same N silhouette
+ * without the fine cut so it stays clear at 16 px.
  */
+export const N_PATH = "M32 20H72L128 116V20H168V180H128L72 84V180H32Z M80 74L88 69.4L128 138L120 142.6Z";
+export const MARK_VIEWBOX = "0 0 200 200";
+
 export default function BrandMark({
   size = 32,
   ariaLabel,
@@ -14,7 +18,7 @@ export default function BrandMark({
 }) {
   return (
     <svg
-      viewBox="0 0 200 200"
+      viewBox={MARK_VIEWBOX}
       width={size}
       height={size}
       className={`shrink-0 ${className}`}
@@ -23,8 +27,7 @@ export default function BrandMark({
       aria-label={ariaLabel}
       focusable="false"
     >
-      <circle cx="100" cy="100" r="74" fill="var(--brand)" />
-      <path d="M64 138V62H84L116 108V62H136V138H116L84 92V138Z" fill="var(--bg)" />
+      <path d={N_PATH} fill="var(--brand)" fillRule="evenodd" />
     </svg>
   );
 }

@@ -28,8 +28,3 @@ export function ArrowMotif({ className = "" }: { className?: string }) {
     </svg>
   );
 }
-
-/** Glowing "N" navbar mark placeholder until the real logo files land. */
-export function LogoMark({ className = "h-8 w-8" }: { className?: string }) {
-  return <ArrowMotif className={className} />;
-}

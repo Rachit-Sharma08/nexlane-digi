@@ -8,15 +8,15 @@ Living document. Every animation, motion, or visual polish we add to the site is
 - Mobile first (360px minimum). No motion that causes layout shift or jank on low-end phones.
 - Performance: no heavy JS animation libraries unless needed. Prefer CSS + `requestAnimationFrame`. Keep Lighthouse performance ≥ 90.
 - Animations enhance, never block content. Core content must be readable with JS off.
-- Brand tokens only: gradient `#0572F5 → #1ED3F2 → #7CF4EF`, bg `#000D1D`, accent `#1ED3F2`. Contrast ≥ 4.5:1.
+- Brand tokens only: Forest & Sage palette from `AGENTS.md` §3. Contrast ≥ 4.5:1.
 - External motion libs: none installed yet. Add only when a real need exists (no "for later" installs).
 
 ## Visual direction
 
-- Preserve Nexlane's navy canvas and blue/cyan identity. Use brand glows sparingly; avoid generic purple gradients, stock dashboard cards, and ornamental all-caps labels.
+- Preserve the approved Forest & Sage editorial identity. Use brand glows sparingly; avoid generic purple gradients, stock dashboard cards, and ornamental all-caps labels.
 - The site represents a small, direct local-business studio. Keep claims honest; do not invent clients, metrics, or awards.
 - Preserve responsive layouts, clear hierarchy, and accessible focus states. Motion should not delay reading or navigation.
-- Use the supplied `D:\Downloads\nexlane-logo-clean.png`; the full artwork lives at `public/nexlane-logo.png`, with a cropped mark at `public/nexlane-mark.png` for compact navbar/footer lockups and the full logo featured in the homepage hero.
+- Use the shared inline SVG `BrandMark` for the current filled N mark. Obsolete PNG logo assets were removed; keep the wordmark as HTML text.
 
 ## Motion decisions
 

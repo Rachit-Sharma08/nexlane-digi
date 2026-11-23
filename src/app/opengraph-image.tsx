@@ -43,8 +43,8 @@ export default function OpengraphImage() {
         />
         <img
           src={mark}
-          width={260}
-          height={186}
+          width={220}
+          height={220}
           alt=""
           style={{ marginBottom: 28, borderRadius: 20 }}
         />

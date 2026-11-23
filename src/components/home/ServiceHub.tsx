@@ -1,4 +1,5 @@
 import { CampaignScene, GameScene, SeoScene, WebScene } from "@/components/motion/scenes";
+import { MARK_VIEWBOX, N_PATH } from "@/components/BrandMark";
 
 /**
  * Home hero visual: one central N with four labeled service scenes around
@@ -15,10 +16,10 @@ export default function ServiceHub() {
       aria-label="Four Nexlane service scenes around the Nexlane N"
     >
       <div className="hub-core">
-        <svg className="hub-mark" viewBox="0 0 200 200" role="img" aria-label="Nexlane N">
+        <svg className="hub-mark" viewBox={MARK_VIEWBOX} role="img" aria-label="Nexlane N">
+          {/* The outer signal ring stays decorative; the N shares BrandMark geometry. */}
           <circle className="hub-ring-line" cx="100" cy="100" r="94" />
-          <circle className="ff" cx="100" cy="100" r="74" />
-          <path className="fl" d="M64 138V62H84L116 108V62H136V138H116L84 92V138Z" />
+          <path d={N_PATH} fill="var(--brand)" fillRule="evenodd" />
         </svg>
       </div>
 
