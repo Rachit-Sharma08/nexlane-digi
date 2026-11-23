@@ -4,27 +4,22 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Page-open transition: the new page arrives from depth. Enter-only (App Router
-   exit animations are unreliable); low tier gets a plain fade. */
-::view-transition-group(route-content) { animation-duration: 420ms; }
-::view-transition-old(route-content) { animation: none; opacity: 0; }
-::view-transition-new(route-content) {
+/* CSS avoids hidden-document failures from the browser View Transition API. */
+.route-content {
   animation: route-open 420ms cubic-bezier(0.16, 1, 0.3, 1) both;
   transform-origin: 50% 20%;
 }
-html[data-quality="low"] ::view-transition-new(route-content) {
+html[data-quality="low"] .route-content {
   animation: route-fade 180ms ease-out both;
 }
 @keyframes route-open {
   from { opacity: 0; transform: perspective(1200px) translateZ(-90px) rotateX(3deg) scale(0.985); }
-  to { opacity: 1; transform: perspective(1200px) translateZ(0) rotateX(0) scale(1); }
+  to { opacity: 1; transform: none; }
 }
 @keyframes route-fade {
   from { opacity: 0; }
   to { opacity: 1; }
 }
-::view-transition { pointer-events: none; }
-
 /* ==================================================================
    Nexlane Digital — Forest & Sage design tokens (owner-approved palette)
    canvas #E5E8CE · forest #1F3A24 · ink #16220F · surface #D6DAB4
@@ -978,10 +973,6 @@ h3,
 
 /* Subtle motion — disabled for users who prefer reduced motion. */
 @media (prefers-reduced-motion: reduce) {
-  ::view-transition-old(route-content),
-  ::view-transition-new(route-content) {
-    animation-duration: 0s !important;
-  }
   html {
     scroll-behavior: auto;
   }
