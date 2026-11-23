@@ -4,7 +4,8 @@ import { site } from "@/config/site";
 import { services } from "@/content/services";
 import { notDraft } from "@/content/blog";
 import { homeFaqs } from "@/content/faq";
-import { ArrowMotif, Container, GradientHeading, SectionHeader } from "@/components/ui";
+import { Container, GradientHeading, SectionHeader } from "@/components/ui";
+import BrandMark from "@/components/BrandMark";
 import DepthCard from "@/components/DepthCard";
 import SectionNav from "@/components/SectionNav";
 import ServiceHub from "@/components/home/ServiceHub";
@@ -384,7 +385,7 @@ export default function HomePage() {
               className="pointer-events-none absolute inset-x-0 -top-24 mx-auto h-48 w-48 rounded-full bg-[var(--brand-2)] opacity-25 blur-3xl"
             />
             <div className="relative flex flex-col items-center gap-4">
-              <ArrowMotif className="parallax-drift h-12 w-12" />
+              <BrandMark size={48} className="parallax-drift" />
               <h2 className="max-w-2xl font-display text-2xl font-bold sm:text-3xl text-[var(--text)]">
                 Not sure where your business is losing customers online?{" "}
                 <GradientHeading>We&apos;ll look for free.</GradientHeading>

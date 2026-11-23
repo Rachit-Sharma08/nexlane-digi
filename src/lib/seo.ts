@@ -65,7 +65,9 @@ export function organizationSchema() {
     name: site.name,
     alternateName: site.alternateName,
     url: site.SITE_URL,
-    logo: absoluteUrl("/brand/nexlane-mark.png"),
+    // The icon route carries the same N silhouette in its favicon-safe form.
+    // Legacy public/brand/ lockups are pre-rebrand and must not be referenced.
+    logo: absoluteUrl("/icon.png"),
     description: site.description,
     foundingDate: "2026",
     slogan: site.tagline,

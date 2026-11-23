@@ -2,7 +2,7 @@
 
 > Nexlane Digital is a digital marketing and web agency from Kaithal, Haryana — websites, SEO and free learning for businesses across Haryana, India and abroad.
 
-Generated 2026-11-08 from this site's own content files (scripts/gen-llms-full.ts). Honesty note: Nexlane Digital started in 2026 and has no client projects to show yet — we offer a free audit instead of pretending to have case studies. We never guarantee rankings; nobody can honestly promise those.
+Generated 2026-11-23 from this site's own content files (scripts/gen-llms-full.ts). Honesty note: Nexlane Digital started in 2026 and has no client projects to show yet — we offer a free audit instead of pretending to have case studies. We never guarantee rankings; nobody can honestly promise those.
 
 ## Who we are
 
@@ -132,7 +132,8 @@ Around Kaithal, customers search in their own words — nearby shops, phone call
 - **What do I get from the free audit?** A short written review of your website or Google profile with 3 to 5 practical suggestions, free and with no obligation.
 
 ## Contact
-Email: nexlanedigitalservice@gmail.com. Or use the form at /contact — phone and WhatsApp numbers are listed there.
+
+Use the form at /contact.
 
 ## Pages
 

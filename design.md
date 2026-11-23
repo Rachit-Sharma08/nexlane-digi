@@ -8,21 +8,21 @@ Living document. Every animation, motion, or visual polish we add to the site is
 - Mobile first (360px minimum). No motion that causes layout shift or jank on low-end phones.
 - Performance: no heavy JS animation libraries unless needed. Prefer CSS + `requestAnimationFrame`. Keep Lighthouse performance ≥ 90.
 - Animations enhance, never block content. Core content must be readable with JS off.
-- Brand tokens only: gradient `#0572F5 → #1ED3F2 → #7CF4EF`, bg `#000D1D`, accent `#1ED3F2`. Contrast ≥ 4.5:1.
+- Brand tokens only: Forest & Sage palette from `AGENTS.md` §3. Contrast ≥ 4.5:1.
 - External motion libs: none installed yet. Add only when a real need exists (no "for later" installs).
 
 ## Visual direction
 
-- Preserve Nexlane's navy canvas and blue/cyan identity. Use brand glows sparingly; avoid generic purple gradients, stock dashboard cards, and ornamental all-caps labels.
+- Preserve the approved Forest & Sage editorial identity. Use brand glows sparingly; avoid generic purple gradients, stock dashboard cards, and ornamental all-caps labels.
 - The site represents a small, direct local-business studio. Keep claims honest; do not invent clients, metrics, or awards.
 - Preserve responsive layouts, clear hierarchy, and accessible focus states. Motion should not delay reading or navigation.
-- Use the supplied `D:\Downloads\nexlane-logo-clean.png`; the full artwork lives at `public/nexlane-logo.png`, with a cropped mark at `public/nexlane-mark.png` for compact navbar/footer lockups and the full logo featured in the homepage hero.
+- Use the shared inline SVG `BrandMark` for the current filled N mark. Obsolete PNG logo assets were removed; keep the wordmark as HTML text.
 
 ## Motion decisions
 
 - Focal moment: a short, one-time hero entrance on page load.
 - Continuity: gentle section entry linked to scrolling with CSS scroll-driven animation where supported, plus a thin reading progress bar and back-to-top action.
-- Feedback: glass cards lift on hover, buttons acknowledge press, nav links get a cyan sweep and active route state, accordions reveal answers, and the mobile menu opens with a short transition.
+- Feedback: glass cards lift on hover, buttons acknowledge press, nav links get a Forest & Sage gradient underline and active route state, accordions reveal answers, and the mobile menu opens with a short transition.
 - Budget: CSS only; no new animation dependency or continuously running canvas. Effects use transform/opacity where practical and respect `prefers-reduced-motion`.
 - Magic UI's official MCP server is enabled in `opencode.json`; the existing shadcn MCP can also resolve the Magic UI registry configured in `components.json`.
 - Ponytail 5.3.3 is installed as a Codex plugin. Restart Codex/new thread is needed for plugin hooks to become active; its lean-change rules were read and followed for this pass.
