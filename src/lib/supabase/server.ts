@@ -1,63 +1,38 @@
+import 'server-only';
 import { createServerClient } from '@supabase/ssr';
+import { createClient } from '@supabase/supabase-js';
 import { cookies } from 'next/headers';
 
-/**
- * Supabase server client for admin operations.
- * Uses service role key for admin privileges (bypasses RLS).
- * Never expose this to the client/browser.
- */
-export async function createAdminSupabaseClient() {
-  const cookieStore = await cookies();
-  
-  return createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll();
-        },
-        setAll(cookiesToSet) {
-          try {
-            cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
-            );
-          } catch {
-            // The `setAll` method was called from a Server Component.
-            // This can be ignored if you have middleware refreshing
-            // user sessions.
-          }
-        },
-      },
-    }
-  );
+function supabaseUrl() {
+  const value = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  if (!value) throw new Error('NEXT_PUBLIC_SUPABASE_URL is required');
+  return value;
 }
 
-/**
- * Supabase client for user-facing auth operations.
- * Uses anon key - respects RLS policies.
- */
 export async function createUserSupabaseClient() {
   const cookieStore = await cookies();
-  
   return createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    supabaseUrl(),
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        getAll() {
-          return cookieStore.getAll();
-        },
+        getAll: () => cookieStore.getAll(),
         setAll(cookiesToSet) {
           try {
-            cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
-            );
+            cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options));
           } catch {
-            // Ignore server component cookie setting
+            // Server Components cannot write cookies; Proxy refreshes those sessions.
           }
         },
       },
-    }
+    },
   );
+}
+
+export function createAdminSupabaseClient() {
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!key) throw new Error('SUPABASE_SERVICE_ROLE_KEY is required');
+  return createClient(supabaseUrl(), key, {
+    auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
+  });
 }

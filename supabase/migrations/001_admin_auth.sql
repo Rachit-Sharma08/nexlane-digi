@@ -1,8 +1,13 @@
--- Phase 2A: Admin authentication tables
--- This migration creates the tables needed for admin login attempt tracking
+create table public.admin_accounts (
+  id uuid primary key references auth.users(id) on delete cascade,
+  email text not null unique,
+  is_active boolean not null default true,
+  last_login_at timestamptz,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
 
--- Login attempts table - tracks every login attempt for audit and lockout
-create table if not exists admin_login_attempts (
+create table public.admin_login_attempts (
   id uuid primary key default gen_random_uuid(),
   email text not null,
   attempted_at timestamptz not null default now(),
@@ -12,149 +17,169 @@ create table if not exists admin_login_attempts (
   locked_out boolean not null default false
 );
 
--- Index for efficient lockout queries
-create index if not exists idx_admin_login_attempts_email_time
-  on admin_login_attempts (email, attempted_at desc);
+create index admin_login_attempts_email_time_idx on public.admin_login_attempts (email, attempted_at desc);
+create index admin_login_attempts_time_idx on public.admin_login_attempts (attempted_at desc);
 
--- Index for admin dashboard queries
-create index if not exists idx_admin_login_attempts_attempted_at
-  on admin_login_attempts (attempted_at desc);
-
--- RLS: Only service role can access this table (no public/anon access)
-alter table admin_login_attempts enable row level security;
-
--- Policy: No direct access for authenticated/anon users
--- All access goes through server-side admin API routes using service role
-create policy "service_role_full_access" on admin_login_attempts
-  for all to service_role
-  using (true)
-  with check (true);
-
--- Admin accounts table - mirrors Supabase Auth users for admin-specific data
-create table if not exists admin_accounts (
-  id uuid primary key references auth.users(id) on delete cascade,
-  email text not null unique,
-  is_active boolean not null default true,
-  last_login_at timestamptz,
-  created_at timestamptz not null default now(),
-  updated_at timestamptz not null default now()
+create table public.admin_login_lockouts (
+  email text primary key,
+  locked_until timestamptz not null
 );
 
--- RLS: Only service role can access
-alter table admin_accounts enable row level security;
+create table public.admin_login_reservations (
+  id uuid primary key default gen_random_uuid(),
+  email text not null,
+  reserved_at timestamptz not null default now(),
+  expires_at timestamptz not null,
+  ip inet,
+  user_agent text
+);
 
-create policy "service_role_full_access" on admin_accounts
-  for all to service_role
-  using (true)
-  with check (true);
+create index admin_login_reservations_email_expiry_idx on public.admin_login_reservations (email, expires_at);
 
--- Function to check if an account is locked out
--- Returns true if 5+ consecutive failures in last 15 minutes
-create or replace function check_admin_lockout(p_email text)
-returns boolean
-language plpgsql
-security invoker
-as $$
-declare
-  v_failed_count int;
-begin
-  select count(*)
-  into v_failed_count
-  from admin_login_attempts
-  where email = p_email
-    and success = false
-    and attempted_at > now() - interval '15 minutes'
-    and not locked_out;
-  
-  return v_failed_count >= 5;
-end;
-$$;
+alter table public.admin_accounts enable row level security;
+alter table public.admin_login_attempts enable row level security;
+alter table public.admin_login_lockouts enable row level security;
+alter table public.admin_login_reservations enable row level security;
 
--- Function to record a login attempt atomically
--- Returns the attempt record with lockout status
-create or replace function record_admin_login_attempt(
-  p_email text,
-  p_success boolean,
-  p_ip inet default null,
-  p_user_agent text default null
+create policy admin_accounts_service_role on public.admin_accounts for all to service_role using (true) with check (true);
+create policy admin_attempts_service_role on public.admin_login_attempts for all to service_role using (true) with check (true);
+create policy admin_lockouts_service_role on public.admin_login_lockouts for all to service_role using (true) with check (true);
+create policy admin_reservations_service_role on public.admin_login_reservations for all to service_role using (true) with check (true);
+
+revoke all on public.admin_accounts, public.admin_login_attempts, public.admin_login_lockouts, public.admin_login_reservations from anon, authenticated;
+grant all on public.admin_accounts, public.admin_login_attempts, public.admin_login_lockouts, public.admin_login_reservations to service_role;
+
+create or replace function public.begin_admin_login_attempt(
+  p_email text, p_ip inet default null, p_user_agent text default null
 )
-returns admin_login_attempts
-language plpgsql
-security invoker
-as $$
+returns jsonb language plpgsql security invoker set search_path = '' as $$
 declare
-  v_attempt admin_login_attempts;
-  v_locked boolean;
+  v_email text := lower(trim(p_email));
+  v_failures bigint;
+  v_pending bigint;
+  v_locked_until timestamptz;
+  v_attempt_id uuid;
 begin
-  v_locked := check_admin_lockout(p_email);
-  
-  insert into admin_login_attempts (email, success, ip, user_agent, locked_out)
-  values (p_email, p_success, p_ip, p_user_agent, v_locked)
-  returning * into v_attempt;
-  
-  return v_attempt;
-end;
-$$;
+  perform pg_catalog.pg_advisory_xact_lock(pg_catalog.hashtextextended(v_email, 0));
 
--- Function to clear lockout for an account (admin action)
-create or replace function clear_admin_lockout(p_email text)
-returns void
-language plpgsql
-security invoker
-as $$
-begin
-  update admin_login_attempts
-  set locked_out = true
-  where email = p_email
-    and success = false
-    and not locked_out;
-end;
-$$;
-
--- Function to disable/enable an admin account
-create or replace function set_admin_account_active(p_email text, p_active boolean)
-returns admin_accounts
-language plpgsql
-security invoker
-as $$
-declare
-  v_account admin_accounts;
-begin
-  update admin_accounts
-  set is_active = p_active,
-      updated_at = now()
-  where email = p_email
-  returning * into v_account;
-  
-  if not found then
-    -- Create the account record if it doesn't exist yet
-    insert into admin_accounts (id, email, is_active)
-    select id, email, p_active
-    from auth.users
-    where email = p_email
-    returning * into v_account;
+  select locked_until into v_locked_until
+    from public.admin_login_lockouts where email = v_email for update;
+  if v_locked_until > now() then
+    insert into public.admin_login_attempts(email, success, ip, user_agent, locked_out)
+      values (v_email, false, p_ip, left(p_user_agent, 1000), true);
+    return pg_catalog.jsonb_build_object('attempt_id', null, 'locked_out', true);
   end if;
-  
+  delete from public.admin_login_lockouts where email = v_email;
+
+  delete from public.admin_login_reservations
+    where email = v_email and expires_at <= now();
+
+  select count(*) into v_failures from public.admin_login_attempts a
+    where a.email = v_email and not a.success and not a.locked_out
+      and a.attempted_at > now() - interval '15 minutes'
+      and a.attempted_at > coalesce(
+        (select max(s.attempted_at) from public.admin_login_attempts s where s.email = v_email and s.success),
+        '-infinity'::timestamptz
+      );
+  select count(*) into v_pending from public.admin_login_reservations r
+    where r.email = v_email and r.expires_at > now();
+
+  if v_failures >= 5 then
+    insert into public.admin_login_lockouts(email, locked_until)
+      values (v_email, now() + interval '15 minutes')
+      on conflict (email) do update set locked_until = excluded.locked_until
+      where public.admin_login_lockouts.locked_until <= now();
+    insert into public.admin_login_attempts(email, success, ip, user_agent, locked_out)
+      values (v_email, false, p_ip, left(p_user_agent, 1000), true);
+    return pg_catalog.jsonb_build_object('attempt_id', null, 'locked_out', true);
+  end if;
+
+  -- Pending attempts consume the five available slots but do not count as failures.
+  if v_failures + v_pending >= 5 then
+    insert into public.admin_login_attempts(email, success, ip, user_agent, locked_out)
+      values (v_email, false, p_ip, left(p_user_agent, 1000), true);
+    return pg_catalog.jsonb_build_object('attempt_id', null, 'locked_out', true);
+  end if;
+
+  insert into public.admin_login_reservations(email, expires_at, ip, user_agent)
+    values (v_email, now() + interval '15 minutes', p_ip, left(p_user_agent, 1000))
+    returning id into v_attempt_id;
+  return pg_catalog.jsonb_build_object('attempt_id', v_attempt_id, 'locked_out', false);
+end;
+$$;
+
+create or replace function public.finish_admin_login_attempt(p_attempt_id uuid, p_success boolean)
+returns boolean language plpgsql security invoker set search_path = '' as $$
+declare
+  v_email text;
+  v_reservation public.admin_login_reservations;
+  v_failures bigint;
+  v_attempt_id uuid;
+begin
+  select email into v_email from public.admin_login_reservations where id = p_attempt_id;
+  if not found then return false; end if;
+
+  perform pg_catalog.pg_advisory_xact_lock(pg_catalog.hashtextextended(v_email, 0));
+  select * into v_reservation from public.admin_login_reservations where id = p_attempt_id for update;
+  if not found then return false; end if;
+  delete from public.admin_login_reservations where id = p_attempt_id;
+  if v_reservation.expires_at <= now() then return false; end if;
+
+  insert into public.admin_login_attempts(email, success, ip, user_agent, locked_out)
+    values (v_email, p_success, v_reservation.ip, v_reservation.user_agent, false)
+    returning id into v_attempt_id;
+
+  if p_success then
+    delete from public.admin_login_lockouts where email = v_email;
+    update public.admin_accounts set last_login_at = now(), updated_at = now() where email = v_email;
+    return true;
+  end if;
+
+  select count(*) into v_failures from public.admin_login_attempts a
+    where a.email = v_email and not a.success and not a.locked_out
+      and a.attempted_at > now() - interval '15 minutes'
+      and a.attempted_at > coalesce(
+        (select max(s.attempted_at) from public.admin_login_attempts s where s.email = v_email and s.success),
+        '-infinity'::timestamptz
+      );
+  if v_failures >= 5 then
+    update public.admin_login_attempts set locked_out = true where id = v_attempt_id;
+    insert into public.admin_login_lockouts(email, locked_until)
+      values (v_email, now() + interval '15 minutes')
+      on conflict (email) do update set locked_until = excluded.locked_until
+      where public.admin_login_lockouts.locked_until <= now();
+  end if;
+  return true;
+end;
+$$;
+
+create or replace function public.clear_admin_lockout(p_email text)
+returns void language plpgsql security invoker set search_path = '' as $$
+begin
+  perform pg_catalog.pg_advisory_xact_lock(pg_catalog.hashtextextended(lower(trim(p_email)), 0));
+  delete from public.admin_login_lockouts where email = lower(trim(p_email));
+  delete from public.admin_login_reservations where email = lower(trim(p_email));
+  update public.admin_login_attempts set locked_out = true
+    where email = lower(trim(p_email)) and not success and not locked_out
+      and attempted_at > now() - interval '15 minutes';
+end;
+$$;
+
+create or replace function public.set_admin_account_active(p_email text, p_active boolean)
+returns public.admin_accounts language plpgsql security invoker set search_path = '' as $$
+declare v_account public.admin_accounts;
+begin
+  update public.admin_accounts set is_active = p_active, updated_at = now()
+    where email = lower(trim(p_email)) returning * into v_account;
   return v_account;
 end;
 $$;
 
--- Function to get admin account by email
-create or replace function get_admin_account(p_email text)
-returns admin_accounts
-language plpgsql
-security invoker
-as $$
-declare
-  v_account admin_accounts;
-begin
-  select * into v_account
-  from admin_accounts
-  where email = p_email;
-  
-  return v_account;
-exception
-  when no_data_found then
-    return null;
-end;
-$$;
+revoke all on function public.begin_admin_login_attempt(text, inet, text) from public, anon, authenticated;
+revoke all on function public.finish_admin_login_attempt(uuid, boolean) from public, anon, authenticated;
+revoke all on function public.clear_admin_lockout(text) from public, anon, authenticated;
+revoke all on function public.set_admin_account_active(text, boolean) from public, anon, authenticated;
+grant execute on function public.begin_admin_login_attempt(text, inet, text) to service_role;
+grant execute on function public.finish_admin_login_attempt(uuid, boolean) to service_role;
+grant execute on function public.clear_admin_lockout(text) to service_role;
+grant execute on function public.set_admin_account_active(text, boolean) to service_role;

@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { isValidAdminRouteSlug } from "./src/lib/admin-auth-utils";
 
 // Security headers. CSP is "strict with minimal opens": Next.js needs
 // 'unsafe-inline' for its inline bootstrap scripts/styles without a nonce
@@ -37,16 +38,17 @@ const securityHeaders = [
   },
 ];
 
-// Get admin route slug from env (with dev/build fallback)
-function getAdminSlug(): string {
-  const slug = process.env.ADMIN_ROUTE_SLUG;
-  if (!slug) {
-    // Allow build to proceed with a placeholder; runtime will enforce via proxy/middleware
-    // In production, the owner MUST set this in Vercel env vars
-    return 'panel-x7f'; // Build/dev fallback (without leading slash for rewrites)
+function getAdminRewriteSlug(): string {
+  const raw = process.env.ADMIN_ROUTE_SLUG;
+  if (!raw && process.env.NODE_ENV === "production") {
+    throw new Error("ADMIN_ROUTE_SLUG must be set before the production build");
   }
-  // Remove leading slash for rewrite source
-  return slug.startsWith('/') ? slug.slice(1) : slug;
+
+  const segment = raw || "panel-x7f";
+  if (!isValidAdminRouteSlug(segment)) {
+    throw new Error("ADMIN_ROUTE_SLUG must be one path segment (6-64 letters, numbers, _ or -)");
+  }
+  return segment;
 }
 
 const nextConfig: NextConfig = {
@@ -61,20 +63,10 @@ const nextConfig: NextConfig = {
     ];
   },
   async rewrites() {
-    const adminSlug = getAdminSlug();
+    const slug = getAdminRewriteSlug();
     return [
-      // Rewrite dynamic admin slug to internal admin-internal path
-      {
-        source: `/${adminSlug}/:path*`,
-        destination: '/admin-internal/:path*',
-      },
-      {
-        source: `/${adminSlug}`,
-        destination: '/admin-internal',
-      },
-      // Old /admin paths return 404 in production (handled by middleware/proxy)
-      // In dev, we also rewrite to admin-internal for backwards compat during transition
-      // but the proxy will handle authentication
+      { source: `/${slug}`, destination: "/admin-internal" },
+      { source: `/${slug}/:path*`, destination: "/admin-internal/:path*" },
     ];
   },
   async headers() {

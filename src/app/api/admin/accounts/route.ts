@@ -1,30 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createAdminSupabaseClient } from '@/lib/supabase/server';
+import { getAdminRequestContext, isAllowedAdminEmail } from '@/lib/admin-auth-supabase';
 
 export async function GET() {
-  const supabase = await createAdminSupabaseClient();
-  
-  // Verify admin session
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session) {
-    return NextResponse.json(
-      { error: 'Unauthorized' },
-      { status: 401 }
-    );
-  }
-  
-  const allowedEmails = [
-    process.env.ADMIN_EMAIL_1,
-    process.env.ADMIN_EMAIL_2,
-  ].filter(Boolean).map(e => e!.toLowerCase());
-  
-  const userEmail = session.user.email?.toLowerCase();
-  if (!userEmail || !allowedEmails.includes(userEmail)) {
-    return NextResponse.json(
-      { error: 'Unauthorized' },
-      { status: 401 }
-    );
-  }
+  const adminContext = await getAdminRequestContext();
+  if (!adminContext) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const { admin: supabase } = adminContext;
   
   // Get admin accounts
   const { data: accounts, error } = await supabase
@@ -43,32 +23,12 @@ export async function GET() {
 }
 
 export async function PATCH(request: NextRequest) {
-  const supabase = await createAdminSupabaseClient();
-  
-  // Verify admin session
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session) {
-    return NextResponse.json(
-      { error: 'Unauthorized' },
-      { status: 401 }
-    );
-  }
-  
-  const allowedEmails = [
-    process.env.ADMIN_EMAIL_1,
-    process.env.ADMIN_EMAIL_2,
-  ].filter(Boolean).map(e => e!.toLowerCase());
-  
-  const userEmail = session.user.email?.toLowerCase();
-  if (!userEmail || !allowedEmails.includes(userEmail)) {
-    return NextResponse.json(
-      { error: 'Unauthorized' },
-      { status: 401 }
-    );
-  }
+  const adminContext = await getAdminRequestContext();
+  if (!adminContext) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const { admin: supabase, email: userEmail } = adminContext;
   
   // Prevent self-disable
-  let body: { email: string; is_active: boolean };
+  let body: unknown;
   try {
     body = await request.json();
   } catch {
@@ -78,25 +38,29 @@ export async function PATCH(request: NextRequest) {
     );
   }
   
-  if (!body.email || typeof body.is_active !== 'boolean') {
+  if (!body || typeof body !== 'object') {
+    return NextResponse.json({ error: 'Invalid request' }, { status: 400 });
+  }
+  const input = body as Record<string, unknown>;
+  if (typeof input.email !== 'string' || !isAllowedAdminEmail(input.email) || typeof input.is_active !== 'boolean') {
     return NextResponse.json(
       { error: 'Invalid request' },
       { status: 400 }
     );
   }
   
-  // Prevent disabling yourself
-  if (body.email.toLowerCase() === userEmail && body.is_active === false) {
+  // Account controls are only for the other configured admin.
+  if (input.email.trim().toLowerCase() === userEmail) {
     return NextResponse.json(
-      { error: 'Cannot disable your own account' },
+      { error: 'You can only manage the other configured admin account' },
       { status: 400 }
     );
   }
   
   // Update account status
   const { data: account, error } = await supabase.rpc('set_admin_account_active', {
-    p_email: body.email,
-    p_active: body.is_active,
+    p_email: input.email,
+    p_active: input.is_active,
   });
   
   if (error) {
@@ -104,11 +68,6 @@ export async function PATCH(request: NextRequest) {
       { error: error.message },
       { status: 500 }
     );
-  }
-  
-  // If disabling, sign out the user's sessions
-  if (!body.is_active) {
-    await supabase.auth.admin.signOut(body.email);
   }
   
   return NextResponse.json({ account });

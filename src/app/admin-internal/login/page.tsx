@@ -1,4 +1,6 @@
 import { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { validateAdminRouteConfig } from "@/lib/admin-auth-utils";
 import { LoginForm } from "./login-form";
 
 export const metadata: Metadata = {
@@ -6,7 +8,10 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
+export const dynamic = "force-dynamic";
+
 export default function LoginPage() {
+  if (process.env.NODE_ENV === "production" && !validateAdminRouteConfig().valid) notFound();
   return (
     <main className="min-h-[calc(100dvh-4rem)] flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-md">

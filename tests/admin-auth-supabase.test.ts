@@ -7,7 +7,7 @@ const originalEnv = { ...process.env };
 before(() => {
   process.env.ADMIN_EMAIL_1 = "test-admin-1@example.com";
   process.env.ADMIN_EMAIL_2 = "test-admin-2@example.com";
-  process.env.ADMIN_ROUTE_SLUG = "/panel-test";
+  process.env.ADMIN_ROUTE_SLUG = "panel-test";
 });
 
 after(() => {
@@ -48,6 +48,8 @@ const {
   isAdminPath,
   getAdminLoginUrl,
   getAdminDashboardUrl,
+  validateAdminRouteConfig,
+  isValidAdminRouteSlug,
 } = await import("../src/lib/admin-auth-utils.ts");
 
 describe("admin-auth-utils", () => {
@@ -60,6 +62,15 @@ describe("admin-auth-utils", () => {
   test("isAllowedAdminEmail returns false for non-allowed emails", () => {
     assert.equal(isAllowedAdminEmail("hacker@example.com"), false);
     assert.equal(isAllowedAdminEmail(""), false);
+  });
+
+  test("requires exactly two distinct configured admin emails", () => {
+    withEnv({ ADMIN_EMAIL_2: "test-admin-1@example.com" }, () => {
+      assert.equal(isAllowedAdminEmail("test-admin-1@example.com"), false);
+    });
+    withEnv({ ADMIN_EMAIL_2: "" }, () => {
+      assert.equal(isAllowedAdminEmail("test-admin-1@example.com"), false);
+    });
   });
 
   test("getAdminRouteSlug returns configured slug", () => {
@@ -78,6 +89,7 @@ describe("admin-auth-utils", () => {
     assert.equal(isAdminPath("/panel-test/"), true);
     assert.equal(isAdminPath("/panel-test/posts"), true);
     assert.equal(isAdminPath("/panel-test/posts/new"), true);
+    assert.equal(isAdminPath("/panel-test-evil"), false);
     assert.equal(isAdminPath("/admin"), false);
     assert.equal(isAdminPath("/"), false);
   });
@@ -92,20 +104,6 @@ describe("admin-auth-utils", () => {
 });
 
 describe("getAdminRouteSlug production behavior", () => {
-  test("throws in production when ADMIN_ROUTE_SLUG not set", () => {
-    withEnv({ NODE_ENV: "production" }, () => {
-      delete process.env.ADMIN_ROUTE_SLUG;
-      
-      try {
-        getAdminRouteSlug();
-        assert.fail("Should have thrown");
-      } catch (err: unknown) {
-        assert.ok(err instanceof Error);
-        assert.ok(err.message.includes("ADMIN_ROUTE_SLUG must be set in production"));
-      }
-    });
-  });
-
   test("returns dev fallback in development when not set", () => {
     withEnv({ NODE_ENV: "development" }, () => {
       delete process.env.ADMIN_ROUTE_SLUG;
@@ -115,14 +113,43 @@ describe("getAdminRouteSlug production behavior", () => {
     });
   });
 
+  test("returns dev fallback in production when not set (runtime enforcement in proxy)", () => {
+    withEnv({ NODE_ENV: "production" }, () => {
+      delete process.env.ADMIN_ROUTE_SLUG;
+      
+      const slug = getAdminRouteSlug();
+      assert.equal(slug, "/panel-x7f");
+      assert.equal(validateAdminRouteConfig().valid, false);
+    });
+  });
+
+  test("accepts an explicitly configured fallback-looking slug", () => {
+    withEnv({ ADMIN_ROUTE_SLUG: "panel-x7f" }, () => {
+      assert.equal(validateAdminRouteConfig().valid, true);
+      assert.equal(getAdminRouteSlug(), "/panel-x7f");
+    });
+  });
+
+  test("rejects an invalid route slug at runtime", () => {
+    withEnv({ ADMIN_ROUTE_SLUG: "../admin" }, () => {
+      assert.equal(validateAdminRouteConfig().valid, false);
+    });
+  });
+
+  test("rejects slugs that would shadow public site routes", () => {
+    assert.equal(isValidAdminRouteSlug("contact"), false);
+    assert.equal(isValidAdminRouteSlug("services"), false);
+    assert.equal(isValidAdminRouteSlug("panel-x7f"), true);
+  });
+
   test("validates slug format", () => {
-    withEnv({ ADMIN_ROUTE_SLUG: "invalid" }, () => {
+    withEnv({ ADMIN_ROUTE_SLUG: "../bad" }, () => {
       try {
         getAdminRouteSlug();
         assert.fail("Should have thrown");
       } catch (err: unknown) {
         assert.ok(err instanceof Error);
-        assert.ok(err.message.includes("must be a valid path starting with /"));
+        assert.ok(err.message.includes("must be one path segment"));
       }
     });
   });

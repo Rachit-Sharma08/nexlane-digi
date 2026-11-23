@@ -1,87 +1,104 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
-import { 
-  createAdminSupabaseClient, 
-  getAdminRouteSlug,
-  isAdminLoginPath 
-} from './lib/admin-auth-supabase';
+import { NextResponse, type NextRequest } from 'next/server';
+import { createAdminSupabaseClient } from './lib/supabase/server';
+import { createProxySupabaseClient } from './lib/supabase/proxy';
+import { getAdminRouteSlug, isAdminLoginPath, isAllowedAdminEmail, validateAdminRouteConfig } from './lib/admin-auth-utils';
+
+const INTERNAL_ADMIN_PATH = '/admin-internal';
+
+function isPath(pathname: string, base: string) {
+  return pathname === base || pathname.startsWith(`${base}/`);
+}
+
+function notFound() {
+  return new NextResponse(null, { status: 404 });
+}
 
 export async function proxy(request: NextRequest) {
-  const adminSlug = getAdminRouteSlug();
   const pathname = request.nextUrl.pathname;
-  
-  // Allow login routes without authentication (both public slug and internal)
-  if (isAdminLoginPath(pathname) || pathname === '/admin-internal/login' || pathname === '/admin-internal/login/') {
-    return NextResponse.next();
+  const internalPath = isPath(pathname, INTERNAL_ADMIN_PATH);
+  const apiPath = isPath(pathname, '/api/admin');
+
+  let adminSlug: string;
+  try {
+    adminSlug = getAdminRouteSlug();
+  } catch {
+    return internalPath || apiPath ? notFound() : NextResponse.next();
   }
-  
-  // Check if this is an admin path (public slug or internal)
-  const isAdminPublicPath = pathname.startsWith(adminSlug);
-  const isAdminInternalPath = pathname.startsWith('/admin-internal');
-  const isAdminApiPath = pathname.startsWith('/api/admin');
-  
-  if (!isAdminPublicPath && !isAdminInternalPath && !isAdminApiPath) {
-    return NextResponse.next();
-  }
-  
-  // For admin paths (including API), verify session
-  const supabase = await createAdminSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  
-  if (!session) {
-    // No session - redirect to login for pages, 401 for APIs
-    if (pathname.startsWith('/api/')) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401, headers: { 'Content-Type': 'application/json' } }
-      );
+
+  // Runtime enforcement: in production, ADMIN_ROUTE_SLUG must be explicitly set and valid.
+  // We validate the raw env var, not the computed slug, so owner can intentionally use '/panel-x7f'.
+  if (process.env.NODE_ENV === 'production') {
+    const config = validateAdminRouteConfig();
+    if (!config.valid) {
+      return internalPath || apiPath ? notFound() : NextResponse.next();
     }
-    return NextResponse.redirect(new URL(`${adminSlug}/login`, request.url));
   }
-  
-  // Verify the user is one of the allowed admin emails
-  const allowedEmails = [
+
+  const publicPath = isPath(pathname, adminSlug);
+  if (!internalPath && !apiPath && !publicPath) return NextResponse.next();
+
+  if (internalPath) {
+    return notFound();
+  }
+
+  if (apiPath && pathname === '/api/admin/login' && request.method === 'POST') {
+    return NextResponse.next();
+  }
+
+  const isLogin = publicPath && isAdminLoginPath(pathname);
+  if (isLogin) return NextResponse.next();
+
+  const authConfigured = [
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    process.env.SUPABASE_SERVICE_ROLE_KEY,
     process.env.ADMIN_EMAIL_1,
     process.env.ADMIN_EMAIL_2,
-  ].filter(Boolean).map(e => e!.toLowerCase());
-  
-  const userEmail = session.user.email?.toLowerCase();
-  if (!userEmail || !allowedEmails.includes(userEmail)) {
-    // Sign out the invalid session
-    await supabase.auth.signOut();
-    
-    if (pathname.startsWith('/api/')) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401, headers: { 'Content-Type': 'application/json' } }
-      );
+  ].every(Boolean);
+  if (!authConfigured) {
+    return apiPath
+      ? NextResponse.json({ error: 'Admin not configured' }, { status: 503 })
+      : NextResponse.redirect(new URL(`${adminSlug}/login`, request.url));
+  }
+
+  if (apiPath) {
+    const { supabase, getResponse } = createProxySupabaseClient(request);
+    const { data: { user }, error } = await supabase.auth.getUser();
+    const email = user?.email?.trim().toLowerCase();
+    if (error || !email || !isAllowedAdminEmail(email)) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+
+    const { data: account, error: accountError } = await createAdminSupabaseClient()
+      .from('admin_accounts')
+      .select('is_active')
+      .eq('email', email)
+      .maybeSingle();
+    if (accountError || !account?.is_active) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+    return getResponse();
+  }
+
+  const { supabase, getResponse } = createProxySupabaseClient(request);
+  const { data: { user }, error } = await supabase.auth.getUser();
+  const email = user?.email?.trim().toLowerCase();
+  if (error || !email || !isAllowedAdminEmail(email)) {
     return NextResponse.redirect(new URL(`${adminSlug}/login`, request.url));
   }
-  
-  // Check if account is active
-  const { data: account } = await supabase
+
+  const { data: account, error: accountError } = await createAdminSupabaseClient()
     .from('admin_accounts')
     .select('is_active')
-    .eq('email', userEmail)
-    .single();
-  
-  if (account && !account.is_active) {
-    // Account disabled - sign out
-    await supabase.auth.signOut();
-    
-    if (pathname.startsWith('/api/')) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401, headers: { 'Content-Type': 'application/json' } }
-      );
-    }
+    .eq('email', email)
+    .maybeSingle();
+  if (accountError || !account?.is_active) {
     return NextResponse.redirect(new URL(`${adminSlug}/login`, request.url));
   }
-  
-  return NextResponse.next();
+
+  return getResponse();
 }
 
 export const config = {
-  matcher: ['/admin-internal/:path*', '/api/admin/:path*'],
+  matcher: ['/:path*'],
 };

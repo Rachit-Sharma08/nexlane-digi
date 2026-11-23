@@ -1,34 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createAdminSupabaseClient } from '@/lib/supabase/server';
+import { getAdminRequestContext, isAllowedAdminEmail } from '@/lib/admin-auth-supabase';
 
 export async function GET(request: NextRequest) {
-  const supabase = await createAdminSupabaseClient();
-  
-  // Verify admin session
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session) {
-    return NextResponse.json(
-      { error: 'Unauthorized' },
-      { status: 401 }
-    );
-  }
-  
-  const allowedEmails = [
-    process.env.ADMIN_EMAIL_1,
-    process.env.ADMIN_EMAIL_2,
-  ].filter(Boolean).map(e => e!.toLowerCase());
-  
-  const userEmail = session.user.email?.toLowerCase();
-  if (!userEmail || !allowedEmails.includes(userEmail)) {
-    return NextResponse.json(
-      { error: 'Unauthorized' },
-      { status: 401 }
-    );
-  }
+  const adminContext = await getAdminRequestContext();
+  if (!adminContext) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const { admin: supabase } = adminContext;
   
   // Get query params
   const { searchParams } = new URL(request.url);
-  const limit = parseInt(searchParams.get('limit') || '100', 10);
+  const requestedLimit = Number.parseInt(searchParams.get('limit') || '100', 10);
+  const limit = Number.isFinite(requestedLimit) ? Math.min(100, Math.max(1, requestedLimit)) : 100;
   const email = searchParams.get('email');
   
   let query = supabase
@@ -37,8 +18,10 @@ export async function GET(request: NextRequest) {
     .order('attempted_at', { ascending: false })
     .limit(limit);
   
-  if (email) {
-    query = query.eq('email', email);
+  if (email && isAllowedAdminEmail(email)) {
+    query = query.eq('email', email.trim().toLowerCase());
+  } else if (email) {
+    return NextResponse.json({ error: 'Invalid email' }, { status: 400 });
   }
   
   const { data: attempts, error } = await query;
@@ -54,32 +37,12 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const supabase = await createAdminSupabaseClient();
-  
-  // Verify admin session
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session) {
-    return NextResponse.json(
-      { error: 'Unauthorized' },
-      { status: 401 }
-    );
-  }
-  
-  const allowedEmails = [
-    process.env.ADMIN_EMAIL_1,
-    process.env.ADMIN_EMAIL_2,
-  ].filter(Boolean).map(e => e!.toLowerCase());
-  
-  const userEmail = session.user.email?.toLowerCase();
-  if (!userEmail || !allowedEmails.includes(userEmail)) {
-    return NextResponse.json(
-      { error: 'Unauthorized' },
-      { status: 401 }
-    );
-  }
+  const adminContext = await getAdminRequestContext();
+  if (!adminContext) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const { admin: supabase } = adminContext;
   
   // Clear lockout for an email
-  let body: { email: string };
+  let body: unknown;
   try {
     body = await request.json();
   } catch {
@@ -89,15 +52,17 @@ export async function POST(request: NextRequest) {
     );
   }
   
-  if (!body.email || typeof body.email !== 'string') {
+  if (!body || typeof body !== 'object' || typeof (body as Record<string, unknown>).email !== 'string' ||
+      !isAllowedAdminEmail((body as { email: string }).email)) {
     return NextResponse.json(
       { error: 'Invalid request' },
       { status: 400 }
     );
   }
+  const email = (body as { email: string }).email.trim().toLowerCase();
   
   const { error } = await supabase.rpc('clear_admin_lockout', {
-    p_email: body.email,
+    p_email: email,
   });
   
   if (error) {

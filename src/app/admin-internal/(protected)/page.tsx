@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useAdminRoute } from "../AdminRouteContext";
 
 export type BlogPost = {
   slug: string;
@@ -36,6 +37,7 @@ type LoginAttempt = {
 
 export default function AdminDashboard() {
   const router = useRouter();
+  const adminRoute = useAdminRoute();
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [accounts, setAccounts] = useState<AdminAccount[]>([]);
   const [attempts, setAttempts] = useState<LoginAttempt[]>([]);
@@ -54,11 +56,6 @@ export default function AdminDashboard() {
   const [passwordError, setPasswordError] = useState("");
   const [passwordSuccess, setPasswordSuccess] = useState("");
 
-  const getAdminRoute = () => {
-    // This will be replaced by the server with the actual route
-    return "/admin";
-  };
-
   const handleLogout = async () => {
     try {
       const res = await fetch("/api/admin/logout", {
@@ -66,12 +63,12 @@ export default function AdminDashboard() {
         credentials: "same-origin",
       });
       if (res.ok) {
-        const loginUrl = `${getAdminRoute()}/login`;
+        const loginUrl = `${adminRoute}/login`;
         router.push(loginUrl);
         router.refresh();
       }
     } catch {
-      const loginUrl = `${getAdminRoute()}/login`;
+      const loginUrl = `${adminRoute}/login`;
       router.push(loginUrl);
       router.refresh();
     }
@@ -88,7 +85,7 @@ export default function AdminDashboard() {
       });
 
       if (res.status === 401) {
-        const loginUrl = `${getAdminRoute()}/login`;
+        const loginUrl = `${adminRoute}/login`;
         router.push(loginUrl);
         router.refresh();
         return;
@@ -114,7 +111,7 @@ export default function AdminDashboard() {
       });
 
       if (res.status === 401) {
-        const loginUrl = `${getAdminRoute()}/login`;
+        const loginUrl = `${adminRoute}/login`;
         router.push(loginUrl);
         router.refresh();
         return;
@@ -132,7 +129,7 @@ export default function AdminDashboard() {
     } finally {
       setLoading(false);
     }
-  }, [router]);
+  }, [router, adminRoute]);
 
   const loadAccounts = useCallback(async () => {
     setLoadingAccounts(true);
@@ -303,7 +300,7 @@ export default function AdminDashboard() {
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
-            <Link href="/admin-internal/posts/new" className="btn btn-primary">
+            <Link href={`${adminRoute}/posts/new`} className="btn btn-primary">
               New post
             </Link>
             <button onClick={handleLogout} className="btn btn-ghost">
@@ -367,7 +364,7 @@ export default function AdminDashboard() {
           <div className="glass overflow-hidden">
             {posts.length === 0 ? (
               <div className="p-12 text-center text-[var(--muted)]">
-                No posts yet. <Link href="/admin-internal/posts/new" className="text-[var(--accent-2)] hover:underline">
+                No posts yet. <Link href={`${adminRoute}/posts/new`} className="text-[var(--accent-2)] hover:underline">
                   Create one
                 </Link>
               </div>
@@ -389,7 +386,7 @@ export default function AdminDashboard() {
                       <tr key={post.slug} className="border-b border-[var(--card-border)] last:border-0 hover:bg-[var(--secondary)]">
                         <td className="p-4">
                           <Link
-                            href={`/admin-internal/posts/${post.slug}`}
+                            href={`${adminRoute}/posts/${post.slug}`}
                             className="font-medium hover:text-[var(--accent-2)] transition-colors"
                           >
                             {post.title}
@@ -417,7 +414,7 @@ export default function AdminDashboard() {
                         <td className="p-4 text-right">
                           <div className="flex items-center justify-end gap-2">
                             <Link
-                              href={`/admin-internal/posts/${post.slug}`}
+                              href={`${adminRoute}/posts/${post.slug}`}
                               className="btn btn-ghost text-sm"
                             >
                               Edit

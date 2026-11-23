@@ -1,11 +1,8 @@
 import { NextResponse } from 'next/server';
-import { createAdminSupabaseClient } from '@/lib/supabase/server';
+import { signOutAdmin } from '@/lib/admin-auth-supabase';
 
 export async function POST() {
-  const supabase = await createAdminSupabaseClient();
-  
-  // Sign out from Supabase Auth
-  await supabase.auth.signOut();
+  await signOutAdmin();
   
   const response = NextResponse.json({ ok: true });
   

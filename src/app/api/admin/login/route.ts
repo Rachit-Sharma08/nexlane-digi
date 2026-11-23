@@ -1,15 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { isIP } from 'node:net';
 import { 
   signInAdmin, 
   getAdminRouteSlug
 } from '@/lib/admin-auth-supabase';
 
-function getClientIp(request: NextRequest): string {
+function getClientIp(request: NextRequest): string | null {
   const forwarded = request.headers.get('x-forwarded-for');
   if (forwarded) {
-    return forwarded.split(',')[0].trim();
+    const address = forwarded.split(',')[0].trim();
+    if (isIP(address)) return address;
   }
-  return 'unknown';
+  return null;
 }
 
 function getUserAgent(request: NextRequest): string {
@@ -18,20 +20,23 @@ function getUserAgent(request: NextRequest): string {
 
 export async function POST(request: NextRequest) {
   // Check if admin emails are configured
-  if (!process.env.ADMIN_EMAIL_1 || !process.env.ADMIN_EMAIL_2) {
+  if (
+    !process.env.ADMIN_EMAIL_1 ||
+    !process.env.ADMIN_EMAIL_2 ||
+    !process.env.NEXT_PUBLIC_SUPABASE_URL ||
+    !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+    !process.env.SUPABASE_SERVICE_ROLE_KEY
+  ) {
     return NextResponse.json(
       { error: 'Admin not configured' },
       { status: 503 }
     );
   }
 
-  let email: string;
-  let password: string;
+  let body: unknown;
   
   try {
-    const body = await request.json();
-    email = body.email;
-    password = body.password;
+    body = await request.json();
   } catch {
     return NextResponse.json(
       { error: 'Invalid request' },
@@ -39,15 +44,20 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  if (!email || !password || typeof email !== 'string' || typeof password !== 'string') {
+  if (!body || typeof body !== 'object') {
+    return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
+  }
+  const credentials = body as Record<string, unknown>;
+  const email = credentials.email;
+  const password = credentials.password;
+  if (typeof email !== 'string' || email.length > 254 || typeof password !== 'string' || password.length > 1024 || !email || !password) {
     return NextResponse.json(
       { error: 'Invalid credentials' },
       { status: 401 }
     );
   }
 
-  // Always attempt sign in to avoid timing attacks revealing allowed emails
-  // The signInAdmin function handles disabled accounts and lockouts internally
+  // signInAdmin returns the same public error for invalid, disabled and locked accounts.
   const ip = getClientIp(request);
   const userAgent = getUserAgent(request);
   

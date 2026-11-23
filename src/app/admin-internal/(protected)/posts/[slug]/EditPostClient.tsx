@@ -3,8 +3,9 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { PostEditor } from "@/app/admin-internal/post-editor";
-import type { BlogPost } from "@/app/admin-internal/post-editor";
+import { PostEditor } from "@/app/admin-internal/(protected)/post-editor";
+import type { BlogPost } from "@/app/admin-internal/(protected)/post-editor";
+import { useAdminRoute } from "../../../AdminRouteContext";
 
 type EditPostClientProps = {
   slug: string;
@@ -12,6 +13,7 @@ type EditPostClientProps = {
 
 export function EditPostClient({ slug }: EditPostClientProps) {
   const router = useRouter();
+  const adminRoute = useAdminRoute();
 
   const [post, setPost] = useState<BlogPost | null>(null);
   const [loading, setLoading] = useState(true);
@@ -26,7 +28,7 @@ export function EditPostClient({ slug }: EditPostClientProps) {
         });
 
         if (res.status === 401) {
-          router.push("/admin/login");
+          router.push(`${adminRoute}/login`);
           router.refresh();
           return;
         }
@@ -49,7 +51,7 @@ export function EditPostClient({ slug }: EditPostClientProps) {
     return () => {
       cancelled = true;
     };
-  }, [slug, router]);
+  }, [slug, router, adminRoute]);
 
   const handleSave = async (updatedPost: BlogPost) => {
     try {
@@ -85,7 +87,7 @@ export function EditPostClient({ slug }: EditPostClientProps) {
       <main className="min-h-[calc(100dvh-4rem)] px-4 py-8">
         <div className="max-w-4xl mx-auto">
           <div className="mb-6 flex items-center justify-between">
-            <Link href="/admin" className="btn btn-ghost text-sm">
+            <Link href={adminRoute} className="btn btn-ghost text-sm">
               ← Back to posts
             </Link>
           </div>
@@ -105,7 +107,7 @@ export function EditPostClient({ slug }: EditPostClientProps) {
       <main className="min-h-[calc(100dvh-4rem)] px-4 py-8">
         <div className="max-w-4xl mx-auto">
           <div className="mb-6 flex items-center justify-between">
-            <Link href="/admin" className="btn btn-ghost text-sm">
+            <Link href={adminRoute} className="btn btn-ghost text-sm">
               ← Back to posts
             </Link>
           </div>
@@ -124,7 +126,7 @@ export function EditPostClient({ slug }: EditPostClientProps) {
     <main className="min-h-[calc(100dvh-4rem)] px-4 py-8">
       <div className="max-w-4xl mx-auto">
         <div className="mb-6 flex items-center justify-between">
-          <Link href="/admin" className="btn btn-ghost text-sm">
+          <Link href={adminRoute} className="btn btn-ghost text-sm">
             ← Back to posts
           </Link>
         </div>

@@ -1,4 +1,5 @@
-import { createAdminSupabaseClient } from './supabase/server.ts';
+import 'server-only';
+import { createAdminSupabaseClient, createUserSupabaseClient } from './supabase/server';
 import {
   isAllowedAdminEmail,
   getAdminRouteSlug,
@@ -38,72 +39,80 @@ export interface AdminAccount {
 
 /**
  * Attempt to sign in an admin using Supabase Auth (email + password).
- * Records the attempt in the database with lockout tracking.
+ * Uses atomic attempt reservation to prevent concurrent login bypass.
  */
 export async function signInAdmin(
   email: string,
   password: string,
-  ip?: string,
+  ip?: string | null,
   userAgent?: string
 ): Promise<AdminLoginResult> {
-  const supabase = await createAdminSupabaseClient();
-  
-  // Check if account exists and is active
-  const { data: account } = await supabase
-    .from('admin_accounts')
-    .select('is_active')
-    .eq('email', email)
-    .single();
-  
-  // If account exists but is disabled, still record attempt but don't reveal
-  if (account && !account.is_active) {
-    await supabase.rpc('record_admin_login_attempt', {
-      p_email: email,
-      p_success: false,
-      p_ip: ip ?? null,
-      p_user_agent: userAgent ?? null,
-    });
-    // Generic error - don't reveal if account is disabled or wrong password
+  const normalizedEmail = email.trim().toLowerCase();
+  if (!isAllowedAdminEmail(normalizedEmail)) {
     return { success: false, error: 'Invalid credentials' };
   }
-  
-  // Attempt Supabase Auth sign in
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  });
-  
-  const success = !error && !!data.session;
-  
-  // Record the attempt
-  await supabase.rpc('record_admin_login_attempt', {
-    p_email: email,
-    p_success: success,
+
+  const adminClient = createAdminSupabaseClient();
+  const { data, error: reserveError } = await adminClient.rpc('begin_admin_login_attempt', {
+    p_email: normalizedEmail.slice(0, 254),
     p_ip: ip ?? null,
-    p_user_agent: userAgent ?? null,
+    p_user_agent: userAgent?.slice(0, 1000) ?? null,
   });
-  
-  if (!success) {
-    // Check if this attempt caused a lockout
-    const { data: lockout } = await supabase.rpc('check_admin_lockout', {
-      p_email: email,
+  if (reserveError || !data || typeof data !== 'object') {
+    return { success: false, error: 'Invalid credentials' };
+  }
+  const reservation = data as { attempt_id?: unknown; locked_out?: unknown };
+  if (reservation.locked_out === true || typeof reservation.attempt_id !== 'string') {
+    return { success: false, error: 'Invalid credentials', lockout: true };
+  }
+  const attemptId = reservation.attempt_id;
+
+  const { data: account, error: accountError } = await adminClient
+    .from('admin_accounts')
+    .select('is_active')
+    .eq('email', normalizedEmail)
+    .maybeSingle();
+  if (accountError || !account?.is_active) {
+    await adminClient.rpc('finish_admin_login_attempt', {
+      p_attempt_id: attemptId,
+      p_success: false,
     });
-    
-    return { 
-      success: false, 
-      error: 'Invalid credentials',
-      lockout: lockout ?? false,
-    };
+    return { success: false, error: 'Invalid credentials' };
   }
-  
-  // Update last_login_at on successful login
-  if (data.user) {
-    await supabase
-      .from('admin_accounts')
-      .update({ last_login_at: new Date().toISOString() })
-      .eq('id', data.user.id);
+
+  let authClient: Awaited<ReturnType<typeof createUserSupabaseClient>> | undefined;
+  let success = false;
+  try {
+    authClient = await createUserSupabaseClient();
+    const { data: authData, error: authError } = await authClient.auth.signInWithPassword({
+      email: normalizedEmail,
+      password,
+    });
+    success = !authError && !!authData.session;
+  } catch {
+    try {
+      await authClient?.auth.signOut({ scope: 'local' });
+    } catch {}
   }
-  
+
+  const { data: finalized, error: finalizeError } = await adminClient.rpc('finish_admin_login_attempt', {
+    p_attempt_id: attemptId,
+    p_success: success,
+  });
+
+  if (finalizeError || finalized !== true) {
+    if (success) {
+      try {
+        await authClient?.auth.signOut({ scope: 'local' });
+      } catch {}
+    }
+    return { success: false, error: 'Invalid credentials' };
+  }
+
+  if (!success) {
+    return { success: false, error: 'Invalid credentials' };
+  }
+
   return { success: true };
 }
 
@@ -111,17 +120,28 @@ export async function signInAdmin(
  * Sign out the current admin session.
  */
 export async function signOutAdmin(): Promise<void> {
-  const supabase = await createAdminSupabaseClient();
-  await supabase.auth.signOut();
+  const supabase = await createUserSupabaseClient();
+  const { error } = await supabase.auth.signOut({ scope: 'local' });
+  if (error) throw error;
 }
 
 /**
  * Get the current admin session (if any).
  */
-export async function getAdminSession() {
-  const supabase = await createAdminSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  return session;
+export async function getAdminRequestContext() {
+  const auth = await createUserSupabaseClient();
+  const { data: { user }, error } = await auth.auth.getUser();
+  const email = user?.email?.trim().toLowerCase();
+  if (error || !user || !email || !isAllowedAdminEmail(email)) return null;
+
+  const admin = createAdminSupabaseClient();
+  const { data: account, error: accountError } = await admin
+    .from('admin_accounts')
+    .select('is_active')
+    .eq('email', email)
+    .maybeSingle();
+  if (accountError || !account?.is_active) return null;
+  return { auth, admin, user, email };
 }
 
 // Re-export pure utility functions
@@ -194,17 +214,17 @@ export async function changeAdminPassword(
   currentPassword: string,
   newPassword: string
 ): Promise<{ success: boolean; error?: string }> {
-  const supabase = await createAdminSupabaseClient();
+  const supabase = await createUserSupabaseClient();
   
   // Get current session to verify current password
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session?.user) {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user?.email || !isAllowedAdminEmail(user.email)) {
     return { success: false, error: 'Not authenticated' };
   }
   
   // Verify current password by attempting to sign in
   const { error: verifyError } = await supabase.auth.signInWithPassword({
-    email: session.user.email!,
+    email: user.email,
     password: currentPassword,
   });
   
@@ -218,8 +238,11 @@ export async function changeAdminPassword(
   });
   
   if (updateError) {
-    return { success: false, error: updateError.message };
+    return { success: false, error: 'Could not update password' };
   }
+
+  const { error: revokeError } = await supabase.auth.signOut({ scope: 'others' });
+  if (revokeError) return { success: false, error: 'Password updated, but other sessions could not be revoked' };
   
   return { success: true };
 }

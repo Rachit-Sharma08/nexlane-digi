@@ -2,9 +2,11 @@
 
 import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import { useAdminRoute } from "../AdminRouteContext";
 
 export function LoginForm() {
   const router = useRouter();
+  const adminRoute = useAdminRoute();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -37,8 +39,7 @@ export function LoginForm() {
       }
 
       // Successful login - redirect to dashboard
-      const adminRoute = data.adminRoute || "/admin";
-      router.push(adminRoute);
+      router.push(data.adminRoute || adminRoute);
       router.refresh();
     } catch {
       setError("Network error. Please try again.");
