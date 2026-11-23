@@ -8,6 +8,7 @@ import { ArrowMotif, Container, GradientHeading, SectionHeader } from "@/compone
 import DepthCard from "@/components/DepthCard";
 import SectionNav from "@/components/SectionNav";
 import ServiceHub from "@/components/home/ServiceHub";
+import FactsPanel from "@/components/home/FactsPanel";
 import NextUp from "@/components/NextUp";
 import { Marquee } from "@/components/ui/marquee";
 import JsonLd from "@/components/JsonLd";
@@ -129,18 +130,7 @@ export default function HomePage() {
           </div>
 
           {/* Facts band (reference style): ink ground, canvas text. */}
-          <ul className="grid overflow-hidden rounded-2xl border border-[var(--text)] bg-[var(--text)] text-[var(--bg)]">
-            {facts.map((fact, i) => (
-              <li
-                key={fact}
-                className={`px-5 py-4 text-sm font-bold leading-snug ${
-                  i > 0 ? "border-t-2 border-[rgba(229,232,206,0.25)]" : ""
-                }`}
-              >
-                {fact}
-              </li>
-            ))}
-          </ul>
+          <FactsPanel facts={facts} />
         </div>
 
         {/* Service hub — full width inside the hero, never overlapping copy. */}
