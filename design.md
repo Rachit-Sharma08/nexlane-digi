@@ -22,7 +22,7 @@ Living document. Every animation, motion, or visual polish we add to the site is
 
 - Focal moment: a short, one-time hero entrance on page load.
 - Continuity: gentle section entry linked to scrolling with CSS scroll-driven animation where supported, plus a thin reading progress bar and back-to-top action.
-- Feedback: glass cards lift on hover, buttons acknowledge press, nav links get a cyan sweep and active route state, accordions reveal answers, and the mobile menu opens with a short transition.
+- Feedback: glass cards lift on hover, buttons acknowledge press, nav links get a Forest & Sage gradient underline and active route state, accordions reveal answers, and the mobile menu opens with a short transition.
 - Budget: CSS only; no new animation dependency or continuously running canvas. Effects use transform/opacity where practical and respect `prefers-reduced-motion`.
 - Magic UI's official MCP server is enabled in `opencode.json`; the existing shadcn MCP can also resolve the Magic UI registry configured in `components.json`.
 - Ponytail 5.3.3 is installed as a Codex plugin. Restart Codex/new thread is needed for plugin hooks to become active; its lean-change rules were read and followed for this pass.
