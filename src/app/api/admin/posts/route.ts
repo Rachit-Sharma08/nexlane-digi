@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { verifySessionCookie, getSessionKeyFromEnv } from '@/lib/admin-auth';
+import { getAdminRequestContext } from '@/lib/admin-auth-supabase';
 import { validatePost } from '@/lib/admin-validate';
 import { BlogPost } from '@/content/blog';
 import path from 'path';
@@ -38,22 +38,8 @@ async function appendAuditLog(entry: Record<string, unknown>): Promise<void> {
   }
 }
 
-export async function GET(request: NextRequest) {
-  const sessionKey = await getSessionKeyFromEnv();
-  if (!sessionKey) {
-    return NextResponse.json(
-      { error: 'Admin not configured' },
-      { status: 503 }
-    );
-  }
-
-  const cookie = request.cookies.get('nexlane_admin')?.value;
-  if (!cookie || !(await verifySessionCookie(cookie, sessionKey))) {
-    return NextResponse.json(
-      { error: 'Unauthorized' },
-      { status: 401 }
-    );
-  }
+export async function GET() {
+  if (!await getAdminRequestContext()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   const posts = await readPosts();
   if (posts === null) {
@@ -63,21 +49,7 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const sessionKey = await getSessionKeyFromEnv();
-  if (!sessionKey) {
-    return NextResponse.json(
-      { error: 'Admin not configured' },
-      { status: 503 }
-    );
-  }
-
-  const cookie = request.cookies.get('nexlane_admin')?.value;
-  if (!cookie || !(await verifySessionCookie(cookie, sessionKey))) {
-    return NextResponse.json(
-      { error: 'Unauthorized' },
-      { status: 401 }
-    );
-  }
+  if (!await getAdminRequestContext()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   let input: unknown;
   try {

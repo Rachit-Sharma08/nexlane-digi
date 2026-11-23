@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { verifySessionCookie, getSessionKeyFromEnv } from '@/lib/admin-auth';
+import { getAdminRequestContext } from '@/lib/admin-auth-supabase';
 import { validatePostUpdate } from '@/lib/admin-validate';
 import { BlogPost } from '@/content/blog';
 import path from 'path';
@@ -23,21 +23,7 @@ export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
-  const sessionKey = await getSessionKeyFromEnv();
-  if (!sessionKey) {
-    return NextResponse.json(
-      { error: 'Admin not configured' },
-      { status: 503 }
-    );
-  }
-
-  const cookie = request.cookies.get('nexlane_admin')?.value;
-  if (!cookie || !(await verifySessionCookie(cookie, sessionKey))) {
-    return NextResponse.json(
-      { error: 'Unauthorized' },
-      { status: 401 }
-    );
-  }
+  if (!await getAdminRequestContext()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   const { slug } = await params;
   const posts = await readPosts();
@@ -78,21 +64,7 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
-  const sessionKey = await getSessionKeyFromEnv();
-  if (!sessionKey) {
-    return NextResponse.json(
-      { error: 'Admin not configured' },
-      { status: 503 }
-    );
-  }
-
-  const cookie = request.cookies.get('nexlane_admin')?.value;
-  if (!cookie || !(await verifySessionCookie(cookie, sessionKey))) {
-    return NextResponse.json(
-      { error: 'Unauthorized' },
-      { status: 401 }
-    );
-  }
+  if (!await getAdminRequestContext()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   const { slug } = await params;
   let input: unknown;
@@ -144,21 +116,7 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
-  const sessionKey = await getSessionKeyFromEnv();
-  if (!sessionKey) {
-    return NextResponse.json(
-      { error: 'Admin not configured' },
-      { status: 503 }
-    );
-  }
-
-  const cookie = request.cookies.get('nexlane_admin')?.value;
-  if (!cookie || !(await verifySessionCookie(cookie, sessionKey))) {
-    return NextResponse.json(
-      { error: 'Unauthorized' },
-      { status: 401 }
-    );
-  }
+  if (!await getAdminRequestContext()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   const { slug } = await params;
   const posts = await readPosts();

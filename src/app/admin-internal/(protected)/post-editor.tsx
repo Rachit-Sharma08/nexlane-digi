@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useAdminRoute } from "../AdminRouteContext";
 import { team } from "@/config/site";
 
 export type BlogBlock =
@@ -73,6 +74,7 @@ function generateSlug(title: string): string {
 
 export function PostEditor({ initialPost, isEditing, onSave }: PostEditorProps) {
   const router = useRouter();
+  const adminRoute = useAdminRoute();
   const isNew = !isEditing;
 
   const [title, setTitle] = useState(initialPost?.title || "");
@@ -217,7 +219,7 @@ export function PostEditor({ initialPost, isEditing, onSave }: PostEditorProps) 
   };
 
   const handleBack = () => {
-    router.push("/admin");
+    router.push(adminRoute);
     router.refresh();
   };
 

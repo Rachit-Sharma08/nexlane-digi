@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { isValidAdminRouteSlug } from "./src/lib/admin-auth-utils";
 
 // Security headers. CSP is "strict with minimal opens": Next.js needs
 // 'unsafe-inline' for its inline bootstrap scripts/styles without a nonce
@@ -37,6 +38,19 @@ const securityHeaders = [
   },
 ];
 
+function getAdminRewriteSlug(): string {
+  const raw = process.env.ADMIN_ROUTE_SLUG;
+  if (!raw && process.env.NODE_ENV === "production") {
+    throw new Error("ADMIN_ROUTE_SLUG must be set before the production build");
+  }
+
+  const segment = raw || "panel-x7f";
+  if (!isValidAdminRouteSlug(segment)) {
+    throw new Error("ADMIN_ROUTE_SLUG must be one path segment (6-64 letters, numbers, _ or -)");
+  }
+  return segment;
+}
+
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
@@ -46,6 +60,13 @@ const nextConfig: NextConfig = {
     return [
       // Renamed in the IA restructure — permanent, keeps old links alive.
       { source: "/portfolio", destination: "/our-work", permanent: true },
+    ];
+  },
+  async rewrites() {
+    const slug = getAdminRewriteSlug();
+    return [
+      { source: `/${slug}`, destination: "/admin-internal" },
+      { source: `/${slug}/:path*`, destination: "/admin-internal/:path*" },
     ];
   },
   async headers() {

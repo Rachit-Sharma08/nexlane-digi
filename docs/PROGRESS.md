@@ -1,14 +1,14 @@
 # Nexlane Digital — Progress
 
-Last updated: 2026-11-22 · Repo: `Rachit-Sharma08/nexlane-digital` (private) · Deploy: Vercel (pending)
+Last updated: 2026-11-23 · Repo: `Rachit-Sharma08/nexlane-digital` (private) · Deploy: Vercel (pending)
 
 ## Prompt 1 of 3 — logo, hero and overlap fixes (2026-11-22)
 
 - **Base and PR check:** `gh pr list --state all --limit 50` shows PRs #8–#11 merged. SEO PR #14 is closed, not merged; its remote head commit `5a7d3b4` is nevertheless an ancestor of `main`, so the code is present in the selected base. `feat/hero-v3` starts from `main` at `2136eff`; Prompt 1 work complete: logo assets added, Anton headline + `next/font/google`, cyan-only palette (no lime/green), hero N mark scene (high tier WebGL + CSS 3D mid/low tiers), overlap fixes (WhatsApp stack, NextUp overflow, dropdown z-index, contact submit text), Next dev overlay inspected (no actionable issue; only a THREE.Clock library deprecation warning), 1440/768/360 Playwright screenshots taken and visually reviewed and saved as `screenshots/home-{1440,768,360}.png`. `git diff --check` passes.
 
-## Backend allowed + quick-win batch (2026-11-08, direct to `main`)
+## Historical backend batch (2026-11-08; admin auth superseded by Phase 2A on 2026-11-23)
 
-**Stage 2026-11-08 e — `/admin` panel (backend + UI):**
+**Stage 2026-11-08 e — `/admin` panel (legacy implementation):**
 - **Auth:** single env `ADMIN_PASSWORD` (no default — unset = panel disabled with 503). Stateless signed cookie `nexlane_admin` = `exp.HMAC-SHA256` (key derived from the password, 7-day expiry, httpOnly/SameSite=Lax/Secure in prod). `src/middleware.ts` guards `/admin/*` + `/api/admin/*` (redirect to `/admin/login` for pages, 401 JSON for APIs). Login rate limit 5 attempts/15 min per IP (in-memory — Vercel WAF `/api/*` rule remains phase 2). Constant-time password compare. Audit lines in `data/admin-audit.log` (gitignored, best-effort so a read-only fs can never fail a request).
 - **Storage:** `src/content/blog.json` = source of truth (committed); `src/content/blog.ts` keeps types + `notDraft/getPost/readingTime` helpers and imports the JSON — zero caller changes. **Edits go live only on the next deploy** (static import) — the panel says so. Atomic tmp+rename writes; corrupt JSON returns 500 instead of overwriting content.
 - **API:** `POST /api/admin/login|logout`, `GET /api/admin/me`, `GET|POST /api/admin/posts`, `GET|PUT|DELETE /api/admin/posts/[slug]`. Server-side validation (`src/lib/admin-validate.ts`): slug format+unique, title/description/category limits, date format, author must be a real `site.team` name, block types limited to p/h/list/quote with size caps (unknown types rejected).
@@ -127,6 +127,47 @@ Cloudflare Turnstile free hai (unlimited verifications). CSP me already `challen
 5. Form component me widget render karo (`<div className="cf-turnstile" data-sitekey={...} />` + script `https://challenges.cloudflare.com/turnstile/v0/api.js`).
 6. `/api/*` route me `verifyTurnstile(req, token)` call karo (already in `lib/formsecurity.ts`).
 7. Local dev: `TURNSTILE_ENABLED` unset rakh → verifyTurnstile auto-true return karta hai (dev skip).
+
+## Phase 2A — Admin Authentication Upgrade (2026-11-23, branch `feat/admin-auth-upgrade`)
+
+**Stage: Admin Auth Migration** — replace shared-password admin login with two named allowlisted accounts via Supabase Auth, add login-attempt limiting with lockout, move admin panel off predictable `/admin` route.
+
+### Implemented; verification status below
+
+- **Supabase deps:** `@supabase/supabase-js`, `@supabase/ssr` added.
+- **Server clients:** `createUserSupabaseClient` (anon) and `createAdminSupabaseClient` (service role, server-only) in `src/lib/supabase/server.ts`.
+- **Proxy client:** `src/lib/supabase/proxy.ts` for request-scoped cookie handling in middleware.
+- **Database migration:** `supabase/migrations/001_admin_auth.sql` — `admin_accounts`, `admin_login_attempts`, lockout and expiring reservation tables; RLS is restricted to `service_role`. Security-invoker RPCs atomically reserve/finalize per-account login attempts and manage lockouts/account status.
+- **Auth utilities (pure + testable):** `src/lib/admin-auth-utils.ts` — `isAllowedAdminEmail`, `getAdminRouteSlug`, `isAdminLoginPath`, `isAdminPath`, `getAdminLoginUrl`, `getAdminDashboardUrl`, `validateAdminRouteConfig`.
+- **Supabase auth logic:** `src/lib/admin-auth-supabase.ts` — `signInAdmin`, `signOutAdmin` (current session only), `getAdminRequestContext`, and `changeAdminPassword` (revoke other sessions after success).
+- **Proxy and routes:** `next.config.ts` maps the configured public slug to internal `/admin-internal/*` at build time. `src/proxy.ts` checks the public route and API requests before rewrites and returns 404 for direct internal paths. The protected route group also validates the active Supabase account server-side. Missing/invalid production slug fails the build; runtime checks block internal/API access and the dynamic login page when it is missing or invalid. Development uses `/panel-x7f` only as a fallback; public-route collisions are rejected.
+- **API routes:** `login`, `logout`, `accounts` (GET/PATCH), `login-attempts` (GET/POST), `password` (PATCH).
+- **Admin panel UI:** `src/app/admin-internal/` — layout, login form (email+password, Forest & Sage style, generic "Invalid credentials" error), dashboard with tabs (Posts, Accounts, Security). `AdminRouteContext` provides dynamic base path.
+- **Next.js rewrites:** The rewrite is configured from the server-only `ADMIN_ROUTE_SLUG` during build so Proxy does not recursively process its own internal rewrite.
+- **Unit tests:** route/config coverage in `tests/admin-auth-supabase.test.ts` and migration/caller contract checks in `tests/admin-login-reservation.test.ts`.
+- **AGENTS.md §14 and PROGRESS.md updated** with Phase 2A docs.
+
+### Gates (all green)
+
+| Gate | Result |
+|---|---|
+| `npx tsc --noEmit` | 0 errors |
+| `npm run lint` | 0 errors, 0 warnings |
+| `npm test` | 20/20 pass (rerun after final edits below) |
+| `npm run build` | Passed with `ADMIN_ROUTE_SLUG=verify-panel` after final source edits (35 routes) |
+| GitHub Actions PR build | Passed after the CI workflow set the same test-only route slug |
+| `npm audit --audit-level=low` | 0 vulnerabilities |
+
+- **Concurrent lockout protection:** The final `001_admin_auth.sql` migration reserves one of five attempts under an email-scoped advisory lock before the Supabase Auth request. Reservations expire after 15 minutes and do not count as failed logins; only five actual consecutive failures create a 15-minute lockout. The TypeScript caller uses the same `begin_admin_login_attempt` / `finish_admin_login_attempt` RPC names and records IP/user-agent data in the database.
+
+### Integration notes (require owner's Supabase project)
+
+- Actual Supabase Auth sign-in, lockout DB ops, and session cookie flow require the owner to create a separate Nexlane Supabase project, run `supabase/migrations/001_admin_auth.sql`, and set `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `ADMIN_EMAIL_1`, `ADMIN_EMAIL_2`, and `ADMIN_ROUTE_SLUG` in local/Vercel env. These cannot be tested locally without that project.
+- The two admin users must be created in Supabase Auth (email+password), then corresponding `admin_accounts` rows provisioned before login works.
+- Public sign-up must remain disabled in the Supabase project.
+- Final production preview: `/verify-panel/login` = 200, unauthenticated `/verify-panel` = 307 to login, `/admin` = 404, direct `/admin-internal/login` = 404, and `/api/admin/me` = 503 when Supabase configuration is absent. Login screenshots at 1440/768/360 were captured after the final build; all three widths passed the no-horizontal-overflow check: `screenshots/admin-login-{1440,768,360}.png`.
+
+---
 
 ## Kya baaki hai
 
@@ -494,3 +535,5 @@ Spec: AGENTS §12 + `docs/seo-content.md`. No new npm dependencies.
 - No-JavaScript, unsupported-IntersectionObserver and reduced-motion states render the full rail, four nodes, connectors and final text color immediately. Both text colors pass WCAG AA on the ink panel: surface text 11.46:1; canvas text 13.20:1.
 - Verification: `npx tsc --noEmit`, `npm run lint`, `npm run build` and `npm audit` pass; audit reports 0 vulnerabilities. Final screenshots are saved in ignored `screenshots/facts-{1440,768,360,reduced}.png`; `screenshots/home-360.png` shows the full mobile hero. A true 360px mobile-emulated browser check confirms the panel, title and buttons fit without horizontal overflow; the 768px and 1440px layouts also fit. Reduced-motion emulation confirms the rail is static, the marker animation is `none`, and all text is fully readable. The 360px panel screenshot is centered in the viewport so all four rows can be reviewed.
 - Branch check: `main` and `origin/main` are both at `8c42532`; `feat/forest-sage` is an ancestor of remote main, so its merge is already complete. `feat/hero-facts-animation` is checked out from that same commit. Other branches were left untouched.
+
+---

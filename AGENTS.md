@@ -197,3 +197,12 @@ This section applies to the Forest & Sage palette redesign (branch `feat/forest-
 8. **Quality tiers (from §11):** `low` (reduced motion, saveData, deviceMemory≤2, cores≤2, <768px) = static only; `mid` = CSS 3D tilt/parallax on fine pointers; `high` = (not used — no WebGL hero). Default server render = `low`, upgrade client-side after hydration.
 
 9. **Build gates:** `tsc`, `lint`, `build` must pass. Contrast ratios ≥4.5:1 verified. Screenshots at 1440/768/360 (+ reduced motion) saved to gitignored `screenshots/`.
+
+## 14. Phase 2A: Admin Authentication Upgrade
+
+- The admin panel uses Supabase Auth with exactly two distinct emails configured via `ADMIN_EMAIL_1` and `ADMIN_EMAIL_2`; never hardcode credentials or expose the service-role key to client code.
+- `ADMIN_ROUTE_SLUG` is one path segment, without a slash. Development may use `/panel-x7f`; production build and runtime must fail closed if it is missing or invalid. `/admin` is not an admin route.
+- Login attempts are persisted per configured account. Five consecutive failures within 15 minutes lock that account for 15 minutes; a successful login clears its lockout. The other configured account remains independent.
+- The `admin_accounts` rows must be provisioned for the two Auth users before login; account requests require an active row. Public sign-up must remain disabled in the Supabase project.
+- Keep `src/content/blog.json` as the blog source of truth in Phase 2A. Do not change post storage as part of this auth migration.
+- Before release: apply and validate the migration against the new dedicated Supabase project, configure all environment variables, test login/lockout/disable flows, run `tsc`, lint, build and responsive checks, then open a PR. Never push directly to `main`.
