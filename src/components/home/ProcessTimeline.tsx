@@ -7,8 +7,10 @@ type Step = { step: string; title: string; blurb: string };
 
 const FOLIO_W = 38;
 const FOLIO_H = 30;
-const TRAVEL_MS = 420;
-const DOCK_MS = 180;
+const STEP_MS = 520;
+// Final resting gap past the last node (clears the 32px node + folio half), so
+// the folio is visible at rest instead of hidden behind the opaque final node.
+const FINAL_GAP = 44;
 
 /** Per-step decorative icon drawn inside the folio (no text, no numbers). */
 function FolioGlyph({ active }: { active: number }) {
@@ -65,7 +67,6 @@ function FolioGlyph({ active }: { active: number }) {
 export default function ProcessTimeline({ items }: { items: Step[] }) {
   const olRef = useRef<HTMLOListElement>(null);
   const [active, setActive] = useState(-1);
-  const [travelling, setTravelling] = useState(false);
   const [positions, setPositions] = useState<{ x: number; y: number }[]>([]);
 
   useEffect(() => {
@@ -91,6 +92,13 @@ export default function ProcessTimeline({ items }: { items: Step[] }) {
         }
         return { x: x + n.offsetWidth / 2, y: y + n.offsetHeight / 2 };
       });
+      if (centers.length >= 2) {
+        const horiz = Math.abs(centers[1].x - centers[0].x) >= Math.abs(centers[1].y - centers[0].y);
+        const last = centers[centers.length - 1];
+        centers.push(horiz ? { x: last.x + FINAL_GAP, y: last.y } : { x: last.x, y: last.y + FINAL_GAP });
+      } else if (centers.length === 1) {
+        centers.push({ x: centers[0].x, y: centers[0].y + FINAL_GAP });
+      }
       setPositions(centers);
     };
     measure();
@@ -100,9 +108,10 @@ export default function ProcessTimeline({ items }: { items: Step[] }) {
 
     const reducedQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
 
-    // Reduced motion: leave the numbered steps unobscured and the line static.
+    // Reduced motion: no travel — show the full line, all text and the folio
+    // parked just past the final node (transition is disabled in globals.css).
     if (reducedQuery.matches) {
-      const id = window.setTimeout(() => setActive(nodes.length - 1), 0);
+      const id = window.setTimeout(() => setActive(nodes.length), 0);
       return () => {
         window.clearTimeout(id);
         ro.disconnect();
@@ -123,15 +132,11 @@ export default function ProcessTimeline({ items }: { items: Step[] }) {
           if (!entry.isIntersecting) continue;
           io.unobserve(entry.target);
           void (async () => {
-            setActive(0);
-            await sleep(DOCK_MS);
-            for (let i = 1; i < nodes.length; i += 1) {
+            // Visit each node center, then hand off just past the final node.
+            for (let i = 0; i <= nodes.length; i += 1) {
               if (cancelled) return;
               setActive(i);
-              setTravelling(true);
-              await sleep(TRAVEL_MS);
-              setTravelling(false);
-              if (i < nodes.length - 1) await sleep(DOCK_MS);
+              if (i < nodes.length) await sleep(STEP_MS);
             }
           })();
         }
@@ -153,7 +158,7 @@ export default function ProcessTimeline({ items }: { items: Step[] }) {
   const style: CSSProperties = pos
     ? {
         transform: `translate(${pos.x - FOLIO_W / 2}px, ${pos.y - FOLIO_H / 2}px)`,
-        opacity: travelling ? 1 : 0,
+        opacity: 1,
       }
     : { opacity: 0 };
 
@@ -167,18 +172,11 @@ export default function ProcessTimeline({ items }: { items: Step[] }) {
         aria-hidden="true"
         className="absolute left-0 right-0 top-4 hidden h-px bg-gradient-to-r from-[var(--brand)] via-[var(--accent)] to-transparent lg:block"
       />
-      <ol ref={olRef} data-relay={active} className="relative grid list-none gap-8 lg:grid-cols-5 lg:gap-4">
-        {items.map((s, i) => (
+
+      <ol ref={olRef} className="relative grid list-none gap-8 lg:grid-cols-5 lg:gap-4">
+        {items.map((s) => (
           <li key={s.step} className="reveal-blur relative z-20 pl-12 lg:pl-0 lg:pt-12">
-            {i === 0 && (
-              <div aria-hidden="true" className="process-folio pointer-events-none absolute left-0 top-0 z-10" style={style}>
-                <svg width={FOLIO_W} height={FOLIO_H} viewBox={`0 0 ${FOLIO_W} ${FOLIO_H}`} fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <rect x="1" y="1" width={FOLIO_W - 2} height={FOLIO_H - 2} rx="4" stroke="var(--brand)" strokeWidth="2" />
-                  {active >= 0 && <FolioGlyph active={active} />}
-                </svg>
-              </div>
-            )}
-            <span className="process-node absolute left-0 top-0 z-20 grid h-8 w-8 place-items-center rounded-full border border-[var(--accent-2)]/50 bg-[var(--bg)] text-xs font-bold text-[var(--accent-2)]">
+            <span className="process-node absolute left-0 top-0 z-20 grid h-8 w-8 place-items-center rounded-full border border-[var(--accent-2)]/50 bg-[var(--surface-1)] text-xs font-bold text-[var(--accent-2)]">
               {s.step}
             </span>
             <h3 className="font-display font-semibold text-[var(--text)]">{s.title}</h3>
@@ -186,6 +184,16 @@ export default function ProcessTimeline({ items }: { items: Step[] }) {
           </li>
         ))}
       </ol>
+
+      {/* Decorative relay folio — travels once along the line, docks at each
+          node (nodes render above it, so numbers stay readable), then rests
+          just past the final node. */}
+      <div aria-hidden="true" className="process-folio pointer-events-none absolute left-0 top-0 z-10" style={style}>
+        <svg width={FOLIO_W} height={FOLIO_H} viewBox={`0 0 ${FOLIO_W} ${FOLIO_H}`} fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="1" y="1" width={FOLIO_W - 2} height={FOLIO_H - 2} rx="4" stroke="var(--brand)" strokeWidth="2" fill="var(--bg)" />
+          {active >= 0 && <FolioGlyph active={active} />}
+        </svg>
+      </div>
     </div>
   );
 }

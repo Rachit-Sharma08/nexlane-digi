@@ -180,7 +180,7 @@ Rules for the run: small commits; max 2 subagents with separate files; never tru
 - **Libraries:** `motion@14.10.0` (single motion library; `framer-motion` not installed). shadcn was already set up; `components.json` now carries `@magicui` (already) and free `@unlumen-ui` registries. No Magic UI/unlumen component was installed yet because none is used in Stage B — the first one lands in Stage C where it has a job (`marquee`, `animated-beam`). No Pro/paid items.
 - **Quality tiers:** `src/lib/quality.tsx` (`QualityProvider`, `useQuality`) returns `low | mid | high`. SSR/first render is always `low`, then measured after hydration; `data-quality` is written to `<html>`. `low` = reduced motion, saveData, deviceMemory ≤ 2, cores ≤ 2 or width < 768. `high` = 1024px+, 4+ cores, fine pointer, no saveData. `mid` = everything else.
 - **Depth primitives:** `DepthCard` (pointer tilt + optional glare; low/touch keep the static card), `Parallax` (motion `useScroll`/`useTransform`, disabled on low), layered depth tokens/shadows in `globals.css`, `Container`/`Section` primitives. `MotionConfig reducedMotion="user"` wraps the app via `AppProviders`.
-- **Page-open transition:** React 19 `ViewTransition` (already in the repo) with an enter-only 3D CSS animation (translateZ + rotateX + scale, 420ms). Exit animation is not attempted (App Router unreliable). `low` gets a 180ms fade; reduced motion gets 0s.
+- **Page-open transition:** keyed route wrapper with an enter-only 3D CSS animation (translateZ + rotateX + scale, 420ms). CSS replaces React `ViewTransition` because Chrome reports a recoverable `InvalidStateError` when the tab is hidden mid-transition. `low` gets a 180ms fade; reduced motion gets 0s.
 - **Navbar:** active underline now slides with `layoutId`; parent dropdown is highlighted + `aria-current="page"` on child pages; click and keyboard dropdowns (ArrowDown opens and focuses the first item, ArrowUp/Down/Home/End cycle, Escape closes and returns focus, Tab/outside click closes); mobile menu highlights the current page with a left accent. Header height is measured into `--header-h` for SectionNav and anchor offsets.
 - **Orientation:** scroll progress bar sits under the header; `SectionNav` sticky pills (desktop) / chips (mobile) with IntersectionObserver scroll-spy; `NextUp` card; headings/sections get `scroll-margin-top`.
 - **Profiles:** one `ProfileTile` for Founders and Team. 1:1 initials tile (photo supported), whole tile links to the portfolio in a new tab when set, "Open portfolio ↗" cue on hover/focus and always on touch. Personal projects (max 3) stay clickable above the tile link and keep the "not Nexlane client work" label. `order` added to config: founders Rachit → Krish; team Jyoti → Neelam. Portfolio URLs set for Rachit, Krish and Neelam (owner permission 2026-11-06); Jyoti has none. `MemberCard` deleted.
@@ -493,10 +493,31 @@ Spec: AGENTS §12 + `docs/seo-content.md`. No new npm dependencies.
 - Uses Forest & Sage tokens. On supported browsers the rail sweeps once over 1.7s when the panel is at least 40% visible; four nodes, connectors and text activate at 320ms intervals, then the nodes breathe slowly at 5s intervals. It unobserves after activation.
 - No-JavaScript, unsupported-IntersectionObserver and reduced-motion states render the full rail, four nodes, connectors and final text color immediately. Both text colors pass WCAG AA on the ink panel: surface text 11.46:1; canvas text 13.20:1.
 - Verification: `npx tsc --noEmit`, `npm run lint`, `npm run build` and `npm audit` pass; audit reports 0 vulnerabilities. Final screenshots are saved in ignored `screenshots/facts-{1440,768,360,reduced}.png`; `screenshots/home-360.png` shows the full mobile hero. A true 360px mobile-emulated browser check confirms the panel, title and buttons fit without horizontal overflow; the 768px and 1440px layouts also fit. Reduced-motion emulation confirms the rail is static, the marker animation is `none`, and all text is fully readable. The 360px panel screenshot is centered in the viewport so all four rows can be reviewed.
-- Branch check (verified after PR #18): `main` and `origin/main` are at `96ac1e4`; both `feat/forest-sage` and `feat/hero-facts-animation` are included in that history. Other branches were left untouched.
+- Branch check (verified after PR #18): PR #18 is merged; `main` and `origin/main` are at `96ac1e4`, with the Forest & Sage redesign already integrated (both `feat/forest-sage` and `feat/hero-facts-animation` are in that history). Other branches were left untouched.
 
 ## Homepage process folio (branch `feat/agency-growth-engine`, 2026-11-23)
 
-- Added a one-time animated agency folio to the existing five-step “How we work” sequence. It travels through the Talk, Plan, Build, Review and Launch steps, with custom document, checklist, page-build, review and handoff glyphs; the existing copy is unchanged.
-- Implementation: `src/components/home/ProcessTimeline.tsx`, called by `src/app/page.tsx`, with motion styles in `src/app/globals.css`. It uses layout offsets so scroll-reveal transforms do not shift the path. The folio fades while docked so it does not cover step numbers; reduced-motion users see the static timeline.
+- Added a one-time animated agency folio to the existing five-step "How we work" sequence. It travels through the Talk, Plan, Build, Review and Launch steps, with custom document, checklist, page-build, review and handoff glyphs; the existing copy is unchanged.
+- Implementation: `src/components/home/ProcessTimeline.tsx`, called by `src/app/page.tsx`, with motion styles in `src/app/globals.css`. It measures node centers with layout offsets (`offsetLeft/Top`) so the scroll-reveal entry transform cannot shift the path. The folio docks at each numbered node (the node circle renders above it, so the step number stays readable), then hands off to rest just past the final node; reduced-motion users see the static timeline with the folio parked past the final node and no travel.
 - Visual checks: 1440, 768 and 360px viewports, with and without reduced motion. No horizontal overflow; the moving folio aligns to the nodes and the settled mobile state leaves all copy clear. Screenshots are in ignored `screenshots/folio/`.
+
+### Verification summary (this session)
+
+- **TypeScript:** `npx tsc --noEmit` → 0 errors
+- **Lint:** `npm run lint` → 0 errors, 0 warnings
+- **Build:** `npm run build` → success, 33 routes (incl. `/motion-preview`)
+- **Unit tests:** `npm test` → 20/20 pass
+- **npm audit:** 0 vulnerabilities
+- **Responsive geometry (Chrome, 1440/768/360 × normal/reduced):** 5 steps at every width, the `<ol>` contains only `<li>` children, folio settles 9px clear of the final node on desktop and 13px clear on mobile, with zero horizontal overflow.
+- **Screenshots saved:** ignored `screenshots/folio-final-{1440,768,360}-{normal,reduced}.png`
+- **No layout shift:** folio is absolutely positioned and uses `offsetLeft/Top` measurement, which ignores the `.reveal-blur` entry transform.
+- **No layout shift:** folio uses `will-change: transform`, absolute positioning, and `offsetLeft/Top` measurement (ignores the `.reveal-blur` entry transform)
+- **Reduced motion respected:** `prefers-reduced-motion: reduce` → folio parked past final node, all step text fully readable, static connector line visible
+- **Five glyphs match design brief:** Talk=note lines + speech tab; Plan=three empty checklist boxes; Build=assembling page blocks; Review=same checklist checked sequentially; Launch=handoff bracket + arrow (no rocket)
+- **Forest & Sage tokens only:** no new colors, no gradients on folio, brand/muted/surface palette
+
+## Homepage contact shortcuts and route transition (branch `feat/agency-growth-engine`, 2026-11-23)
+
+- WhatsApp and chatbot bubbles are visible from the first paint at opposite lower corners. The chatbot launcher is server-rendered; the existing top-bar Chat action also opens it directly. The WhatsApp destination and chat answers are unchanged.
+- Replaced React's native `ViewTransition` boundary with a keyed CSS route wrapper. The 420ms depth entrance, low-tier fade and reduced-motion behavior remain, without calling the browser View Transition API that errors when a tab becomes hidden mid-transition.
+- Verification: Playwright at 360, 393, 768 and 1440px confirms both bubbles are visible immediately and there is no horizontal overflow. JavaScript-disabled first paint also contains both bubbles. A hidden-document route-navigation simulation to `/contact` made zero native view-transition calls and produced zero console errors.
