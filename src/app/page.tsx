@@ -7,7 +7,7 @@ import { homeFaqs } from "@/content/faq";
 import { ArrowMotif, Container, GradientHeading, SectionHeader } from "@/components/ui";
 import DepthCard from "@/components/DepthCard";
 import SectionNav from "@/components/SectionNav";
-import HeroVisual from "@/components/home/HeroVisual";
+import ServiceHub from "@/components/home/ServiceHub";
 import NextUp from "@/components/NextUp";
 import { Marquee } from "@/components/ui/marquee";
 import JsonLd from "@/components/JsonLd";
@@ -55,23 +55,19 @@ const audiences = [
 const whyUs = [
   {
     title: "We talk to you directly",
-    blurb:
-      "No account managers or ticket queues — the same four people who build your site answer your questions.",
+    blurb: "No account managers or ticket queues — the same four people who build your site answer your questions.",
   },
   {
     title: "Web + SEO + video, together",
-    blurb:
-      "Websites, search visibility and video edits come from one small team, so the end work stays consistent.",
+    blurb: "Websites, search visibility and video edits come from one small team, so the end work stays consistent.",
   },
   {
     title: "We teach what we do",
-    blurb:
-      "Free lessons on YouTube and Instagram — our methods stay tested in public, not behind client NDAs.",
+    blurb: "Free lessons on YouTube and Instagram — our methods stay tested in public, not behind client NDAs.",
   },
   {
     title: "Written scope before work starts",
-    blurb:
-      "You get a short, plain document saying exactly what we will deliver — sign-off first, work after.",
+    blurb: "You get a short, plain document saying exactly what we will deliver — sign-off first, work after.",
   },
 ];
 
@@ -91,7 +87,7 @@ const sections = [
   { id: "work", label: "Our work" },
 ];
 
-const cardLink = "inline-flex items-center gap-1 text-sm font-semibold text-[var(--accent-2)] hover:text-white";
+const cardLink = "inline-flex items-center gap-1 text-sm font-semibold text-[var(--accent-2)] hover:text-[var(--text)]";
 
 export default function HomePage() {
   const faqs = homeFaqs;
@@ -99,15 +95,13 @@ export default function HomePage() {
 
   return (
     <>
-      {/* 1. HERO — the only WebGL moment on the site (§11.2, §13) */}
+      {/* 1. HERO — editorial two-column (copy | facts), hub full-width below */}
       <section id="hero" className="hero-section relative overflow-hidden">
         <span className="hero-backdrop" aria-hidden="true" />
-        <div className="mx-auto grid w-full max-w-6xl gap-10 px-4 pb-28 pt-14 sm:px-6 sm:pt-20 lg:grid-cols-[1.15fr_0.85fr] lg:items-center lg:pb-32">
+        <div className="mx-auto grid w-full max-w-6xl gap-10 px-4 pb-4 pt-14 sm:px-6 sm:pt-20 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
           <div>
             <p className="hero-eyebrow">Nexlane Digital · Kaithal, Haryana</p>
-            <h1 className="hero-title">
-              Websites, <GradientHeading>SEO</GradientHeading> and growth for businesses
-            </h1>
+            <h1 className="hero-title">Websites, SEO and growth for businesses</h1>
             <p className="mt-5 max-w-xl text-lg leading-relaxed text-[var(--muted)]">
               Nexlane Digital is a young digital marketing agency in Kaithal, Haryana. We build websites, improve SEO
               and run ads for businesses of every size, and we teach what we learn for free.
@@ -133,9 +127,25 @@ export default function HomePage() {
               ))}
             </nav>
           </div>
-          <div className="hero-media mx-auto w-full max-w-[30rem] lg:max-w-none">
-            <HeroVisual />
-          </div>
+
+          {/* Facts band (reference style): ink ground, canvas text. */}
+          <ul className="grid overflow-hidden rounded-2xl border border-[var(--text)] bg-[var(--text)] text-[var(--bg)]">
+            {facts.map((fact, i) => (
+              <li
+                key={fact}
+                className={`px-5 py-4 text-sm font-bold leading-snug ${
+                  i > 0 ? "border-t-2 border-[rgba(229,232,206,0.25)]" : ""
+                }`}
+              >
+                {fact}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Service hub — full width inside the hero, never overlapping copy. */}
+        <div className="hero-arrive mx-auto w-full max-w-6xl px-4 pb-28 sm:px-6 lg:pb-32">
+          <ServiceHub />
         </div>
       </section>
 
@@ -154,12 +164,12 @@ export default function HomePage() {
             <div className="md:col-span-4">
               <DepthCard glare className="flex h-full flex-col justify-between gap-8 p-6 sm:p-8">
                 <div>
-                  <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">01 · Websites</span>
+                  <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent-2)]">01 · Websites</span>
                   <h3 className="mt-3 font-display text-2xl font-semibold sm:text-3xl">Web Development</h3>
                   <p className="mt-3 max-w-md text-sm leading-relaxed text-[var(--muted)]">{services[0].summary}</p>
                   <ul className="mt-5 flex flex-wrap gap-2">
                     {services[0].whatIsIncluded.slice(0, 3).map((item) => (
-                      <li key={item} className="rounded-full border border-[var(--card-border)] bg-[rgba(12,34,63,0.35)] px-3 py-1 text-xs text-[var(--muted)]">
+                      <li key={item} className="rounded-full border border-[var(--card-border)] bg-[var(--secondary)] px-3 py-1 text-xs text-[var(--muted)]">
                         {item}
                       </li>
                     ))}
@@ -174,12 +184,12 @@ export default function HomePage() {
             <div className="md:col-span-2">
               <DepthCard glare className="flex h-full flex-col justify-between gap-8 p-6">
                 <div>
-                  <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">02 · Search</span>
+                  <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent-2)]">02 · Search</span>
                   <h3 className="mt-3 font-display text-xl font-semibold">{services[1].shortName}</h3>
                   <p className="mt-3 text-sm leading-relaxed text-[var(--muted)]">{services[1].summary}</p>
                   <ul className="mt-4 flex flex-wrap gap-2">
                     {services[1].whatIsIncluded.slice(0, 3).map((item) => (
-                      <li key={item} className="rounded-full border border-[var(--card-border)] bg-[rgba(12,34,63,0.35)] px-3 py-1 text-xs text-[var(--muted)]">
+                      <li key={item} className="rounded-full border border-[var(--card-border)] bg-[var(--secondary)] px-3 py-1 text-xs text-[var(--muted)]">
                         {item}
                       </li>
                     ))}
@@ -194,12 +204,12 @@ export default function HomePage() {
             <div className="md:col-span-2">
               <DepthCard glare className="flex h-full flex-col justify-between gap-8 p-6">
                 <div>
-                  <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">03 · Play</span>
+                  <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent-2)]">03 · Play</span>
                   <h3 className="mt-3 font-display text-xl font-semibold">{services[2].shortName}</h3>
                   <p className="mt-3 text-sm leading-relaxed text-[var(--muted)]">{services[2].summary}</p>
                   <ul className="mt-4 flex flex-wrap gap-2">
                     {services[2].whatIsIncluded.slice(0, 3).map((item) => (
-                      <li key={item} className="rounded-full border border-[var(--card-border)] bg-[rgba(12,34,63,0.35)] px-3 py-1 text-xs text-[var(--muted)]">
+                      <li key={item} className="rounded-full border border-[var(--card-border)] bg-[var(--secondary)] px-3 py-1 text-xs text-[var(--muted)]">
                         {item}
                       </li>
                     ))}
@@ -214,7 +224,7 @@ export default function HomePage() {
             <div className="md:col-span-4">
               <DepthCard glare className="flex h-full flex-col justify-between gap-8 p-6 sm:p-8">
                 <div>
-                  <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">Free · Learn</span>
+                  <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent-2)]">Free · Learn</span>
                   <h3 className="mt-3 font-display text-2xl font-semibold sm:text-3xl">Learn with us</h3>
                   <p className="mt-3 max-w-md text-sm leading-relaxed text-[var(--muted)]">
                     We teach digital marketing, AI tools and profile growth on YouTube and Instagram — free, for anyone.
@@ -228,7 +238,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* 3. FACTS + TOOLS — only true things */}
+        {/* 3. TOOLS — only true things */}
         <section className="scroll-reveal border-y border-[var(--card-border)] py-10">
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {facts.map((fact) => (
@@ -245,7 +255,7 @@ export default function HomePage() {
               {tools.map((tool) => (
                 <span
                   key={tool}
-                  className="whitespace-nowrap rounded-full border border-[var(--card-border)] bg-[rgba(9,38,72,0.5)] px-4 py-1.5 text-sm text-[var(--muted)]"
+                  className="whitespace-nowrap rounded-full border border-[var(--card-border)] bg-[var(--surface-1)] px-4 py-1.5 text-sm text-[var(--muted)]"
                 >
                   {tool}
                 </span>
@@ -264,7 +274,7 @@ export default function HomePage() {
           <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {audiences.map((a) => (
               <li key={a.title} className="motion-card glass p-5">
-                <h3 className="font-display font-semibold">{a.title}</h3>
+                <h3 className="font-display font-semibold text-[var(--text)]">{a.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-[var(--muted)]">{a.blurb}</p>
               </li>
             ))}
@@ -282,7 +292,7 @@ export default function HomePage() {
             {whyUs.map((w, i) => (
               <DepthCard key={w.title} glare className="p-6">
                 <span className="font-display text-sm font-bold text-gradient">{String(i + 1).padStart(2, "0")}</span>
-                <h3 className="mt-2 font-display text-lg font-semibold">{w.title}</h3>
+                <h3 className="mt-2 font-display text-lg font-semibold text-[var(--text)]">{w.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-[var(--muted)]">{w.blurb}</p>
               </DepthCard>
             ))}
@@ -307,10 +317,10 @@ export default function HomePage() {
             />
             {process.map((s) => (
               <li key={s.step} className="reveal-blur relative pl-12 lg:pl-0 lg:pt-12">
-                <span className="absolute left-0 top-0 grid h-8 w-8 place-items-center rounded-full border border-[var(--accent)]/50 bg-[#04203a] text-xs font-bold text-[var(--accent-2)]">
+                <span className="absolute left-0 top-0 grid h-8 w-8 place-items-center rounded-full border border-[var(--accent-2)]/50 bg-[var(--surface-1)] text-xs font-bold text-[var(--accent-2)]">
                   {s.step}
                 </span>
-                <h3 className="font-display font-semibold">{s.title}</h3>
+                <h3 className="font-display font-semibold text-[var(--text)]">{s.title}</h3>
                 <p className="mt-1 text-sm leading-relaxed text-[var(--muted)]">{s.blurb}</p>
               </li>
             ))}
@@ -320,7 +330,7 @@ export default function HomePage() {
         {/* 7. OUR WORK — honest empty state, no fake items */}
         <section id="work" className="scroll-reveal py-14">
           <SectionHeader eyebrow="Proof" title="Our work" />
-          <div className="mt-8 rounded-2xl border border-dashed border-[var(--card-border)] bg-[rgba(6,27,54,0.3)] p-6 sm:p-8">
+          <div className="mt-8 rounded-2xl border border-dashed border-[var(--card-border)] bg-[var(--surface-1)] p-6 sm:p-8">
             <p className="max-w-2xl text-sm leading-relaxed text-[var(--muted)]">
               Our first client projects are on the way. They will appear here once they ship, with each client&apos;s
               written permission — no placeholders, no borrowed screenshots.
@@ -342,8 +352,8 @@ export default function HomePage() {
             <div className="mt-8 grid gap-4 sm:grid-cols-3">
               {posts.slice(0, 3).map((p) => (
                 <div key={p.slug} className="motion-card glass p-5">
-                  <p className="text-xs uppercase tracking-widest text-[var(--accent)]">{p.category}</p>
-                  <h3 className="mt-1 font-display font-semibold">{p.title}</h3>
+                  <p className="text-xs uppercase tracking-widest text-[var(--accent-2)]">{p.category}</p>
+                  <h3 className="mt-1 font-display font-semibold text-[var(--text)]">{p.title}</h3>
                   <Link href={`/learn/blog/${p.slug}`} className={`mt-3 ${cardLink}`}>
                     Read <span aria-hidden="true">→</span>
                   </Link>
@@ -368,7 +378,7 @@ export default function HomePage() {
           <div className="mt-8 divide-y divide-[var(--card-border)] rounded-2xl border border-[var(--card-border)]">
             {faqs.map((f) => (
               <details key={f.question} className="group px-5 py-4">
-                <summary className="cursor-pointer list-none font-medium text-white marker:hidden">{f.question}</summary>
+                <summary className="cursor-pointer list-none font-medium text-[var(--text)] marker:hidden">{f.question}</summary>
                 <p className="mt-2 text-sm leading-relaxed text-[var(--muted)]">{f.answer}</p>
               </details>
             ))}
@@ -385,7 +395,7 @@ export default function HomePage() {
             />
             <div className="relative flex flex-col items-center gap-4">
               <ArrowMotif className="parallax-drift h-12 w-12" />
-              <h2 className="max-w-2xl font-display text-2xl font-bold sm:text-3xl">
+              <h2 className="max-w-2xl font-display text-2xl font-bold sm:text-3xl text-[var(--text)]">
                 Not sure where your business is losing customers online?{" "}
                 <GradientHeading>We&apos;ll look for free.</GradientHeading>
               </h2>

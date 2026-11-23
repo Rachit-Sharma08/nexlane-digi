@@ -40,7 +40,7 @@ export default function FoundersPage() {
       <Container className="pb-20 pt-12">
         <Breadcrumbs items={breadcrumbItems} />
         <Eyebrow>About · {group.label}</Eyebrow>
-        <h1 className="mb-4 font-display text-4xl font-bold sm:text-5xl">{group.label}</h1>
+        <h1 className="mb-4 font-display text-4xl font-bold sm:text-5xl text-[var(--text)]">{group.label}</h1>
         <Muted>
           Two founders, directly reachable — you talk to the people doing the work.
         </Muted>

@@ -40,7 +40,7 @@ export default function SectionNav({
   return (
     <nav
       aria-label={label}
-      className="sticky top-[var(--header-h,4rem)] z-40 -mx-4 my-8 border-y border-[var(--card-border)] bg-[rgba(0,8,20,0.9)] px-2 py-2 backdrop-blur-md sm:mx-0 sm:w-fit sm:rounded-full sm:border"
+      className="sticky top-[var(--header-h,4rem)] z-40 -mx-4 my-8 border-y border-[var(--card-border)] bg-[rgba(229,232,206,0.9)] px-2 py-2 backdrop-blur-md sm:mx-0 sm:w-fit sm:rounded-full sm:border"
     >
       <ul className="flex gap-1 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {items.map((item) => {
@@ -52,8 +52,8 @@ export default function SectionNav({
                 aria-current={current ? "location" : undefined}
                 className={`block whitespace-nowrap rounded-full px-3 py-2.5 text-xs font-medium transition-colors ${
                   current
-                    ? "bg-[rgba(30,211,242,0.14)] text-white"
-                    : "text-[var(--muted)] hover:text-white"
+                    ? "bg-[rgba(31,58,36,0.14)] text-[var(--text)]"
+                    : "text-[var(--muted)] hover:text-[var(--text)]"
                 }`}
               >
                 {item.label}

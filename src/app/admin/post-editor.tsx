@@ -236,7 +236,7 @@ export function PostEditor({ initialPost, isEditing, onSave }: PostEditorProps) 
             aria-live="polite"
             className={`p-4 rounded-lg text-sm ${
               status.type === "success"
-                ? "bg-[rgba(30,211,242,0.15)] border border-[var(--accent)] text-[var(--accent)]"
+                ? "bg-[rgba(31,58,36,0.15)] border border-[var(--brand)] text-[var(--brand)]"
                 : "bg-[rgba(239,68,68,0.15)] border border-[rgb(239,68,68)] text-[rgb(239,68,68)]"
             }`}
           >

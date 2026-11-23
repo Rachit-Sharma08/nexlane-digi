@@ -32,8 +32,8 @@ export default function robots(): MetadataRoute.Robots {
   return allowIndexing
     ? {
         rules: [
-          { userAgent: [...AI_ANSWER_BOTS], disallow: "/admin", allow: "/" },
-          { userAgent: "*", disallow: "/admin", allow: "/" },
+          { userAgent: [...AI_ANSWER_BOTS], disallow: ["/admin", "/motion-preview"], allow: "/" },
+          { userAgent: "*", disallow: ["/admin", "/motion-preview"], allow: "/" },
         ],
         sitemap: absoluteUrl("/sitemap.xml"),
       }

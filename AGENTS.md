@@ -17,14 +17,19 @@ Nexlane Digital is a new, student-founded digital marketing and web agency from 
 - Repo: `Rachit-Sharma08/nexlane-digital` (private). Local path: `D:\Projects\nexlane-digital` (Windows, PowerShell).
 - All editable values (name, links, team, labels, reply time, WhatsApp) live in `src/config/site.ts`. Never hardcode them in components.
 
-## 3. Brand tokens
+## 3. Brand tokens (Forest & Sage — owner decision 2026-11-22)
 
-Dark navy site, blue to cyan gradient (sampled from the logo).
+Light, natural palette replacing the earlier dark navy theme.
 
-- `--bg #000D1D`, glows `#003D66` / `#015798`
-- `--brand #0572F5`, `--brand-2 #10A9F2`, `--accent #1ED3F2`, `--accent-2 #7CF4EF`, text `#FFFFFF`, muted `#9FB3C8`
-- Gradient: `#0572F5 → #1ED3F2 → #7CF4EF`. Text contrast at least 4.5:1.
+- `--bg #E5E8CE` (canvas), `--bg-glow-1 #D6DAB4` / `--bg-glow-2 #CDD3AC` (soft depth)
+- `--brand #1F3A24` (forest), `--brand-2 #2F4A28` (forest-light)
+- `--accent #1F3A24` (forest — the text-safe accent; eyebrows, links, focus), `--accent-2 #3F5E36` (deep sage — hover/secondary text)
+- `--text #16220F` (ink), `--muted #46543A` (muted, 6.5:1 on canvas)
+- `--card-border rgba(31,58,36,0.45)`, `--surface #D6DAB4`
+- Gradient: `#1F3A24 → #3F5E36` only in `.text-gradient` / dividers. Text contrast at least 4.5:1. (The reference HTML defines only the four core colors: `#E5E8CE`, `#1F3A24`, `#16220F`, `#D6DAB4` — everything else is derived from them and must pass 4.5:1 as text.)
 - Mobile first (360px minimum). Respect `prefers-reduced-motion`.
+
+**Logo:** inline SVG `src/components/BrandMark.tsx` matching the approved artifact: a forest circle with a pale N. Keep `NEXLANE` as HTML text in the header. No PNG lockup/mark in the header.
 
 ## 4. Site structure (decided by the owner)
 
@@ -171,12 +176,24 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 <!-- END:nextjs-agent-rules -->
 
-## 13. Design direction v3: Nexlane mark + cyan accent (owner decision, 2026-11-22)
-This section applies to Prompt 1 of the logo, hero and overlap redesign. It extends sections 6 and 11; honesty, accessibility, reduced motion, performance and SEO rules still apply.
+## 13. Design direction v3: Forest & Sage redesign (owner decision, 2026-11-22)
 
-1. **Logo assets:** transparent `public/brand/nexlane-mark.png` (380x257) and `public/brand/nexlane-lockup.png` (620x437). Use the mark in the header with real HTML text `NEXLANE`; do not use the old opaque logo or `mix-blend-mode`. Use `next/image` with width, height and `priority`; provide useful alt text for the mark and preserve appropriate alt text elsewhere.
-2. **Hero headline:** use Anton via `next/font/google` for a very large, uppercase, tightly set H1 (about `line-height: 0.95`). The hero H1 must not overflow at 360px. Keep the existing copy and honest tone, a small tracked eyebrow, pill CTAs and small service links.
-3. **Palette:** dark navy and white surfaces with cyan as the single accent. Do not add lime/green as a design accent or a third decorative color. The SEO word in the hero uses the brand gradient `#0572F5` to `#1ED3F2` to `#7CF4EF`; gradients may also appear in the primary CTA and glow. Keep CTA text readable (white on a sufficiently dark gradient).
-4. **Hero object:** use Nexlane's own N mark only; no third-party mascot, stock image or AI image. On high tier only, reuse the WebGL scene with the mark as a textured plane, 6–8 thin tinted copies for depth, slow float, pointer/gyro parallax and a cyan glow arc. Dispose textures, geometry and materials on unmount. The H1 and CTA must render before the canvas.
-5. **Mid/low/reduced motion:** do not use WebGL. Show the same PNG with CSS depth/tilt on mid-tier pointer input, and static on low tier or `prefers-reduced-motion`; retain a cyan glow arc and drop-shadow. Honor the existing quality-tier rules.
-6. **Overlap fixes:** keep the floating WhatsApp and chatbot controls from covering hero copy or each other; add safe hero bottom padding. Keep the About NextUp CTA within the viewport and clear of floating controls. Offset the top WhatsApp/social strip so it is not clipped behind the sticky header. The About dropdown needs a solid blurred surface above SectionNav. Contact form submit text must be white and readable on its gradient.
+This section applies to the Forest & Sage palette redesign (branch `feat/forest-sage`). Its visual direction supersedes earlier conflicting palette and WebGL-hero guidance in sections 3, 6 and 11; retain the general performance tiers and interaction rules where compatible. Honesty, accessibility, reduced motion, performance and SEO rules still apply.
+
+1. **Palette & tokens:** Section 3 is the single source of truth for the Forest & Sage light theme (`--bg #E5E8CE`, `--brand #1F3A24`, `--accent #1F3A24`, `--text #16220F`, etc.). All components must use these CSS variables; no hardcoded dark/blue/white values remain.
+
+2. **Logo asset:** inline SVG `src/components/BrandMark.tsx` matching the approved artifact (forest circle + pale N). Navbar and Footer keep the wordmark as HTML text. PNG files are not used in the header.
+
+3. **Hero (Home):** two-column editorial layout — left: copy (eyebrow, large Anton H1, short paragraph, pill CTAs, small service links); right: the honest facts band (ink ground, canvas text). The `ServiceHub` component (center N mark + four animated scene frames: Website build, SEO scan, Campaign pulse, Game hop) sits full-width below the copy inside `#hero`, so the N and scene frames never overlap the text. No WebGL, no Three.js. Animations are pure CSS/SVG driven by `.scene-stage` classes in `globals.css`, respecting `prefers-reduced-motion` and quality tiers (`data-quality` on `<html>`).
+
+4. **ServiceHub & scenes:** shared between Home and `/motion-preview`. Four SVG scenes (`WebScene`, `SeoScene`, `CampaignScene`, `GameScene` in `src/components/motion/scenes.tsx`) with CSS keyframe loops in `globals.css`. Each scene tile has pause/replay controls on `/motion-preview` (isolated per tile). Base state = complete static end frame; animations layer on top.
+
+5. **Motion preview route:** `/motion-preview` is internal QA only — `noindex`, not in nav/sitemap/robots. Each tile owns pause/replay; reduced motion shows static end state with a note.
+
+6. **Dependencies removed:** `three`, `@react-three/fiber`, `@types/three` deleted from `package.json` after verifying zero remaining imports.
+
+7. **Overlap fixes:** floating WhatsApp/chatbot no longer cover hero copy; About NextUp CTA stays in viewport; top WhatsApp/social strip offset from sticky header; Contact form submit text readable on gradient.
+
+8. **Quality tiers (from §11):** `low` (reduced motion, saveData, deviceMemory≤2, cores≤2, <768px) = static only; `mid` = CSS 3D tilt/parallax on fine pointers; `high` = (not used — no WebGL hero). Default server render = `low`, upgrade client-side after hydration.
+
+9. **Build gates:** `tsc`, `lint`, `build` must pass. Contrast ratios ≥4.5:1 verified. Screenshots at 1440/768/360 (+ reduced motion) saved to gitignored `screenshots/`.

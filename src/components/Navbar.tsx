@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { nav, site } from "@/config/site";
+import BrandMark from "./BrandMark";
 
 /** Thin top strip with WhatsApp / social / email icons (only what is set). */
 function TopBar() {
@@ -22,10 +22,10 @@ function TopBar() {
 
   if (links.length === 0) return null;
   return (
-    <div className="border-b border-[var(--card-border)] bg-[#000814] pt-[env(safe-area-inset-top)]">
+    <div className="border-b border-[var(--card-border)] bg-[var(--bg)] pt-[env(safe-area-inset-top)]">
       <div className="mx-auto flex max-w-6xl items-center justify-end gap-5 px-4 py-1.5 sm:px-6">
         {links.map((l) => (
-          <a key={l.label} href={l.href} aria-label={l.label} className="flex items-center gap-1.5 text-xs text-[var(--muted)] hover:text-white" rel="noopener noreferrer" target="_blank">
+          <a key={l.label} href={l.href} aria-label={l.label} className="flex items-center gap-1.5 text-xs text-[var(--muted)] hover:text-[var(--text)]" rel="noopener noreferrer" target="_blank">
             {l.icon}
             {l.label}
           </a>
@@ -39,14 +39,14 @@ type NavItem = { href: string; label: string };
 type DropdownParent = { label: string } & { items: NavItem[] };
 
 const navBase = "relative flex items-center rounded px-3 py-2 text-sm transition-colors";
-const navIdle = "text-[var(--muted)] hover:text-white";
+const navIdle = "text-[var(--muted)] hover:text-[var(--text)]";
 
 /** CSS-only gradient underline (motion lib would add ~145 KB to every page). */
 function ActiveIndicator() {
   return (
     <span
       aria-hidden="true"
-      className="nav-indicator absolute inset-x-2 -bottom-[7px] h-0.5 rounded-full bg-gradient-to-r from-[var(--brand-2)] to-[var(--accent)]"
+      className="nav-indicator absolute inset-x-2 -bottom-[7px] h-0.5 rounded-full bg-gradient-to-r from-[var(--brand-2)] to-[var(--accent-2)]"
     />
   );
 }
@@ -58,11 +58,7 @@ function isRouteActive(pathname: string, href: string) {
 function DesktopLink({ item, pathname }: { item: NavItem; pathname: string }) {
   const active = isRouteActive(pathname, item.href);
   return (
-    <Link
-      href={item.href}
-      aria-current={active ? "page" : undefined}
-      className={`${navBase} ${active ? "text-white" : navIdle}`}
-    >
+    <Link href={item.href} aria-current={active ? "page" : undefined} className={`${navBase} ${active ? "text-[var(--text)]" : navIdle}`}>
       {item.label}
       {active && <ActiveIndicator />}
     </Link>
@@ -78,15 +74,12 @@ function Dropdown({ parent, mobile }: { parent: DropdownParent; mobile?: boolean
   const focusFirstOnOpen = useRef(false);
   const menuId = useId();
   const active = parent.items.some((i) => isRouteActive(pathname, i.href));
-  // A menu only counts as open on the route where it was opened; navigation
-  // therefore closes it without a setState-in-effect.
   const open = menu.open && menu.path === pathname;
   const setOpen = useCallback(
     (value: boolean) => setMenu({ path: pathname, open: value }),
     [pathname],
   );
 
-  // Keyboard open moves focus into the menu once React has rendered it.
   useEffect(() => {
     if (open && focusFirstOnOpen.current) {
       focusFirstOnOpen.current = false;
@@ -155,7 +148,7 @@ function Dropdown({ parent, mobile }: { parent: DropdownParent; mobile?: boolean
   if (mobile) {
     return (
       <div className="ml-3 border-l border-[var(--card-border)] pl-3">
-        <span className={`text-xs font-semibold uppercase tracking-widest ${active ? "text-white" : "text-[var(--accent)]"}`}>
+        <span className={`text-xs font-semibold uppercase tracking-widest ${active ? "text-[var(--text)]" : "text-[var(--accent)]"}`}>
           {parent.label}
         </span>
         <ul className="mt-1 space-y-1">
@@ -168,8 +161,8 @@ function Dropdown({ parent, mobile }: { parent: DropdownParent; mobile?: boolean
                   aria-current={itemActive ? "page" : undefined}
                   className={`block rounded px-2 py-3 text-sm ${
                     itemActive
-                      ? "border-l-2 border-[var(--accent)] bg-[rgba(30,211,242,0.08)] pl-2 text-white"
-                      : "text-[var(--muted)] hover:text-white"
+                      ? "border-l-2 border-[var(--accent)] bg-[rgba(31,58,36,0.08)] pl-2 text-[var(--text)]"
+                      : "text-[var(--muted)] hover:text-[var(--text)]"
                   }`}
                 >
                   {i.label}
@@ -194,7 +187,7 @@ function Dropdown({ parent, mobile }: { parent: DropdownParent; mobile?: boolean
         aria-current={active ? "page" : undefined}
         onClick={() => setOpen(!open)}
         onKeyDown={handleButtonKeyDown}
-        className={`${navBase} gap-1 ${active || open ? "text-white" : navIdle}`}
+        className={`${navBase} gap-1 ${active || open ? "text-[var(--text)]" : navIdle}`}
       >
         {parent.label}
         <Chevron className={`h-3 w-3 transition-transform ${open ? "rotate-180" : ""}`} />
@@ -205,7 +198,7 @@ function Dropdown({ parent, mobile }: { parent: DropdownParent; mobile?: boolean
           ref={menuRef}
           id={menuId}
           onKeyDown={handleMenuKeyDown}
-          className="absolute left-0 top-full z-[60] mt-2 w-56 rounded-xl border border-[var(--card-border)] bg-[#04182f] p-2 shadow-2xl shadow-black/60 backdrop-blur-md"
+          className="absolute left-0 top-full z-[60] mt-2 w-56 rounded-xl border border-[var(--card-border)] bg-[var(--surface-1)] p-2 shadow-2xl shadow-[var(--shadow-deep)] backdrop-blur-md"
         >
           {parent.items.map((i) => {
             const itemActive = pathname === i.href;
@@ -214,8 +207,8 @@ function Dropdown({ parent, mobile }: { parent: DropdownParent; mobile?: boolean
                 <Link
                   href={i.href}
                   aria-current={itemActive ? "page" : undefined}
-                  className={`block rounded px-3 py-2 text-sm hover:bg-[rgba(12,34,63,0.5)] hover:text-white ${
-                    itemActive ? "bg-[rgba(30,211,242,0.08)] text-white" : "text-[var(--muted)]"
+                  className={`block rounded px-3 py-2 text-sm hover:bg-[var(--secondary)] hover:text-[var(--text)] ${
+                    itemActive ? "bg-[rgba(31,58,36,0.08)] text-[var(--text)]" : "text-[var(--muted)]"
                   }`}
                   onClick={() => setOpen(false)}
                 >
@@ -237,7 +230,6 @@ export default function Navbar() {
   const setMenuOpen = (value: boolean) => setMenu({ path: pathname, open: value });
   const headerRef = useRef<HTMLElement>(null);
 
-  // SectionNav and anchor offsets read the real header height (top bar included).
   useEffect(() => {
     const header = headerRef.current;
     if (!header) return;
@@ -252,18 +244,11 @@ export default function Navbar() {
   return (
     <header ref={headerRef} className="sticky top-0 z-50">
       <TopBar />
-      <nav aria-label="Main navigation" className="border-b border-[var(--card-border)] bg-[rgba(0,8,20,0.78)] backdrop-blur-md">
+      <nav aria-label="Main navigation" className="border-b border-[var(--card-border)] bg-[rgba(229,232,206,0.78)] backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
           <Link href="/" className="flex items-center gap-2" aria-label={`${site.name} home`}>
-            <Image
-              src="/brand/nexlane-mark.png"
-              alt="Nexlane Digital mark"
-              width={380}
-              height={257}
-              priority
-              className="h-10 w-auto object-contain"
-            />
-            <span className="font-display text-lg font-bold tracking-[0.18em] text-white">NEXLANE</span>
+            <BrandMark size={40} ariaLabel={`${site.name} mark`} />
+            <span className="font-display text-lg font-bold tracking-[0.18em] text-[var(--text)]">NEXLANE</span>
           </Link>
 
           {/* Desktop */}
@@ -284,7 +269,7 @@ export default function Navbar() {
 
           {/* Hamburger */}
           <button
-            className="rounded p-2.5 text-white lg:hidden"
+            className="rounded p-2.5 text-[var(--text)] lg:hidden"
             aria-expanded={menuOpen}
             aria-label={menuOpen ? "Close menu" : "Open menu"}
             onClick={() => setMenuOpen(!menuOpen)}
@@ -297,7 +282,7 @@ export default function Navbar() {
 
         {/* Mobile menu */}
         {menuOpen && (
-          <div className="mobile-menu-enter border-t border-[var(--card-border)] bg-[rgba(0,8,20,0.97)] px-4 py-4 lg:hidden">
+          <div className="mobile-menu-enter border-t border-[var(--card-border)] bg-[rgba(229,232,206,0.97)] px-4 py-4 lg:hidden">
             <div className="space-y-3">
               {nav.main.map((i) => {
                 const active = isRouteActive(pathname, i.href);
@@ -309,8 +294,8 @@ export default function Navbar() {
                     aria-current={active ? "page" : undefined}
                     className={`block rounded px-2 py-3 text-sm ${
                       active
-                        ? "border-l-2 border-[var(--accent)] bg-[rgba(30,211,242,0.08)] pl-2 text-white"
-                        : "text-[var(--muted)] hover:text-white"
+                        ? "border-l-2 border-[var(--accent)] bg-[rgba(31,58,36,0.08)] pl-2 text-[var(--text)]"
+                        : "text-[var(--muted)] hover:text-[var(--text)]"
                     }`}
                   >
                     {i.label}
@@ -330,8 +315,8 @@ export default function Navbar() {
                     aria-current={active ? "page" : undefined}
                     className={`block rounded px-2 py-3 text-sm ${
                       active
-                        ? "border-l-2 border-[var(--accent)] bg-[rgba(30,211,242,0.08)] pl-2 text-white"
-                        : "text-[var(--muted)] hover:text-white"
+                        ? "border-l-2 border-[var(--accent)] bg-[rgba(31,58,36,0.08)] pl-2 text-[var(--text)]"
+                        : "text-[var(--muted)] hover:text-[var(--text)]"
                     }`}
                   >
                     {i.label}

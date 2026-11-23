@@ -33,7 +33,6 @@ export default function AdminDashboard() {
         router.refresh();
       }
     } catch {
-      // Even if logout fails, redirect to login
       router.push("/admin/login");
       router.refresh();
     }
@@ -125,7 +124,7 @@ export default function AdminDashboard() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="font-display text-2xl font-semibold">Nexlane admin</h1>
+            <h1 className="font-display text-2xl font-semibold text-[var(--text)]">Nexlane admin</h1>
             <p className="text-sm text-[var(--muted)] mt-1">
               Changes save to blog.json and go live on the next deploy.
             </p>
@@ -154,7 +153,7 @@ export default function AdminDashboard() {
         <div className="glass overflow-hidden">
           {posts.length === 0 ? (
             <div className="p-12 text-center text-[var(--muted)]">
-              No posts yet. <Link href="/admin/posts/new" className="text-[var(--accent)] hover:underline">
+              No posts yet. <Link href="/admin/posts/new" className="text-[var(--accent-2)] hover:underline">
                 Create one
               </Link>
             </div>
@@ -173,11 +172,11 @@ export default function AdminDashboard() {
                 </thead>
                 <tbody>
                   {posts.map((post) => (
-                    <tr key={post.slug} className="border-b border-[var(--card-border)] last:border-0 hover:bg-[rgba(125,196,255,0.03)]">
+                    <tr key={post.slug} className="border-b border-[var(--card-border)] last:border-0 hover:bg-[var(--secondary)]">
                       <td className="p-4">
                         <Link
                           href={`/admin/posts/${post.slug}`}
-                          className="font-medium hover:text-[var(--accent)] transition-colors"
+                          className="font-medium hover:text-[var(--accent-2)] transition-colors"
                         >
                           {post.title}
                         </Link>
@@ -195,7 +194,7 @@ export default function AdminDashboard() {
                           className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                             post.draft
                               ? "bg-[rgba(245,158,11,0.15)] text-[rgb(245,158,11)] border border-[rgb(245,158,11)]"
-                              : "bg-[rgba(30,211,242,0.15)] text-[var(--accent)] border border-[var(--accent)]"
+                              : "bg-[rgba(31,58,36,0.15)] text-[var(--accent-2)] border border-[var(--accent-2)]"
                           }`}
                         >
                           {post.draft ? "Draft" : "Published"}
