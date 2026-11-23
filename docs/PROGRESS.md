@@ -155,6 +155,7 @@ Cloudflare Turnstile free hai (unlimited verifications). CSP me already `challen
 | `npm run lint` | 0 errors, 0 warnings |
 | `npm test` | 20/20 pass (rerun after final edits below) |
 | `npm run build` | Passed with `ADMIN_ROUTE_SLUG=verify-panel` after final source edits (35 routes) |
+| GitHub Actions PR build | Passed after the CI workflow set the same test-only route slug |
 | `npm audit --audit-level=low` | 0 vulnerabilities |
 
 - **Concurrent lockout protection:** The final `001_admin_auth.sql` migration reserves one of five attempts under an email-scoped advisory lock before the Supabase Auth request. Reservations expire after 15 minutes and do not count as failed logins; only five actual consecutive failures create a 15-minute lockout. The TypeScript caller uses the same `begin_admin_login_attempt` / `finish_admin_login_attempt` RPC names and records IP/user-agent data in the database.
