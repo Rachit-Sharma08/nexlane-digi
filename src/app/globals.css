@@ -1109,5 +1109,5 @@ html[data-quality="low"] .hero-arrive {
   .facts-panel .facts-marker { transform: scale(1); opacity: 1; transition: none; }
   .facts-panel .facts-tick { width: 11px; transition: none; }
   .facts-panel .facts-copy { color: var(--bg); transition: none; }
-  .facts-panel .facts-row .facts-marker { animation: none; }
+  .facts-panel.is-active .facts-row .facts-marker { animation: none; }
 }
