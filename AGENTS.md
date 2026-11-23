@@ -198,71 +198,11 @@ This section applies to the Forest & Sage palette redesign (branch `feat/forest-
 
 9. **Build gates:** `tsc`, `lint`, `build` must pass. Contrast ratios ≥4.5:1 verified. Screenshots at 1440/768/360 (+ reduced motion) saved to gitignored `screenshots/`.
 
-## 14. Phase 2A: Admin Authentication Upgrade (2026-11-23)
+## 14. Phase 2A: Admin Authentication Upgrade
 
-Replace the single shared-password admin login with two named, allowlisted admin accounts using Supabase Auth.
-
-### Requirements
-- Two admin accounts (Rachit, Krish) using Supabase Auth email+password
-- Admin emails from env vars `ADMIN_EMAIL_1` and `ADMIN_EMAIL_2` (never hardcoded)
-- Login attempt tracking in Supabase with 5 failures/15min lockout per account
-- Generic error messages (no email enumeration) — "Invalid credentials" for both wrong password and non-allowlisted email
-- Admin route from `ADMIN_ROUTE_SLUG` env var (dev fallback `/panel-x7f`, production fails closed at runtime via proxy)
-- Keep blog.json storage unchanged (Phase 2B)
-- Forest & Sage visual style, accessibility at 1440/768/360
-- No hardcoded secrets, no Supabase service role in client bundle
-
-### Architecture
-- **Supabase Auth** for the two admin accounts with service-role server client for admin operations
-- **Database functions** (PL/pgSQL with `SECURITY DEFINER`) for atomic lockout checking/recording: `record_admin_login_attempt`, `check_admin_lockout`, `clear_admin_lockout`, `set_admin_account_active`
-- **RLS enabled** on admin tables with `service_role`-only policies
-- **Dev fallback route** `/panel-x7f`; production throws at runtime if `ADMIN_ROUTE_SLUG` unset (checked in proxy)
-- **Password change** via Supabase Auth `updateUser` (self-service, verified current password)
-
-### Files created/modified
-- `src/lib/supabase/server.ts` — admin + user Supabase clients (server-only, service role)
-- `src/lib/admin-auth-utils.ts` — pure utility functions (testable, no external deps)
-- `src/lib/admin-auth-supabase.ts` — Supabase-backed auth logic, lockout, route helpers
-- `supabase/migrations/001_admin_auth.sql` — login_attempts, admin_accounts tables, RLS, RPC functions
-- `src/proxy.ts` — middleware protecting dynamic admin routes
-- `src/app/admin-internal/` — admin panel pages (renamed from `/admin` for internal routing)
-- `src/app/api/admin/login/route.ts` — Supabase Auth sign-in with allowlist check
-- `src/app/api/admin/logout/route.ts` — Supabase sign-out + old cookie cleanup
-- `src/app/api/admin/accounts/route.ts` — account management (GET, PATCH)
-- `src/app/api/admin/login-attempts/route.ts` — view/clear login attempts
-- `src/app/api/admin/password/route.ts` — password change
-- `tests/admin-auth-supabase.test.ts` — unit tests for utility functions
-
-### Environment variables (in `.env.example`)
-```
-# Supabase configuration (create a NEW Supabase project for Nexlane Digital)
-NEXT_PUBLIC_SUPABASE_URL=""
-NEXT_PUBLIC_SUPABASE_ANON_KEY=""
-SUPABASE_SERVICE_ROLE_KEY=""
-
-# Admin allowlist emails (exactly two) — NEVER commit real emails
-ADMIN_EMAIL_1=""
-ADMIN_EMAIL_2=""
-
-# Admin route slug — non-obvious path for the admin panel
-# Production: MUST be set to a random unguessable string (e.g. "panel-x7f9k2")
-# Development: if unset, defaults to "panel-x7f" (dev-only fallback)
-# Old /admin paths will 404 in production
-ADMIN_ROUTE_SLUG=""
-```
-
-### Owner setup steps (documented for launch)
-1. Create a new Supabase project for Nexlane Digital
-2. Run the migration `supabase/migrations/001_admin_auth.sql` in the Supabase SQL editor
-3. In Supabase Auth → Users, create two users with emails matching `ADMIN_EMAIL_1` and `ADMIN_EMAIL_2`, set strong passwords
-4. In Supabase → Table Editor → `admin_accounts`, verify both emails exist with `is_active = true`
-5. Set env vars in Vercel: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `ADMIN_EMAIL_1`, `ADMIN_EMAIL_2`, `ADMIN_ROUTE_SLUG` (random unguessable string)
-6. Deploy — old `/admin` paths now 404, new dynamic route works
-
-### Security notes
-- Service role key **never** exposed to client; all admin operations server-side only
-- Generic error "Invalid credentials" for both wrong password and non-allowlisted email
-- Lockout at 5 failed attempts per email per 15-minute window (rolling window)
-- Admin can disable the other admin's account (not their own)
-- Account disable signs out the user's active sessions
-- Password change requires current password verification
+- The admin panel uses Supabase Auth with exactly two distinct emails configured via `ADMIN_EMAIL_1` and `ADMIN_EMAIL_2`; never hardcode credentials or expose the service-role key to client code.
+- `ADMIN_ROUTE_SLUG` is one path segment, without a slash. Development may use `/panel-x7f`; production build and runtime must fail closed if it is missing or invalid. `/admin` is not an admin route.
+- Login attempts are persisted per configured account. Five consecutive failures within 15 minutes lock that account for 15 minutes; a successful login clears its lockout. The other configured account remains independent.
+- The `admin_accounts` rows must be provisioned for the two Auth users before login; account requests require an active row. Public sign-up must remain disabled in the Supabase project.
+- Keep `src/content/blog.json` as the blog source of truth in Phase 2A. Do not change post storage as part of this auth migration.
+- Before release: apply and validate the migration against the new dedicated Supabase project, configure all environment variables, test login/lockout/disable flows, run `tsc`, lint, build and responsive checks, then open a PR. Never push directly to `main`.
